@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/ui_widgets/dots_indicator/dots_decorator.dart';
-import 'package:flutter/material.dart';
 
 typedef OnTap = void Function(double position);
 

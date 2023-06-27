@@ -11,7 +11,7 @@ class PlacesSuggestionDto extends Equatable {
       status: json['status'],
       predictions: List<Predictions>.from(
         json['predictions'].map(
-          (x) => Predictions.fromJson(x),
+          Predictions.fromJson,
         ),
       ),
     );

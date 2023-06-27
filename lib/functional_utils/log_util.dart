@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 String jsonPretty(Object obj) {
   const encoder = JsonEncoder.withIndent('  ');
@@ -50,10 +49,10 @@ class Log {
     if (production) return '';
     var _ = '';
 
-    final _d = delime.padRight(20, delime);
-    _ += '\n$delime> $tag $_d>\n';
+    final d = delime.padRight(20, delime);
+    _ += '\n$delime> $tag $d>\n';
     if (payload != null) {
-      _ += '$payload \n$_d\n';
+      _ += '$payload \n$d\n';
     }
 
     return _;

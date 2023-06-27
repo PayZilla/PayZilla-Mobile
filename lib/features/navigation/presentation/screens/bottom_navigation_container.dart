@@ -15,7 +15,7 @@ class BottomNavigationContainer extends StatefulWidget {
   final bool hideNav;
 
   @override
-  _BottomNavigationContainerState createState() =>
+  State<BottomNavigationContainer> createState() =>
       _BottomNavigationContainerState();
 }
 

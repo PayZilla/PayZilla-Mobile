@@ -37,7 +37,7 @@ class _RateEndpoints {
 }
 
 // user endpoints
-class _PZillaPolicyEndpoints {
+class _AppPolicyEndpoints {
   final tcp = '${AppConfig.clientUrl}/policies';
   final faqs = '${AppConfig.clientUrl}/faqs';
   final kycPolicy = '${AppConfig.clientUrl}/kyc-policy';
@@ -116,7 +116,7 @@ final transactionEndpoints = _TransactionEndpoints();
 final walletEndpoints = _WalletEndpoints();
 final userEndpoints = _UserEndpoints();
 final rateEndpoints = _RateEndpoints();
-final PZillaPolicyEndpoints = _PZillaPolicyEndpoints();
+final appPolicyEndpoints = _AppPolicyEndpoints();
 final mapsEndpoints = _MapEndpoints();
 final otherEndpoints = _OtherEndpoints();
 final otpEndpoints = _OTPEndpoints();

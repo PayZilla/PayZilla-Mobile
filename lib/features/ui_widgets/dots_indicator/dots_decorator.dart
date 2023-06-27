@@ -1,5 +1,5 @@
-import 'package:pay_zilla/config/config.dart';
 import 'package:flutter/material.dart';
+import 'package:pay_zilla/config/config.dart';
 
 const Size kDefaultSize = Size.square(Insets.dim_10);
 const EdgeInsets kDefaultSpacing = EdgeInsets.all(Insets.dim_6);

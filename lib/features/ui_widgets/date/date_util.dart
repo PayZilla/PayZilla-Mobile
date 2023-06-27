@@ -89,8 +89,8 @@ class DateFormatUtil {
   }
 
   static String dayOfMonth(int day) {
-    final _dayMap = {1: 'st', 2: 'nd', 3: 'rd'};
-    return "$day${_dayMap[day] ?? 'th'}";
+    final dayMap = {1: 'st', 2: 'nd', 3: 'rd'};
+    return "$day${dayMap[day] ?? 'th'}";
   }
 }
 

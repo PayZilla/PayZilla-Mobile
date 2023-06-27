@@ -4,13 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:pay_zilla/functional_utils/notification_utility.dart';
 
 class TransactionInfo extends StatelessWidget {
-  const TransactionInfo(
-      {Key? key,
-      this.description,
-      this.value,
-      this.showCopyWidget = false,
-      this.isError = false})
-      : super(key: key);
+  const TransactionInfo({
+    Key? key,
+    this.description,
+    this.value,
+    this.showCopyWidget = false,
+    this.isError = false,
+  }) : super(key: key);
 
   final String? description, value;
   final bool showCopyWidget, isError;
@@ -22,7 +22,7 @@ class TransactionInfo extends StatelessWidget {
       children: [
         Text(
           description!,
-          style: Theme.of(context).textTheme.caption!.copyWith(
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 fontWeight: FontWeight.w600,
                 color: const Color(0xff6c7884),
               ),
@@ -30,7 +30,7 @@ class TransactionInfo extends StatelessWidget {
         const Spacer(),
         Text(
           value!,
-          style: Theme.of(context).textTheme.caption!.copyWith(
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 fontWeight: FontWeight.w400,
                 color: isError ? Colors.red : const Color(0xff333D47),
                 height: 1.33,

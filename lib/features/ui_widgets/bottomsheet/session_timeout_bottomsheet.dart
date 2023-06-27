@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
-import 'package:flutter/material.dart';
 
 class SessionTimeoutBottomSheet extends StatelessWidget
     with BaseBottomSheetMixin, LogoutMixin {

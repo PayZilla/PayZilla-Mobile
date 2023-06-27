@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class Validators {
   static String? Function(String?) validateAccountNumber({int maxLength = 10}) {
@@ -100,14 +100,14 @@ class Validators {
 
   static String? Function(String?) validatePassword({
     int minLength = 8,
-    int maxlength = 255,
+    int maxLength = 255,
   }) {
     return (String? value) {
       final res = harmonize(value);
 
       if (res.isEmpty) {
         return 'Password is required';
-      } else if (res.length < minLength || res.length > maxlength) {
+      } else if (res.length < minLength || res.length > maxLength) {
         return 'Password must be at least $minLength characters';
       } else if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])')
           .hasMatch(res)) {

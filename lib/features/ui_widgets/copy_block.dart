@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../functional_utils/notification_utility.dart';
+import 'package:pay_zilla/functional_utils/notification_utility.dart';
 
 class CopyBlock extends StatelessWidget {
   const CopyBlock({
@@ -26,19 +26,19 @@ class CopyBlock extends StatelessWidget {
       child: ListTile(
         title: Text(
           title,
-          style: Theme.of(context).textTheme.bodyText2!.apply(
-            color: const Color(0xff6c7884),
-            fontWeightDelta: 2,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium!.apply(
+                color: const Color(0xff6c7884),
+                fontWeightDelta: 2,
+              ),
           textAlign: TextAlign.start,
         ),
         subtitle: Padding(
-          padding: const EdgeInsets.only(top: 12.0),
+          padding: const EdgeInsets.only(top: 12),
           child: Text(
             subTitle,
-            style: Theme.of(context).textTheme.bodyText2!.apply(
-              color: const Color(0xff6c7884),
-            ),
+            style: Theme.of(context).textTheme.bodyMedium!.apply(
+                  color: const Color(0xff6c7884),
+                ),
             textAlign: TextAlign.start,
           ),
         ),
@@ -58,10 +58,10 @@ class CopyBlock extends StatelessWidget {
             alignment: Alignment.center,
             child: Text(
               'Copy',
-              style: Theme.of(context).textTheme.overline!.apply(
-                color: Theme.of(context).primaryColor,
-                fontWeightDelta: 2,
-              ),
+              style: Theme.of(context).textTheme.labelSmall!.apply(
+                    color: Theme.of(context).primaryColor,
+                    fontWeightDelta: 2,
+                  ),
             ),
           ),
         ),

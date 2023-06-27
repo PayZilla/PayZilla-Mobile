@@ -52,7 +52,7 @@ Future<void> _registerOthers(Flavor flavor, bool enableLogging) async {
   sl
     ..registerFactory<SharedPreferences>(() => sharePreference)
     ..registerLazySingleton<RemoteConfigService>(
-      () => RemoteConfigServiceImpl(),
+      RemoteConfigServiceImpl.new,
     )
     ..registerSingleton(firebaseAnalytics)
     ..registerSingleton(AppEnvManager(flavor))

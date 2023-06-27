@@ -13,9 +13,9 @@ extension TransactionStatusExtension on TransactionStatusEnum {
   String get name => describeEnum(this);
 
   String describeEnum(Object enumEntry) {
-    final String description = enumEntry.toString();
-    final int indexOfDot = description.indexOf('.');
-    assert(indexOfDot != -1 && indexOfDot < description.length - 1);
+    final description = enumEntry.toString();
+    final indexOfDot = description.indexOf('.');
+    assert(indexOfDot != -1 && indexOfDot < description.length - 1, '');
     return description.substring(indexOfDot + 1);
   }
 
@@ -33,8 +33,6 @@ extension TransactionStatusExtension on TransactionStatusEnum {
         return 'Cancelled';
       case TransactionStatusEnum.review:
         return 'Review';
-      default:
-        return 'Pending';
     }
   }
 
@@ -43,50 +41,50 @@ extension TransactionStatusExtension on TransactionStatusEnum {
       case TransactionStatusEnum.pending:
         return Text(
           'Pending',
-          style: Theme.of(context).textTheme.overline!.copyWith(
-            fontWeight: FontWeight.w400,
-            color: const Color(0xffFF9500),
-          ),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: const Color(0xffFF9500),
+              ),
         );
       case TransactionStatusEnum.processing:
         return Text(
           'Processing',
-          style: Theme.of(context).textTheme.overline!.copyWith(
-            fontWeight: FontWeight.w400,
-            color: const Color(0xffFF9500),
-          ),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: const Color(0xffFF9500),
+              ),
         );
       case TransactionStatusEnum.successful:
         return Text(
           'Success',
-          style: Theme.of(context).textTheme.overline!.copyWith(
-            fontWeight: FontWeight.w400,
-            color: const Color(0xff00A32E),
-          ),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: const Color(0xff00A32E),
+              ),
         );
       case TransactionStatusEnum.failed:
         return Text(
           'Failed',
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(
-            fontWeight: FontWeight.w400,
-            color: const Color(0xffFF2D55),
-          ),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: const Color(0xffFF2D55),
+              ),
         );
       case TransactionStatusEnum.review:
         return Text(
           'Review',
-          style: Theme.of(context).textTheme.overline!.copyWith(
-            fontWeight: FontWeight.w400,
-            color: const Color(0xffFF9500),
-          ),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: const Color(0xffFF9500),
+              ),
         );
-      default:
+      case TransactionStatusEnum.cancelled:
         return Text(
           'Cancelled',
-          style: Theme.of(context).textTheme.overline!.copyWith(
-            fontWeight: FontWeight.w400,
-            color: const Color(0xffFF9500),
-          ),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: const Color(0xffFF9500),
+              ),
         );
     }
   }

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:pay_zilla/core/core.dart';
-import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
+import 'package:pay_zilla/core/core.dart';
+import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class PhoneNumber extends Equatable {
   const PhoneNumber({

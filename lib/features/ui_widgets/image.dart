@@ -1,7 +1,7 @@
-import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 /// simple wrapper around CachedNetworkImage that provides any boilerplate we need for images in the app
 class HostedImage extends StatelessWidget {

@@ -1,11 +1,11 @@
-import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
-class AfrWebViewArgs {
-  AfrWebViewArgs(this.url, this.title);
+class AppWebViewArgs {
+  AppWebViewArgs(this.url, this.title);
 
   final String url;
   final String title;
@@ -13,7 +13,7 @@ class AfrWebViewArgs {
 
 class AfrWebview extends StatefulWidget {
   const AfrWebview({required this.args, Key? key}) : super(key: key);
-  final AfrWebViewArgs args;
+  final AppWebViewArgs args;
 
   @override
   State<AfrWebview> createState() => _AfrWebviewState();
