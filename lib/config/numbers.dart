@@ -1,0 +1,42 @@
+class Insets {
+  Insets._();
+
+  static const double padding = 15;
+  static const double hPadding = 20;
+  static const double vPadding = 20;
+  static const double dim_0 = 0;
+  static const double dim_1 = 1;
+  static const double dim_2 = 2;
+  static const double dim_4 = 4;
+  static const double dim_5 = 5;
+  static const double dim_6 = 6;
+  static const double dim_8 = 8;
+  static const double dim_10 = 10;
+  static const double dim_12 = 12;
+  static const double dim_14 = 14;
+  static const double dim_16 = 16;
+  static const double dim_18 = 18;
+  static const double dim_20 = 20;
+  static const double dim_22 = 22;
+  static const double dim_24 = 24;
+  static const double dim_26 = 26;
+  static const double dim_28 = 28;
+  static const double dim_30 = 30;
+  static const double dim_32 = 32;
+  static const double dim_34 = 34;
+  static const double dim_40 = 40;
+  static const double dim_42 = 42;
+  static const double dim_44 = 44;
+  static const double dim_48 = 48;
+  static const double dim_50 = 50;
+  static const double dim_54 = 54;
+  static const double dim_60 = 60;
+  static const double dim_64 = 64;
+  static const double dim_66 = 66;
+  static const double dim_70 = 70;
+  static const double dim_80 = 80;
+  static const double dim_90 = 90;
+  static const double dim_100 = 100;
+  static const double dim_116 = 116;
+  static const double dim_173 = 173;
+}
