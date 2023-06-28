@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class PZilla {
-  PZilla._(this.context);
+class AppNavigator {
+  AppNavigator._(this.context);
 
-  factory PZilla.of(BuildContext context) {
-    return PZilla._(context);
+  factory AppNavigator.of(BuildContext context) {
+    return AppNavigator._(context);
   }
 
   BuildContext context;

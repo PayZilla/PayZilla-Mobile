@@ -47,7 +47,7 @@ class FutureBottomSheet<T> extends StatelessWidget with BaseBottomSheetMixin {
                       if (onItemSelected != null) {
                         onItemSelected!(item);
                       } else {
-                        PZilla.of(context).popDialog(item);
+                        AppNavigator.of(context).popDialog(item);
                       }
                     },
                     child: itemBuilder(context, item),

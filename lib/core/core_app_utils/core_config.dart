@@ -18,8 +18,6 @@ class AppEnvManager {
 extension AppConfig on Flavor {
   R fold<R>({
     required R Function(String) ifDevelopment,
-    required R Function(String) ifStaging,
-    required R Function(String) ifPreProd,
     required R Function(String) ifProduction,
   }) {
     switch (this) {

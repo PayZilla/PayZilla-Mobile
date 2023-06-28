@@ -27,7 +27,7 @@ class SessionTimeoutBottomSheet extends StatelessWidget
             style: const TextStyle(fontSize: 16),
           ),
           const YBox(Insets.dim_32),
-          AfrichangeButton(
+          AppButton(
             textTitle: 'Log In',
             action: sessionLogout,
           ),

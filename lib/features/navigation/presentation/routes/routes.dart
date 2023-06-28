@@ -1,6 +1,6 @@
 import 'package:pay_zilla/features/navigation/navigation.dart';
 
-class PZillaRoutes {
+class AppRoutes {
 //splash screen first
   static const splash = '/splash';
 
@@ -25,7 +25,7 @@ class PZillaRoutes {
   // questionnaire
   static const questionnaire = '/questionnaire';
 
-  static String tab(PZillaTab tab) {
+  static String tab(AppNavTab tab) {
     return '/tab/${tab.toString().split('.').last}';
   }
 

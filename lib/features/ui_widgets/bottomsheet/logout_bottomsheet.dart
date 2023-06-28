@@ -26,14 +26,14 @@ class LogoutBottomSheet extends StatelessWidget
         Row(
           children: [
             Expanded(
-              child: AfrichangePurpleButton(
+              child: AppGradientButton(
                 textTitle: 'Cancel',
-                action: () => PZilla.of(context).pop(),
+                action: () => AppNavigator.of(context).pop(),
               ),
             ),
             const YBox(Insets.dim_10),
             Expanded(
-              child: AfrichangeButton(
+              child: AppButton(
                 backgroundColor: AppColors.orangeColor,
                 textTitle: 'Logout',
                 action: logout,

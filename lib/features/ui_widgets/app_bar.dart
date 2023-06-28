@@ -51,7 +51,7 @@ class AfrAppBar extends StatelessWidget implements PreferredSizeWidget {
           : titleWidget ?? const SizedBox.shrink(),
       leading: leading ??
           IconButton(
-            onPressed: onLeadingPressed ?? PZilla.of(context).pop,
+            onPressed: onLeadingPressed ?? AppNavigator.of(context).pop,
             icon: Icon(
               Icons.chevron_left_rounded,
               size: 30,

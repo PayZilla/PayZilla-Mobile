@@ -29,8 +29,8 @@ class AppColors {
   static const payZillaPurple = Color(0xFF7165E3);
   static const btnSecondaryColor = Color(0xff9EA6BE);
   static const iconColor = Color(0xFF1A1A1A);
-  static const textHeaderColor = Color(0xFF333D47);
-  static const textBodyColor = Color(0xFF6C7884);
+  static const textHeaderColor = Color(0xFF1D3A6F);
+  static const textBodyColor = Color(0xFF6B7280);
   static const deeperDark = Color(0xFF111418);
   static const white = Color(0xFFFFFFFF);
   static const grey = Color(0xFF676D7E);

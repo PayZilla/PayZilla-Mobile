@@ -3,8 +3,8 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
-class AfrichangeGreyButton extends AfrichangeButton {
-  const AfrichangeGreyButton({
+class AppSolidButton extends AppButton {
+  const AppSolidButton({
     required String textTitle,
     required VoidCallback action,
     bool fullWidth = true,
@@ -23,8 +23,8 @@ class AfrichangeGreyButton extends AfrichangeButton {
         );
 }
 
-class AfrichangePurpleButton extends AfrichangeButton {
-  AfrichangePurpleButton({
+class AppGradientButton extends AppButton {
+  AppGradientButton({
     required String textTitle,
     required VoidCallback action,
     bool? deActivate,
@@ -34,6 +34,26 @@ class AfrichangePurpleButton extends AfrichangeButton {
   }) : super(
           textTitle: textTitle,
           action: action,
+          decoration: ShapeDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment(-1, 0.01),
+              end: Alignment(1, -0.01),
+              colors: [
+                Color(0xFF0A4D6A),
+                Color(0xFF08C0CA),
+              ],
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            shadows: const [
+              BoxShadow(
+                color: Color(0x3F000000),
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              )
+            ],
+          ),
           deActivate: deActivate,
           showLoading: showLoading,
           fullWidth: fullWidth,
@@ -43,8 +63,8 @@ class AfrichangePurpleButton extends AfrichangeButton {
         );
 }
 
-class AfrichangeButton extends StatelessWidget {
-  const AfrichangeButton({
+class AppButton extends StatelessWidget {
+  const AppButton({
     required this.textTitle,
     required this.action,
     this.deActivate,
@@ -54,18 +74,21 @@ class AfrichangeButton extends StatelessWidget {
     this.color,
     this.backgroundColor,
     this.loadingColor,
+    this.decoration,
     this.child,
   }) : super(key: key);
   final String textTitle;
   final bool fullWidth;
   final bool? showLoading;
   final bool? deActivate;
+  final Decoration? decoration;
   final Color? color, backgroundColor, loadingColor;
   final VoidCallback action;
   final Widget? child;
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: decoration,
       height: Insets.dim_54.dx,
       width: fullWidth ? double.maxFinite : null,
       child: ElevatedButton(
@@ -89,7 +112,8 @@ class AfrichangeButton extends StatelessWidget {
                         color: deActivate == true
                             ? Colors.grey.shade400
                             : color ?? Colors.white,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
                       ),
                 ),
       ),

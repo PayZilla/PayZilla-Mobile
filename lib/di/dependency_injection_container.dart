@@ -1,7 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -26,6 +23,7 @@ Future<void> initServiceLocator(
   registerRepositories(sl);
 
   // register view models
+
   registerViewModelProviders(sl);
 
   //storage
@@ -44,26 +42,16 @@ Future<void> _registerOthers(Flavor flavor, bool enableLogging) async {
   final connectivity = Connectivity();
   final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  final firebaseRemoteConfig = FirebaseRemoteConfig.instance;
-  final firebaseMessaging = FirebaseMessaging.instance;
-  final firebaseAnalytics = FirebaseAnalytics.instance;
   final sharePreference = await SharedPreferences.getInstance();
 
   sl
     ..registerFactory<SharedPreferences>(() => sharePreference)
-    ..registerLazySingleton<RemoteConfigService>(
-      RemoteConfigServiceImpl.new,
-    )
-    ..registerSingleton(firebaseAnalytics)
     ..registerSingleton(AppEnvManager(flavor))
-    ..registerSingleton(firebaseMessaging)
-    ..registerSingleton(firebaseRemoteConfig)
     ..registerSingleton(secureStorage)
     ..registerSingleton(localAuth)
     ..registerSingleton(connectivity)
     ..registerSingleton(localNotificationsPlugin)
-    ..registerSingleton(AnalyticsManager(firebaseAnalytics: sl()))
-    ..registerSingleton(NotificationManager(sl(), sl()))
+    ..registerSingleton(NotificationManager(sl()))
     ..registerSingleton(
       HttpManager(
         cache: sl<SecureLocalCache>(),

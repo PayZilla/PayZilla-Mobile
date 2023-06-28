@@ -1,46 +1,43 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/di/dependency_injection_container.dart';
 
-Future<void> backgroundHandler(RemoteMessage message) async {}
+// Future<void> backgroundHandler(RemoteMessage message) async {}
 
 class NotificationManager {
   NotificationManager(
-    this.firebaseMessaging,
+    // this.firebaseMessaging,
     this.flutterLocalNotificationsPlugin,
   ) {
-    initializeNotificationManager();
+    // initializeNotificationManager();
   }
-  final FirebaseMessaging firebaseMessaging;
+  // final FirebaseMessaging firebaseMessaging;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   static NotificationManager get instance => sl<NotificationManager>();
 
   /// firebase cloud messenger token for this device
   String fcmToken = '';
-  final List<RemoteMessage> _queue = [];
+  // final List<RemoteMessage> _queue = [];
 
-  final StreamController<RemoteMessage> _notification =
-      StreamController.broadcast();
-  Stream<RemoteMessage> get notification => _notification.stream;
+  // final StreamController<RemoteMessage> _notification =
+  //     StreamController.broadcast();
+  // Stream<RemoteMessage> get notification => _notification.stream;
 
   final AndroidNotificationChannel androidChannel =
       const AndroidNotificationChannel(
-    'PZillaichange',
-    'PZillaichange',
-    description: 'This channel is used for PZillaichange notifications.',
+    'PayZilla',
+    'PayZilla',
+    description: 'This channel is used for PayZilla notifications.',
     importance: Importance.max,
   );
 
   /// this is only required on iOS
   Future<void> requestPermission() async {
-    await firebaseMessaging.requestPermission();
+    // await firebaseMessaging.requestPermission();
   }
-
+/*
   Future initializeNotificationManager() async {
     fcmToken = await firebaseMessaging
         .getToken()
@@ -154,5 +151,5 @@ class NotificationManager {
 
   void dispose() {
     _notification.close();
-  }
+  }*/
 }

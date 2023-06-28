@@ -2,14 +2,18 @@
 const String baseSvgPath = 'assets/svgs';
 const String basePngPath = 'assets/pngs';
 
-//splash screen assets
-final String bgAsset = 'welcome_bg'.png;
-final String logoFull = 'africhange_logo_full_white'.png;
+// app logo path
+final String logoSvg = 'logo'.svg;
+final String logoWithNamePng = 'logo_and_name'.png;
+final String logoPng = 'logo'.png;
 
 // Onboarding screen assets
-final String onb1 = 'welcome_intro_one'.png;
-final String onb2 = 'welcome_intro_two'.png;
-final String onb3 = 'welcome_intro_three'.png;
+final String onb1 = 'on1'.png;
+final String onb2 = 'device'.png;
+final String onb2b = 'device_top'.png;
+final String onb3 = 'card_phone'.png;
+final String onb3b = 'card_top'.png;
+final String imgPlaceholder = 'img_place_holder'.png;
 
 // Onboarding country assets
 final String nigeriaSvg = 'nigeria'.flagSvg;
@@ -21,7 +25,6 @@ final String homeInActive = 'home_inactive'.navSvg;
 final String walletInactive = 'wallet_inactive'.navSvg;
 final String referralInactive = 'referral_inactive'.navSvg;
 final String payBillsInactive = 'pay_bills_inactive'.navSvg;
-final String logo = 'send_money_nav_logo'.navSvg;
 
 // dashboard
 final String noTransaction = 'no_transaction'.svg;
@@ -31,20 +34,6 @@ final String fingerPrint = 'fingerprint'.png;
 final String referralCard = 'referral_card_bg'.png;
 final String dashboardBg = 'dashboard_background_1'.png;
 final String fingerprint = 'fingerprint'.png;
-
-// Memoji
-final String av1 = 'africhange_avatar_one'.png;
-final String av2 = 'africhange_avatar_two'.png;
-final String av3 = 'africhange_avatar_three'.png;
-final String av4 = 'africhange_avatar_four'.png;
-final String av5 = 'africhange_avatar_five'.png;
-final String av6 = 'africhange_avatar_six'.png;
-final String av7 = 'africhange_avatar_seven'.png;
-final String av8 = 'africhange_avatar_eight'.png;
-final String av9 = 'africhange_avatar_nine'.png;
-final String av10 = 'africhange_avatar_ten'.png;
-final String av11 = 'africhange_avatar_eleven'.png;
-final String av12 = 'africhange_avatar_twelve'.png;
 
 // profile icons
 final String faqLogoIcon = 'faq_icon'.profileSvg;
@@ -64,7 +53,6 @@ final String appStore = 'appstore_icon'.png;
 final String playStore = 'playstore_icon'.png;
 final String googleAuth = 'google_authenticator_icon'.png;
 final String deleteAccount = 'delete_thrash'.svg;
-
 
 //transaction
 final String pendingIcon = 'transaction_pending'.svg;

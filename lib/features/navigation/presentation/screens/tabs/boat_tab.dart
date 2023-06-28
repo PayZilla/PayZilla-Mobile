@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
-enum PZillaTab { none, home, wallet, referral, profile }
+enum AppNavTab { none, home, wallet, referral, profile }
 
-extension PZillaTabUtil on PZillaTab {
-  static PZillaTab? fromString(String? tabName) {
+extension AppNavTabUtil on AppNavTab {
+  static AppNavTab? fromString(String? tabName) {
     switch (tabName) {
       case 'home':
-        return PZillaTab.home;
+        return AppNavTab.home;
       case 'wallet':
-        return PZillaTab.wallet;
+        return AppNavTab.wallet;
       case 'none':
-        return PZillaTab.none;
+        return AppNavTab.none;
       case 'referral':
-        return PZillaTab.referral;
+        return AppNavTab.referral;
       case 'profile':
-        return PZillaTab.profile;
+        return AppNavTab.profile;
       default:
-        return PZillaTab.home;
+        return AppNavTab.home;
     }
   }
 }
 
-class PZillaTabScreenData {
-  PZillaTabScreenData({required this.tab, required this.body});
+class AppTabScreenData {
+  AppTabScreenData({required this.tab, required this.body});
 
-  PZillaTab tab;
+  AppNavTab tab;
   Widget body;
 }

@@ -11,7 +11,7 @@ class BottomNavigationContainer extends StatefulWidget {
     required this.hideNav,
   }) : super(key: key);
 
-  final PZillaTab selectedTab;
+  final AppNavTab selectedTab;
   final bool hideNav;
 
   @override
@@ -37,15 +37,15 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           selectedTab: widget.selectedTab,
           height: context.getHeight(0.08),
           onTabSelected: (tab) {
-            if (tab == PZillaTab.none) return;
-            PZilla.of(context).push(PZillaRoutes.tab(tab));
+            if (tab == AppNavTab.none) return;
+            AppNavigator.of(context).push(AppRoutes.tab(tab));
           },
           items: [
             BottomAppBarItem(
               icon: LocalSvgImage(homeInActive),
               activeIcon: LocalSvgImage(homeActive),
               title: 'Home',
-              tab: PZillaTab.home,
+              tab: AppNavTab.home,
             ),
             BottomAppBarItem(
               icon: LocalSvgImage(walletInactive),
@@ -54,19 +54,19 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
                 color: AppColors.borderColor,
               ),
               title: 'Wallet',
-              tab: PZillaTab.wallet,
+              tab: AppNavTab.wallet,
             ),
             BottomAppBarItem(
               icon: const SizedBox.shrink(),
               activeIcon: const SizedBox.shrink(),
               title: ' ',
-              tab: PZillaTab.none,
+              tab: AppNavTab.none,
             ),
             BottomAppBarItem(
               icon: LocalSvgImage(referralInactive),
               activeIcon: LocalSvgImage(referralInactive),
               title: 'Referral',
-              tab: PZillaTab.referral,
+              tab: AppNavTab.referral,
             ),
             BottomAppBarItem(
               icon: LocalSvgImage(payBillsInactive),
@@ -75,7 +75,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
                 color: AppColors.borderColor,
               ),
               title: 'Profile',
-              tab: PZillaTab.profile,
+              tab: AppNavTab.profile,
             ),
           ],
         ),
@@ -94,7 +94,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
                 color: AppColors.borderColor,
               ),
               child: Center(
-                child: LocalSvgImage(logo),
+                child: LocalSvgImage(logoSvg),
               ),
             ),
           ),
@@ -114,7 +114,7 @@ class BottomAppBarItem {
   Widget icon;
   Widget activeIcon;
   String title;
-  PZillaTab tab;
+  AppNavTab tab;
 }
 
 class BottomAppBar extends StatefulWidget {
@@ -138,8 +138,8 @@ class BottomAppBar extends StatefulWidget {
   final Color backgroundColor;
   final Color color;
   final Color selectedColor;
-  final PZillaTab selectedTab;
-  final Function(PZillaTab) onTabSelected;
+  final AppNavTab selectedTab;
+  final Function(AppNavTab) onTabSelected;
 
   @override
   State<StatefulWidget> createState() => BottomAppBarState();

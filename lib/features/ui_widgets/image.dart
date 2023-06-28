@@ -37,8 +37,8 @@ class HostedImage extends StatelessWidget {
       ),
       errorWidget: (_, s, ___) =>
           fallbackImage ??
-          LocalImage(
-            bgAsset,
+          LocalSvgImage(
+            logoSvg,
             fit: fit,
             height: height,
             width: width,
