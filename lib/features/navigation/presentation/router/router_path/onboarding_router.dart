@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:pay_zilla/features/auth/presentation/screens/login_screen.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
 
 GoRoute onboardingRouter() {
@@ -7,6 +8,13 @@ GoRoute onboardingRouter() {
     builder: (context, state) {
       return const OnboardingScreen();
     },
-    routes: [],
+    routes: [
+      GoRoute(
+        path: 'auth',
+        builder: (context, state) {
+          return const SignIn();
+        },
+      ),
+    ],
   );
 }

@@ -76,9 +76,9 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const YBox(Insets.dim_40),
-                  const Text(
+                children: const [
+                  YBox(Insets.dim_60),
+                  Text(
                     'The fastest transaction\nprocess only here',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -87,7 +87,8 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const Padding(
+                  YBox(Insets.dim_20),
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: Insets.dim_66),
                     child: Text(
                       'Get easy to pay all your bills with just a few steps. Paying your bills become fast and efficient.',
@@ -99,33 +100,8 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                       ),
                     ),
                   ),
-                  const YBox(Insets.dim_80),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Insets.dim_60),
-                    child: AppGradientButton(
-                      textTitle: 'Get Started',
-                      action: () {},
-                    ),
-                  ),
-                  const YBox(Insets.dim_48),
+                  Spacer(),
                 ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          right: 30,
-          top: 50,
-          child: TextButton(
-            onPressed: () {},
-            child: const Text(
-              'SKIP',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.30,
               ),
             ),
           ),

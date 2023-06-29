@@ -17,7 +17,7 @@ class SearchTextInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AfrichangeTextFormField(
+    return AppTextFormField(
       onChanged: onChanged,
       decoration: InputDecoration(
         filled: true,

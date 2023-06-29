@@ -36,7 +36,7 @@ abstract class Repository with LogoutMixin {
           sessionTimeout(reason: 'Oops, Session expired');
           return Left(ServerFailure(e.message));
         }
-        if (e is PZillaException) {
+        if (e is AppException) {
           return Left(ServerFailure(e.message));
         }
         if (e is InvalidArgOrDataException) {

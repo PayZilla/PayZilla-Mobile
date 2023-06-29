@@ -118,7 +118,7 @@ class HttpManager {
         }
         return response.data;
       }
-      throw PZillaServerException(_handleException(response.data));
+      throw AppServerException(_handleException(response.data));
     } catch (e) {
       Log().debug(
         'the _makeRequest exception caught ${AppConfig.baseUrl}/api$endpoint',
@@ -139,7 +139,7 @@ class HttpManager {
           throw InvalidArgOrDataException();
         }
         if (e.response != null) {
-          throw PZillaServerException(_handleException(e.response?.data));
+          throw AppServerException(_handleException(e.response?.data));
         }
       }
       throw UnexpectedServerException();

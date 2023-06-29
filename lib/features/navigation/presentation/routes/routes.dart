@@ -6,7 +6,7 @@ class AppRoutes {
 
   //onboarding screen and where you can go and come from Onboarding
   static const onboarding = '/onboarding';
-  static const onboardingSignUp = '/onboarding/signUp';
+  static const onboardingAuth = '/onboarding/auth';
 
   //dashboard screen
   static const profileAvatarUpload = '/tab/home/profile-avatar-upload';

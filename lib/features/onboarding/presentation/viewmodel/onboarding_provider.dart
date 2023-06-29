@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
@@ -58,6 +59,11 @@ class OnboardingProvider extends ChangeNotifier {
   void dispose() {
     _timer.cancel();
     super.dispose();
+  }
+
+  void pushToAuthScreen(BuildContext context) {
+    AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+    notifyListeners();
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
+import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -27,6 +28,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       extendBody: true,
       body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
           PageView(
             controller: provider.welcomePageController,
@@ -38,19 +40,45 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               },
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: Insets.dim_30),
-              child: SmoothPageIndicator(
-                controller: provider.welcomePageController,
-                count: 3,
-                effect: const ExpandingDotsEffect(
-                  expansionFactor: 5,
-                  dotHeight: 10,
-                  dotWidth: 12,
-                  activeDotColor: Color(0xFF233F78),
+          if (provider.currentValue != 0) ...[
+            Positioned(
+              right: 30,
+              top: 50,
+              child: TextButton(
+                onPressed: () => provider.pushToAuthScreen(context),
+                child: const Text(
+                  'SKIP',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.30,
+                  ),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: Insets.dim_60,
+                right: Insets.dim_60,
+                bottom: Insets.dim_80,
+              ),
+              child: AppGradientButton(
+                textTitle: 'Get Started',
+                action: () => provider.pushToAuthScreen(context),
+              ),
+            ),
+          ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: Insets.dim_30),
+            child: SmoothPageIndicator(
+              controller: provider.welcomePageController,
+              count: 3,
+              effect: const ExpandingDotsEffect(
+                expansionFactor: 5,
+                dotHeight: 10,
+                dotWidth: 12,
+                activeDotColor: Color(0xFF233F78),
               ),
             ),
           )

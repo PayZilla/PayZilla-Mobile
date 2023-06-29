@@ -66,9 +66,9 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const YBox(Insets.dim_40),
-                  const Text(
+                children: const [
+                  YBox(Insets.dim_60),
+                  Text(
                     'PayZilla app the safest \nand most trusted',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -77,7 +77,8 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const Padding(
+                  YBox(Insets.dim_20),
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: Insets.dim_66),
                     child: Text(
                       'Your finance work starts here. Our here to help you track and deal with speeding up your transactions.',
@@ -89,33 +90,8 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
                       ),
                     ),
                   ),
-                  const YBox(Insets.dim_80),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Insets.dim_60),
-                    child: AppGradientButton(
-                      textTitle: 'Get Started',
-                      action: () {},
-                    ),
-                  ),
-                  const YBox(Insets.dim_48),
+                  Spacer(),
                 ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          right: 30,
-          top: 50,
-          child: TextButton(
-            onPressed: () {},
-            child: const Text(
-              'SKIP',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.30,
               ),
             ),
           ),

@@ -1,11 +1,11 @@
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 
-abstract class PZillaException implements Exception {
+abstract class AppException implements Exception {
   String get message;
 
   @override
   bool operator ==(Object other) {
-    return other is PZillaException && message == other.message;
+    return other is AppException && message == other.message;
   }
 
   @override
@@ -13,11 +13,11 @@ abstract class PZillaException implements Exception {
 
   @override
   String toString() {
-    return 'PZillaichangeException: $message';
+    return 'AppException: $message';
   }
 }
 
-abstract class ServerException implements PZillaException {
+abstract class ServerException implements AppException {
   @override
   String toString() {
     return '$runtimeType: $message';
@@ -50,28 +50,28 @@ class SessionExpiredServerException extends ServerException {
   String get message => 'Your session has expired';
 }
 
-class PZillaServerException extends ServerException {
-  PZillaServerException([this.msg = 'An unexpected error occurred']);
+class AppServerException extends ServerException {
+  AppServerException([this.msg = 'An unexpected error occurred']);
   final String msg;
 
   @override
   String get message => msg;
 }
 
-class InvalidArgOrDataException extends PZillaException {
+class InvalidArgOrDataException extends AppException {
   InvalidArgOrDataException([this.msg = 'error in arguments or data']);
   final String msg;
   @override
   String get message => msg;
 }
 
-class CacheGetException extends PZillaException {
+class CacheGetException extends AppException {
   CacheGetException();
   @override
   String get message => 'error retrieving data from cache';
 }
 
-class CachePutException extends PZillaException {
+class CachePutException extends AppException {
   CachePutException();
   @override
   String get message => 'error storing data to cache';

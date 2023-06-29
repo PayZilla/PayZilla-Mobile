@@ -29,7 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
         child: SizedBox(
           height: 192,
-          child: LocalImage(logoWithNamePng),
+          child: LocalImage(
+            logoWithNamePng,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

@@ -37,7 +37,7 @@ class MapsServiceImpl implements IMapsRemoteServices {
         return [];
       }
 
-      throw PZillaServerException(response.status);
+      throw AppServerException(response.status);
     } catch (_) {
       rethrow;
     }
@@ -77,7 +77,7 @@ class MapsServiceImpl implements IMapsRemoteServices {
         }
         return placeModel;
       }
-      throw PZillaServerException('response.message');
+      throw AppServerException('response.message');
     } catch (_) {
       rethrow;
     }

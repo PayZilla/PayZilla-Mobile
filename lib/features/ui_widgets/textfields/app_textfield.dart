@@ -6,8 +6,8 @@ import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class AfrichangeTextFormField extends StatelessWidget {
-  const AfrichangeTextFormField({
+class AppTextFormField extends StatelessWidget {
+  const AppTextFormField({
     Key? key,
     this.labelText,
     this.prefixText,
@@ -200,7 +200,7 @@ class ClickableFormField extends StatelessWidget {
         InkWell(
           onTap: onPressed,
           child: IgnorePointer(
-            child: AfrichangeTextFormField(
+            child: AppTextFormField(
               hintText: hintText,
               initialValue: initialValue,
               prefixIcon: prefixIcon,
@@ -287,7 +287,7 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return AfrichangeTextFormField(
+    return AppTextFormField(
       style: widget.style,
       prefixIcon: SizedBox(
         height: 40,
@@ -364,8 +364,8 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
   }
 }
 
-class AfrDropDownField extends StatelessWidget {
-  const AfrDropDownField({
+class AppDropDownField extends StatelessWidget {
+  const AppDropDownField({
     Key? key,
     this.labelText,
     this.initialValue,
