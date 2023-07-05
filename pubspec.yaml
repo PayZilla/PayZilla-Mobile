@@ -34,7 +34,6 @@ dependencies:
   json_annotation: ^4.6.0
   json_serializable: ^6.3.1
   permission_handler: ^10.0.0
-  pinput: ^1.2.0 
   uuid: ^3.0.6
 
 
@@ -66,6 +65,7 @@ dependencies:
   local_auth: ^1.1.9  
   overlay_support: ^1.2.1  
   phosphor_flutter: ^1.4.0
+  pinput: ^2.2.31
   share_plus: ^5.0.0 
   smooth_page_indicator: ^1.1.0
   url_launcher: ^6.1.4
@@ -112,6 +112,10 @@ flutter:
     # Add assets from the images directory to the application.
     - assets/pngs/
     - assets/svgs/ 
+    - assets/svgs/country_flags/
+    - assets/svgs/reasons/
+    - assets/svgs/verification/
+
     - .env
 
 flutter_native_splash:

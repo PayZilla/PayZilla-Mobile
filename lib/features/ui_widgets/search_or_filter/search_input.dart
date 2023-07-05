@@ -17,30 +17,47 @@ class SearchTextInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppTextFormField(
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: AppColors.white,
-        hintText: title,
-        hintStyle: context.textTheme.bodyMedium?.copyWith(
-          color: Colors.grey,
-          fontSize: 14,
+    return Row(
+      children: [
+        Expanded(
+          child: AppTextFormField(
+            onChanged: onChanged,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.white,
+              hintText: title,
+              hintStyle: context.textTheme.bodyMedium?.copyWith(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+              constraints: const BoxConstraints(maxHeight: 44),
+              contentPadding: EdgeInsets.only(
+                bottom: Insets.dim_8,
+                right: Insets.dim_8,
+                left: showLeading ? 0.0 : Insets.dim_8,
+              ),
+              prefixIcon: showLeading
+                  ? const Icon(
+                      PhosphorIcons.magnifyingGlass,
+                      color: Colors.black,
+                      size: 20,
+                    )
+                  : null,
+            ),
+          ),
         ),
-        constraints: const BoxConstraints(maxHeight: 44),
-        contentPadding: EdgeInsets.only(
-          bottom: Insets.dim_8,
-          right: Insets.dim_8,
-          left: showLeading ? 0.0 : Insets.dim_8,
-        ),
-        prefixIcon: showLeading
-            ? const Icon(
-                PhosphorIcons.magnifyingGlass,
-                color: Colors.black,
-                size: 20,
-              )
-            : null,
-      ),
+        TextButton(
+          onPressed: () {},
+          child: Text(
+            'Cancel',
+            style: context.textTheme.bodyMedium!.copyWith(
+              color: AppColors.textHeaderColor,
+              fontWeight: FontWeight.w700,
+              fontSize: Insets.dim_16,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

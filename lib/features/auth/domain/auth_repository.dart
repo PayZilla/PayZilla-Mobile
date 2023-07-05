@@ -57,4 +57,11 @@ class AuthRepository extends Repository {
       return response;
     });
   }
+
+  Future<Either<Failure, List<ReasonsModel>>> fetchReasons() async {
+    return runGuard(() async {
+      final response = await remoteDataSource.fetchReasons();
+      return response;
+    });
+  }
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 
-class AfrAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const AfrAppBar({
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomAppBar({
     Key? key,
     this.title,
     this.onLeadingPressed,
@@ -16,6 +16,7 @@ class AfrAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.useSmallFont = false,
     this.titleWidget,
     this.leadingColor,
+    this.elevation = 0,
     this.bottom,
   }) : super(key: key);
 
@@ -29,6 +30,7 @@ class AfrAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final bool? centerTitle;
   final double? leadingWidth;
+  final double? elevation;
   final bool useSmallFont;
   final Widget? titleWidget;
   final Color? leadingColor;
@@ -38,7 +40,7 @@ class AfrAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: backgroundColor,
-      elevation: 0,
+      elevation: elevation,
       centerTitle: centerTitle,
       title: title != null
           ? Text(
@@ -49,17 +51,7 @@ class AfrAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             )
           : titleWidget ?? const SizedBox.shrink(),
-      leading: leading ??
-          IconButton(
-            onPressed: onLeadingPressed ?? AppNavigator.of(context).pop,
-            icon: Icon(
-              Icons.chevron_left_rounded,
-              size: 30,
-              color: leadingColor ?? AppColors.borderColor,
-            ),
-            color: AppColors.borderColor,
-            splashRadius: 30,
-          ),
+      leading: leading ?? const AppBackButton(),
       leadingWidth: leadingWidth,
       actions: [
         ...?actions,
@@ -70,4 +62,40 @@ class AfrAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(65);
+}
+
+class AppBackButton extends StatelessWidget {
+  const AppBackButton({super.key, this.onPressed});
+  final Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40,
+      height: 40,
+      padding: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            color: Color(0xFFE5E7EB),
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      child: FittedBox(
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: onPressed ?? AppNavigator.of(context).pop,
+          icon: const Icon(
+            Icons.chevron_left_rounded,
+            size: 35,
+            color: AppColors.black,
+          ),
+          color: AppColors.black,
+          splashRadius: 30,
+        ),
+      ),
+    );
+  }
 }

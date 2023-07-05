@@ -18,7 +18,7 @@ class AppSolidButton extends AppButton {
           showLoading: showLoading,
           fullWidth: fullWidth,
           color: AppColors.white,
-          backgroundColor: AppColors.btnSecondaryColor,
+          backgroundColor: AppColors.btnPrimaryColor,
           key: key,
         );
 }
@@ -58,7 +58,7 @@ class AppGradientButton extends AppButton {
           showLoading: showLoading,
           fullWidth: fullWidth,
           color: AppColors.white,
-          backgroundColor: AppColors.borderColor,
+          backgroundColor: AppColors.borderColor.withOpacity(0.5),
           key: key,
         );
 }
@@ -102,7 +102,7 @@ class AppButton extends StatelessWidget {
             ),
         onPressed: showLoading == true || deActivate == true ? null : action,
         child: showLoading == true
-            ? AfrichangeLoadingWidget(
+            ? AppLoadingWidget(
                 color: backgroundColor != null ? Colors.white : loadingColor,
               )
             : child ??

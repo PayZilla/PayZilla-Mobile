@@ -12,26 +12,6 @@ class OnboardingProvider extends ChangeNotifier {
 
   late Timer _timer;
 
-  final onboardingValues = [
-    _ValueHolder(
-      img: onb1,
-      title: 'Send Money with ease',
-      desc:
-          'With just few clicks you can send money in any denomination with ease',
-    ),
-    _ValueHolder(
-      img: onb1,
-      title: 'Unbeatable Rates',
-      desc:
-          'Africhange offers you the best rate in the market. Send money with confidence.',
-    ),
-    _ValueHolder(
-      img: onb1,
-      title: 'Wallet to Securely Store Your Funds',
-      desc: 'Fund your Africhange wallet to send money faster',
-    ),
-  ];
-
   final onboardingScreens = const [
     OnboardingScreen1(),
     OnboardingScreen2(),
@@ -65,15 +45,4 @@ class OnboardingProvider extends ChangeNotifier {
     AppNavigator.of(context).push(AppRoutes.onboardingAuth);
     notifyListeners();
   }
-}
-
-class _ValueHolder {
-  String title;
-  String desc;
-  String img;
-  _ValueHolder({
-    required this.img,
-    required this.title,
-    required this.desc,
-  });
 }

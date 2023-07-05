@@ -24,145 +24,180 @@ class _SignInState extends State<SignIn> with FormMixin {
   Widget build(BuildContext context) {
     final provider = context.watch<AuthProvider>();
 
-    return Scaffold(
-      backgroundColor: AppColors.scaffold,
+    return AppScaffold(
+      appBar: CustomAppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: Insets.dim_24),
+          child: AppBackButton(
+            onPressed: () =>
+                AppNavigator.of(context).push(AppRoutes.onboarding),
+          ),
+        ),
+        leadingWidth: 80,
+      ),
       body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-            child: Form(
-              key: formKey,
-              autovalidateMode: autoValidateMode,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'Login',
-                    style: context.textTheme.headlineLarge!
-                        .apply(color: AppColors.textHeaderColor),
-                    textAlign: TextAlign.start,
+        child: Form(
+          key: formKey,
+          autovalidateMode: autoValidateMode,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'Hi There! 👋',
+                style: context.textTheme.headlineLarge!.copyWith(
+                  color: AppColors.textHeaderColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: Insets.dim_24,
+                ),
+                textAlign: TextAlign.start,
+              ),
+              const YBox(Insets.dim_8),
+              Text(
+                'Welcome back, Sign in to your account',
+                style: context.textTheme.bodyMedium!.copyWith(
+                  color: AppColors.textBodyColor,
+                  fontWeight: FontWeight.w400,
+                  fontSize: Insets.dim_16,
+                ),
+                textAlign: TextAlign.start,
+              ),
+              const YBox(Insets.dim_40),
+              AppTextFormField(
+                initialValue: requestDto.email,
+                hintText: 'Email',
+                isLoading: provider.genericAuthResp.isLoading,
+                inputType: TextInputType.emailAddress,
+                onSaved: (value) {
+                  requestDto = requestDto.copyWith(email: value);
+                },
+                validator: (input) => Validators.validateEmail(
+                  value: input,
+                ),
+              ),
+              const YBox(Insets.dim_24),
+              AppTextFormField(
+                initialValue: requestDto.password,
+                hintText: 'Password',
+                isLoading: provider.genericAuthResp.isLoading,
+                inputType: TextInputType.text,
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() => obscurePassword = !obscurePassword);
+                  },
+                  color: AppColors.textBodyColor,
+                  icon: Icon(
+                    obscurePassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
                   ),
-                  const YBox(Insets.dim_8),
-                  Text(
-                    'Enter your details to login ',
+                ),
+                obscureText: obscurePassword,
+                onSaved: (value) {
+                  requestDto = requestDto.copyWith(password: value);
+                },
+                validator: (input) => Validators.validatePassword()(input),
+              ),
+              const YBox(Insets.dim_26),
+              InkWell(
+                onTap: () {
+                  AppNavigator.of(context).push(AppRoutes.authToRecovery);
+                },
+                child: const Text(
+                  'Forgot your password?',
+                  style: TextStyle(
+                    color: Color(0xff08C0CA),
+                    fontWeight: FontWeight.w700,
+                    fontSize: Insets.dim_16,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
+              const YBox(Insets.dim_60),
+              AppSolidButton(
+                textTitle: 'Sign In',
+                showLoading: provider.genericAuthResp.isLoading,
+                action: () async {
+                  AppNavigator.of(context).push(AppRoutes.biometric);
+                  return;
+                  if (kDebugMode) {
+                    final formState = formKey.currentState;
+                    formState?.save();
+                    await provider.login(
+                      requestDto.copyWith(
+                        email: requestDto.email.isEmpty
+                            ? 'jboy9140@yahoo.com'
+                            : requestDto.email,
+                        password: requestDto.password.isEmpty
+                            ? '.joshThings1@'
+                            : requestDto.password,
+                      ),
+                      context,
+                    );
+                  } else {
+                    validate(() async {
+                      await provider.login(requestDto, context);
+                    });
+                  }
+                },
+              ),
+              const YBox(Insets.dim_26),
+              Row(
+                children: const [
+                  Expanded(child: Divider()),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Insets.dim_14),
+                    child: Text(
+                      'OR',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.textBodyColor,
+                        fontStyle: FontStyle.normal,
+                      ),
+                    ),
+                  ),
+                  Expanded(child: Divider())
+                ],
+              ),
+              const YBox(Insets.dim_26),
+              Row(
+                children: [
+                  socialAuthWidget(googleSvg),
+                  const XBox(Insets.dim_24),
+                  socialAuthWidget(appleSvg),
+                ],
+              ),
+              YBox(context.getHeight(0.17)),
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    text: "Don't have an account? ",
                     style: context.textTheme.bodyMedium!.apply(
                       color: AppColors.textBodyColor,
                     ),
-                    textAlign: TextAlign.start,
-                  ),
-                  const YBox(Insets.dim_40),
-                  AppTextFormField(
-                    initialValue: requestDto.email,
-                    labelText: 'Email',
-                    hintText: 'name@example.com',
-                    isLoading: provider.genericAuthResp.isLoading,
-                    inputType: TextInputType.emailAddress,
-                    onSaved: (value) {
-                      requestDto = requestDto.copyWith(email: value);
-                    },
-                    validator: (input) => Validators.validateEmail(
-                      value: input,
-                    ),
-                  ),
-                  const YBox(Insets.dim_24),
-                  AppTextFormField(
-                    initialValue: requestDto.password,
-                    labelText: 'Password',
-                    hintText: 'Your Password',
-                    isLoading: provider.genericAuthResp.isLoading,
-                    inputType: TextInputType.text,
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          obscurePassword = !obscurePassword;
-                        });
-                      },
-                      child: Container(
-                        height: Insets.dim_24.dx,
-                        width: Insets.dim_50,
-                        margin: const EdgeInsets.symmetric(
-                          vertical: Insets.dim_8,
-                          horizontal: Insets.dim_4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF2F2F7),
-                          borderRadius: BorderRadius.circular(Insets.dim_4),
-                        ),
-                        child: Center(
-                          child: Text(
-                            obscurePassword ? 'Show' : 'Hide',
-                            style: context.textTheme.bodyMedium!
-                                .apply(color: AppColors.textBodyColor),
-                          ),
-                        ),
+                    children: [
+                      TextSpan(
+                        text: 'Sign up',
+                        style: Theme.of(context).textTheme.bodyMedium!.apply(
+                              color: const Color(0xff1DAB87),
+                              fontWeightDelta: 2,
+                            ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            AppNavigator.of(context)
+                                .push(AppRoutes.authToSignUp);
+                          },
                       ),
-                    ),
-                    obscureText: obscurePassword,
-                    onSaved: (value) {
-                      requestDto = requestDto.copyWith(password: value);
-                    },
-                    validator: (input) => Validators.validatePassword()(input),
+                    ],
                   ),
-                  YBox(Dims.deviceSize.height / 2.2),
-                  AppSolidButton(
-                    textTitle: 'Continue',
-                    showLoading: provider.genericAuthResp.isLoading,
-                    action: () async {
-                      if (kDebugMode) {
-                        final formState = formKey.currentState;
-                        formState?.save();
-                        await provider.login(
-                          requestDto.copyWith(
-                            email: requestDto.email.isEmpty
-                                ? 'jboy9140@yahoo.com'
-                                : requestDto.email,
-                            password: requestDto.password.isEmpty
-                                ? '.joshThings1@'
-                                : requestDto.password,
-                          ),
-                          context,
-                        );
-                      } else {
-                        validate(() async {
-                          await provider.login(requestDto, context);
-                        });
-                      }
-                    },
-                  ),
-                  const YBox(Insets.dim_16),
-                  Center(
-                    child: RichText(
-                      text: TextSpan(
-                        text: "Don't have an account? ",
-                        style: context.textTheme.bodyMedium!.apply(
-                          color: AppColors.textBodyColor,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Sign up',
-                            style:
-                                Theme.of(context).textTheme.bodyMedium!.apply(
-                                      color: const Color(0xff7165E3),
-                                      fontWeightDelta: 2,
-                                    ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                AppNavigator.of(context).push(AppRoutes.signUp);
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const YBox(Insets.dim_16),
-                  AppEnvManager.instance.getEnvironment().fold(
-                        ifDevelopment: _showEnvName,
-                        ifProduction: (env) => const SizedBox(),
-                      ),
-                ],
+                ),
               ),
-            ),
+              const YBox(Insets.dim_16),
+              AppEnvManager.instance.getEnvironment().fold(
+                    ifDevelopment: _showEnvName,
+                    ifProduction: (env) => const SizedBox(),
+                  ),
+            ],
           ),
         ),
       ),

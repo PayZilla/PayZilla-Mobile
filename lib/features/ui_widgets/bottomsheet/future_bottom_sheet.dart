@@ -58,9 +58,9 @@ class FutureBottomSheet<T> extends StatelessWidget with BaseBottomSheetMixin {
           );
         }
         if (snapshot.hasError) {
-          return const AfrichangeErrorWidget();
+          return const AppErrorWidget();
         }
-        return const AfrichangeLoadingWidget();
+        return const AppLoadingWidget();
       },
     );
 

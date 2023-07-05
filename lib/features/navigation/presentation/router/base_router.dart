@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/splash_screen/splash_screen.dart';
 
@@ -57,6 +58,14 @@ GoRouter getBaseRouter() {
         },
       ),
       onboardingRouter(),
+      authRouter(),
+      countryRouter(),
+      GoRoute(
+        path: '/biometric',
+        builder: (context, state) {
+          return const BiometricScreen();
+        },
+      ),
       //Note (Dev)=> create sub routes for nav tabs inside this routes list
       GoRoute(
         path: '/tab/:tab_name',

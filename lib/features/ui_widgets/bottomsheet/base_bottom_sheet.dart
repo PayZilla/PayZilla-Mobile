@@ -24,88 +24,40 @@ class BaseBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
+        height: height ?? context.getHeight(0.3),
+        width: double.infinity,
         decoration: const BoxDecoration(
-          color: Color(0xffD7D4F7),
+          color: AppColors.white,
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(Insets.dim_16),
-            topLeft: Radius.circular(Insets.dim_16),
+            topRight: Radius.circular(Insets.dim_40),
+            topLeft: Radius.circular(Insets.dim_40),
           ),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  if (isDismissible)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 19),
-                      child: TextButton.icon(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          color: Color(0xff333D47),
-                        ),
-                        label: Text(
-                          'Close',
-                          style: context.textTheme.bodyMedium
-                              .size(Insets.dim_16)
-                              .copyWith(
-                                color: const Color(0xff333D47),
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
-                      ),
-                    )
-                  else
-                    const YBox(Insets.dim_50),
-                  Container(
-                    height: height ?? context.getHeight(0.3),
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffFBFBFE),
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(Insets.dim_24),
-                        topLeft: Radius.circular(Insets.dim_24),
-                      ),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Insets.dim_16,
-                    ),
-                    child: ListView(
-                      // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const YBox(Insets.dim_40),
-                        if (title != null) ...[
-                          Text(
-                            title ?? '',
-                            style: context.textTheme.headlineLarge!
-                                .copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ],
-                        if (desc != null) ...[
-                          Padding(
-                            padding: const EdgeInsets.only(top: Insets.dim_8),
-                            child: Text(
-                              desc ?? '',
-                              style: context.textTheme.bodySmall,
-                            ),
-                          ),
-                        ],
-                        const YBox(Insets.dim_16),
-                        child,
-                      ],
-                    ),
-                  )
-                ],
+        padding: const EdgeInsets.symmetric(
+          horizontal: Insets.dim_16,
+        ),
+        child: ListView(
+          children: [
+            const YBox(Insets.dim_20),
+            if (title != null) ...[
+              Text(
+                title ?? '',
+                style: context.textTheme.headlineLarge!
+                    .copyWith(fontWeight: FontWeight.w700),
               ),
             ],
-          ),
+            if (desc != null) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: Insets.dim_8),
+                child: Text(
+                  desc ?? '',
+                  style: context.textTheme.bodySmall,
+                ),
+              ),
+            ],
+            const YBox(Insets.dim_16),
+            child,
+          ],
         ),
       ),
     );

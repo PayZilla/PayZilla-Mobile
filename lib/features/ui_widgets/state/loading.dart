@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AfrichangeLoadingWidget extends StatelessWidget {
-  const AfrichangeLoadingWidget({this.size = 15, this.color, Key? key})
+class AppLoadingWidget extends StatelessWidget {
+  const AppLoadingWidget({this.size = 15, this.color, Key? key})
       : super(key: key);
   final double size;
   final Color? color;

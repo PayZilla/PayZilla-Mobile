@@ -11,15 +11,15 @@ class AppWebViewArgs {
   final String title;
 }
 
-class AfrWebview extends StatefulWidget {
-  const AfrWebview({required this.args, Key? key}) : super(key: key);
+class AppWebview extends StatefulWidget {
+  const AppWebview({required this.args, Key? key}) : super(key: key);
   final AppWebViewArgs args;
 
   @override
-  State<AfrWebview> createState() => _AfrWebviewState();
+  State<AppWebview> createState() => _AppWebviewState();
 }
 
-class _AfrWebviewState extends State<AfrWebview> {
+class _AppWebviewState extends State<AppWebview> {
   late final WebViewController _controller;
   int loadingPercent = 0;
   @override
@@ -66,11 +66,11 @@ class _AfrWebviewState extends State<AfrWebview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AfrAppBar(
+      appBar: CustomAppBar(
         title: widget.args.title,
       ),
       body: loadingPercent != 100
-          ? const AfrichangeLoadingWidget()
+          ? const AppLoadingWidget()
           : WebViewWidget(controller: _controller),
     );
   }

@@ -208,6 +208,7 @@ class ClickableFormField extends StatelessWidget {
                   const Icon(
                     PhosphorIcons.caretDown,
                     size: 18,
+                    color: AppColors.black,
                   ),
               inputType: inputType,
               onChanged: onChanged,
@@ -289,6 +290,7 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
   Widget build(BuildContext context) {
     return AppTextFormField(
       style: widget.style,
+      /*
       prefixIcon: SizedBox(
         height: 40,
         child: Row(
@@ -302,7 +304,7 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
             const Icon(
               PhosphorIcons.caretDown,
               size: 18,
-              color: AppColors.deeperDark,
+              color: AppColors.black,
             ),
             const XBox(Insets.dim_4),
             const Padding(
@@ -332,8 +334,7 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
             phoneNumberCountry = country;
           });
         }
-      }),
-      labelText: widget.labelText ?? 'Phone Number',
+      }),*/
       hintText: widget.hintText ?? 'Enter phone number',
       initialValue: widget.initialValue?.number,
       suffixIcon: widget.textFieldIcon,

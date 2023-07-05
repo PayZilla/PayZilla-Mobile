@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:pay_zilla/features/auth/presentation/screens/login_screen.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
 
 GoRoute onboardingRouter() {

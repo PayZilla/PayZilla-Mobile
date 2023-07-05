@@ -25,17 +25,16 @@ class CacheKeys {
 }
 
 class AppColors {
-  static const scaffold = Color(0xffFBFBFE);
-  static const payZillaPurple = Color(0xFF7165E3);
-  static const btnSecondaryColor = Color(0xff9EA6BE);
+  static const scaffold = Color(0xffffffff);
+  static const btnPrimaryColor = Color(0xff0A4D6A);
   static const iconColor = Color(0xFF1A1A1A);
-  static const textHeaderColor = Color(0xFF1D3A6F);
+  static const textHeaderColor = Color(0xFF1D3A70);
   static const textBodyColor = Color(0xFF6B7280);
-  static const deeperDark = Color(0xFF111418);
+  static const black = Color(0xFF000000);
   static const white = Color(0xFFFFFFFF);
   static const grey = Color(0xFF676D7E);
   static const borderErrorColor = Color(0xFFDC3030);
-  static Color borderColor = const Color(0xFF9DA2A0).withOpacity(0.5);
+  static Color borderColor = const Color(0xFFF9FAFB);
   static const orangeColor = Color(0xffF97066);
 }
 

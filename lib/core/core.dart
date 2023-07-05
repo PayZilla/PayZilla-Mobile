@@ -1,3 +1,4 @@
+export './core_app_utils/multi_selector_util.dart';
 export './core_dto/response.dart';
 export './data/cache/cache.dart';
 export './data/cache/secured_cache_impl.dart';

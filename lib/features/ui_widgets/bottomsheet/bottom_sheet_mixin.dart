@@ -17,7 +17,7 @@ mixin BaseBottomSheetMixin {
       builder: build,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Insets.dim_16),
+          top: Radius.circular(Insets.dim_40),
         ),
       ),
     );

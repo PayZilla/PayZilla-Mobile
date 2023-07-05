@@ -18,7 +18,34 @@ final String imgPlaceholder = 'img_place_holder'.png;
 // Onboarding country assets
 final String nigeriaSvg = 'nigeria'.flagSvg;
 final String canadaSvg = 'canada'.flagSvg;
+final String chinaSvg = 'china'.flagSvg;
+final String indonesiaSvg = 'indonesia'.flagSvg;
+final String netherlandsSvg = 'netherlands'.flagSvg;
+final String singaporeSvg = 'singapore'.flagSvg;
+final String usaSvg = 'usa'.flagSvg;
 
+// login screen assets
+final String googleSvg = 'google'.svg;
+final String appleSvg = 'apple'.svg;
+
+// recovery screen assets
+final String recoverySvg = 'recovery'.svg;
+
+// biometric screen assets
+final String biometricSvg = 'biometric'.svg;
+
+// reasons screen assets
+final String r1 = 'r1'.reasonsSvg;
+final String r2 = 'r2'.reasonsSvg;
+final String r3 = 'r3'.reasonsSvg;
+final String r4 = 'r4'.reasonsSvg;
+final String r5 = 'r5'.reasonsSvg;
+final String r6 = 'r6'.reasonsSvg;
+
+// verification screen assets
+final String bvnSvg = 'bvn'.verificationSvg;
+final String idCardSvg = 'passport'.verificationSvg;
+final String driverLicenseSvg = 'drivers'.verificationSvg;
 // nav icons
 final String homeActive = 'home_active'.navSvg;
 final String homeInActive = 'home_inactive'.navSvg;
@@ -49,9 +76,7 @@ final String creditTransaction = 'transaction_in'.walletSvg;
 final String walletCardPatternedBg = 'wallet_balance_bg'.png;
 
 //security
-final String appStore = 'appstore_icon'.png;
 final String playStore = 'playstore_icon'.png;
-final String googleAuth = 'google_authenticator_icon'.png;
 final String deleteAccount = 'delete_thrash'.svg;
 
 //transaction
@@ -68,6 +93,13 @@ extension ImageExtension on String {
   String get svg => '$baseSvgPath/$this.svg';
   //get country svg path
   String get flagSvg => '$baseSvgPath/country_flags/$this.svg';
+
+  //get reasons svg path
+  String get reasonsSvg => '$baseSvgPath/reasons/$this.svg';
+
+  //get verification svg path
+  String get verificationSvg => '$baseSvgPath/verification/$this.svg';
+
   // get nav assets
   String get navSvg => '$baseSvgPath/nav/$this.svg';
   //get wallet assets

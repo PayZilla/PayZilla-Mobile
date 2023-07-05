@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pay_zilla/features/onboarding/onboarding.dart';
 import 'package:pay_zilla/features/ui_widgets/image.dart';
 import 'package:pay_zilla/functional_utils/assets.dart';
 import 'package:pay_zilla/functional_utils/extensions/context_extension.dart';
-import 'package:provider/provider.dart';
 
 class OnboardingScreen1 extends StatelessWidget {
   const OnboardingScreen1({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<OnboardingProvider>();
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
@@ -103,7 +100,7 @@ class OnboardingScreen1 extends StatelessWidget {
                   ),
                   SizedBox(
                     child: Center(
-                      child: LocalImage(provider.onboardingValues[0].img),
+                      child: LocalImage(onb1),
                     ),
                   ),
                 ],

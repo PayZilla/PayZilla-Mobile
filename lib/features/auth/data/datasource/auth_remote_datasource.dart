@@ -5,6 +5,7 @@ abstract class IAuthRemoteDataSource {
   Future<dynamic> login(AuthParams params);
   Future<dynamic> getUser();
   Future<dynamic> signUp(AuthParams params);
+  Future<List<ReasonsModel>> fetchReasons();
 }
 
 class AuthRemoteDataSource implements IAuthRemoteDataSource {
@@ -55,6 +56,22 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
       );
       if (response.isResultOk) {
         return AuthResponseData.fromJson(response.toJson());
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<ReasonsModel>> fetchReasons() async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.get(''),
+      );
+      if (response.isResultOk) {
+        return [];
       }
 
       throw AppServerException(response.message);

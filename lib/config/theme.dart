@@ -5,8 +5,8 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData _baseTheme(BuildContext context) => ThemeData(
-        primaryColor: AppColors.payZillaPurple,
-        indicatorColor: AppColors.payZillaPurple,
+        primaryColor: AppColors.btnPrimaryColor,
+        indicatorColor: AppColors.btnPrimaryColor,
         scaffoldBackgroundColor: AppColors.scaffold,
         fontFamily: Fonts.gilroy,
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -18,20 +18,20 @@ class AppTheme {
             ),
             shadowColor: Colors.transparent,
             shape: const RoundedRectangleBorder(
-              borderRadius: Corners.xsBorder,
+              borderRadius: Corners.mdBorder,
             ),
-            backgroundColor: AppColors.payZillaPurple,
+            backgroundColor: AppColors.btnPrimaryColor,
             foregroundColor: Colors.white,
           ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: AppColors.scaffold,
-          selectedItemColor: AppColors.payZillaPurple,
+          selectedItemColor: AppColors.btnPrimaryColor,
           unselectedItemColor: AppColors.grey,
           type: BottomNavigationBarType.fixed,
         ),
         iconTheme: const IconThemeData(
-          color: AppColors.payZillaPurple,
+          color: AppColors.btnPrimaryColor,
         ),
         textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
@@ -43,7 +43,7 @@ class AppTheme {
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: AppColors.payZillaPurple,
+          backgroundColor: AppColors.btnPrimaryColor,
         ),
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
@@ -58,30 +58,33 @@ class AppTheme {
           centerTitle: false,
         ),
         buttonTheme: const ButtonThemeData(
-          buttonColor: AppColors.payZillaPurple,
+          buttonColor: AppColors.btnPrimaryColor,
           textTheme: ButtonTextTheme.accent,
         ),
         inputDecorationTheme: InputDecorationTheme(
-          fillColor: Colors.white,
+          fillColor: const Color(0xFFF9FAFB),
+          filled: true,
           contentPadding: const EdgeInsets.symmetric(
             vertical: Insets.dim_8,
             horizontal: Insets.dim_10,
           ),
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.borderColor),
+            borderRadius: Corners.mdBorder,
+            borderSide: BorderSide(color: AppColors.borderColor, width: 0),
           ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Insets.dim_6),
+          enabledBorder: const OutlineInputBorder(
+            borderRadius: Corners.mdBorder,
             borderSide: BorderSide(
-              color: AppColors.borderColor,
+              color: Color(0xFFF9FAFB),
+              width: 0,
             ),
           ),
           errorBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.borderErrorColor),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Insets.dim_6),
-            borderSide: const BorderSide(
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: Corners.mdBorder,
+            borderSide: BorderSide(
               color: AppColors.grey,
             ),
           ),

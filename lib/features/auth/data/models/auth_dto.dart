@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 
 class AuthParams extends Equatable {
   const AuthParams({
@@ -6,19 +7,22 @@ class AuthParams extends Equatable {
     required this.signUpEmail,
     required this.password,
     required this.countryCode,
+    required this.phoneNumber,
     required this.applicationType,
   });
 
-  factory AuthParams.empty() => const AuthParams(
+  factory AuthParams.empty() => AuthParams(
         email: '',
         signUpEmail: '',
         password: '',
         countryCode: '',
+        phoneNumber: PhoneNumber.empty(),
         applicationType: 0,
       );
   final String email;
   final String signUpEmail;
   final String password;
+  final PhoneNumber phoneNumber;
   final String countryCode;
   final int applicationType;
 
@@ -26,6 +30,7 @@ class AuthParams extends Equatable {
     String? email,
     String? signUpEmail,
     String? password,
+    PhoneNumber? phoneNumber,
     String? countryCode,
     int? applicationType,
   }) {
@@ -33,6 +38,7 @@ class AuthParams extends Equatable {
       email: email ?? this.email,
       signUpEmail: signUpEmail ?? this.signUpEmail,
       password: password ?? this.password,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       countryCode: countryCode ?? this.countryCode,
       applicationType: applicationType ?? this.applicationType,
     );
@@ -58,6 +64,10 @@ class AuthParams extends Equatable {
       map['countryCode'] = countryCode.trim();
     }
 
+    if (phoneNumber.isNotEmpty) {
+      map['phoneNumber'] = phoneNumber.number.trim();
+    }
+
     return map;
   }
 
@@ -67,5 +77,6 @@ class AuthParams extends Equatable {
         password,
         countryCode,
         applicationType,
+        phoneNumber,
       ];
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 
-class AfrichangeErrorWidget extends StatelessWidget {
-  const AfrichangeErrorWidget({
+class AppErrorWidget extends StatelessWidget {
+  const AppErrorWidget({
     this.error,
     this.onRetry,
     this.buttonText,
