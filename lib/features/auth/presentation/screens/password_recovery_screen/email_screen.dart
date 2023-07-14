@@ -72,7 +72,10 @@ class _EmailRecoveryState extends State<EmailRecovery> with FormMixin {
                 action: () {
                   AppNavigator.of(context).push(
                     AppRoutes.recoveryToVerify,
-                    args: VerifyEmailOtpRecoveryArgs('test@example.com'),
+                    args: VerifyEmailOtpRecoveryArgs(
+                      'test@example.com',
+                      AppRoutes.verifyToPassword,
+                    ),
                   );
                 },
               ),

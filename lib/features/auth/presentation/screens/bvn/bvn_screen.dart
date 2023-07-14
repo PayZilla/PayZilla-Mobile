@@ -110,7 +110,9 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
             AppSolidButton(
               textTitle: 'Verify Identity',
               showLoading: provider.genericAuthResp.isLoading,
-              action: () {},
+              action: () {
+                AppNavigator.of(context).push(AppRoutes.bvnToReasons);
+              },
             ),
             const YBox(Insets.dim_26),
           ],

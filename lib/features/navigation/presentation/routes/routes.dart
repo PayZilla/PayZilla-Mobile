@@ -18,10 +18,12 @@ class AppRoutes {
   static const biometric = '/biometric';
 
   // country of residence, onboarding reasons, pin
-  static const country = '/country';
-  static const countryToReasons = '/country/reasons';
-  static const reasonsToPin = '/country/reasons/pin';
-  static const pinToBvn = '/country/reasons/pin/bvn-verification';
+  static const pin = '/pin';
+
+  static const country = '/pin/country';
+  static const countryToBvn = '/pin/country/bvn-verification';
+  static const bvnToReasons = '/pin/country/bvn-verification/reasons';
+  static const reasonsToPin = '/pin/country/bvn-verification/reasons/pin';
 
   // bvn verification
 
@@ -31,4 +33,10 @@ class AppRoutes {
   static String tab(AppNavTab tab) {
     return '/tab/${tab.toString().split('.').last}';
   }
+
+  //bottom tab routes
+  static const home = '/tab/home';
+  static const myCard = '/tab/card';
+  static const activity = '/tab/activity';
+  static const profile = '/tab/profile';
 }

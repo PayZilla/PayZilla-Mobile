@@ -7,9 +7,11 @@ class AppScaffold extends StatefulWidget {
     required this.body,
     this.appBar,
     this.extendedBody = false,
+    this.useBodyPadding = true,
   });
   final Widget? body;
   final bool extendedBody;
+  final bool useBodyPadding;
   final PreferredSizeWidget? appBar;
 
   @override
@@ -23,12 +25,15 @@ class _AppScaffoldState extends State<AppScaffold> {
       extendBody: widget.extendedBody,
       backgroundColor: AppColors.scaffold,
       appBar: widget.appBar,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-          child: widget.body,
-        ),
-      ),
+      body: widget.useBodyPadding
+          ? SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+                child: widget.body,
+              ),
+            )
+          : widget.body,
     );
   }
 }

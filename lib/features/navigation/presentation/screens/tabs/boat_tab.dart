@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-enum AppNavTab { none, home, wallet, referral, profile }
+enum AppNavTab { none, home, card, activity, profile }
 
 extension AppNavTabUtil on AppNavTab {
   static AppNavTab? fromString(String? tabName) {
     switch (tabName) {
       case 'home':
         return AppNavTab.home;
-      case 'wallet':
-        return AppNavTab.wallet;
+      case 'card':
+        return AppNavTab.card;
       case 'none':
         return AppNavTab.none;
-      case 'referral':
-        return AppNavTab.referral;
+      case 'activity':
+        return AppNavTab.activity;
       case 'profile':
         return AppNavTab.profile;
       default:

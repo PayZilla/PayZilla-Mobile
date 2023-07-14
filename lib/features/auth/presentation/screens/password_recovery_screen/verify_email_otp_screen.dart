@@ -8,9 +8,10 @@ import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
 
 class VerifyEmailOtpRecoveryArgs {
-  VerifyEmailOtpRecoveryArgs(this.email);
+  VerifyEmailOtpRecoveryArgs(this.email, this.path);
 
   final String email;
+  final String path;
 }
 
 class VerifyEmailOtpRecovery extends StatefulWidget {
@@ -90,7 +91,7 @@ class _VerifyEmailOtpRecoveryState extends State<VerifyEmailOtpRecovery>
                 textTitle: 'Confirm',
                 showLoading: provider.genericAuthResp.isLoading,
                 action: () {
-                  AppNavigator.of(context).push(AppRoutes.verifyToPassword);
+                  AppNavigator.of(context).push(widget.args.path);
                 },
               ),
             ],

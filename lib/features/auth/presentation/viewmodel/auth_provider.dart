@@ -244,9 +244,7 @@ class AuthProvider extends ChangeNotifier {
 
   void countrySelected(CountryData country, BuildContext context) {
     AppNavigator.of(context)
-      ..push(
-        AppRoutes.countryToReasons,
-      )
+      ..push(AppRoutes.countryToBvn)
       ..popDialog();
     notifyListeners();
   }

@@ -115,6 +115,8 @@ flutter:
     - assets/svgs/country_flags/
     - assets/svgs/reasons/
     - assets/svgs/verification/
+    - assets/svgs/dashboard/
+    - assets/svgs/nav/
 
     - .env
 

@@ -71,7 +71,7 @@ class _CountryScreenState extends State<CountryScreen> with FormMixin {
               textTitle: 'Continue',
               showLoading: provider.genericAuthResp.isLoading,
               action: () =>
-                  AppNavigator.of(context).push(AppRoutes.countryToReasons),
+                  AppNavigator.of(context).push(AppRoutes.countryToBvn),
             ),
             const YBox(Insets.dim_26),
           ],

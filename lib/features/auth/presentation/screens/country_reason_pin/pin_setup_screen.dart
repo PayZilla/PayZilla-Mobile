@@ -80,9 +80,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> with FormMixin {
               YBox(context.getHeight(0.12)),
               AppSolidButton(
                 textTitle: 'Create PIN',
-                action: () {
-                  AppNavigator.of(context).push(AppRoutes.pinToBvn);
-                },
+                action: () {},
               ),
             ],
           ),

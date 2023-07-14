@@ -135,7 +135,13 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
                 textTitle: 'Sign Up',
                 showLoading: provider.genericAuthResp.isLoading,
                 action: () {
-                  AppNavigator.of(context).push(AppRoutes.country);
+                  AppNavigator.of(context).push(
+                    AppRoutes.pin,
+                    args: VerifyEmailOtpRecoveryArgs(
+                      'test@example.com',
+                      AppRoutes.country,
+                    ),
+                  );
                 },
               ),
               const YBox(Insets.dim_26),

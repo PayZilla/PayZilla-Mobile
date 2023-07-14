@@ -42,19 +42,28 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           },
           items: [
             BottomAppBarItem(
-              icon: LocalSvgImage(homeInActive),
-              activeIcon: LocalSvgImage(homeActive),
+              icon: LocalSvgImage(
+                homeInActive,
+                height: 22,
+              ),
+              activeIcon: LocalSvgImage(
+                homeActive,
+                height: 25,
+              ),
               title: 'Home',
               tab: AppNavTab.home,
             ),
             BottomAppBarItem(
-              icon: LocalSvgImage(walletInactive),
-              activeIcon: LocalSvgImage(
-                walletInactive,
-                color: AppColors.borderColor,
+              icon: LocalSvgImage(
+                myCardInactive,
+                height: 22,
               ),
-              title: 'Wallet',
-              tab: AppNavTab.wallet,
+              activeIcon: LocalSvgImage(
+                myCardActive,
+                height: 22,
+              ),
+              title: 'My Card',
+              tab: AppNavTab.card,
             ),
             BottomAppBarItem(
               icon: const SizedBox.shrink(),
@@ -63,16 +72,25 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
               tab: AppNavTab.none,
             ),
             BottomAppBarItem(
-              icon: LocalSvgImage(referralInactive),
-              activeIcon: LocalSvgImage(referralInactive),
-              title: 'Referral',
-              tab: AppNavTab.referral,
+              icon: LocalSvgImage(
+                activityInactive,
+                height: 22,
+              ),
+              activeIcon: LocalSvgImage(
+                activityActive,
+                height: 22,
+              ),
+              title: 'Activity',
+              tab: AppNavTab.activity,
             ),
             BottomAppBarItem(
-              icon: LocalSvgImage(payBillsInactive),
+              icon: LocalSvgImage(
+                profileInactive,
+                height: 22,
+              ),
               activeIcon: LocalSvgImage(
-                payBillsInactive,
-                color: AppColors.borderColor,
+                profileActive,
+                height: 22,
               ),
               title: 'Profile',
               tab: AppNavTab.profile,
@@ -80,21 +98,22 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           ],
         ),
         Positioned(
-          top: -25,
+          top: -5,
           left: context.getWidth(.39),
           child: GestureDetector(
-            onTap: () {
-              Log().debug('Send money tab');
-            },
+            onTap: () => Log().debug('Send money tab'),
             child: Container(
               height: context.getHeight(0.07),
               width: context.getHeight(0.1),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.borderColor,
+                color: Color(0xff08C0CA),
               ),
               child: Center(
-                child: LocalSvgImage(logoSvg),
+                child: LocalSvgImage(
+                  scanSvg,
+                  height: context.getHeight(0.04),
+                ),
               ),
             ),
           ),
@@ -196,13 +215,15 @@ class BottomAppBarState extends State<BottomAppBar> {
                   item.title,
                   style: TextStyle(
                     fontFamily: kFontFamily,
-                    fontWeight: FontWeight.w500,
-                    fontSize: Insets.dim_10,
+                    fontWeight: widget.selectedTab == item.tab
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                    fontSize: Insets.dim_12,
                     letterSpacing: .2,
                     fontStyle: FontStyle.normal,
                     color: widget.selectedTab == item.tab
-                        ? AppColors.borderColor
-                        : const Color(0xFFCACACA),
+                        ? AppColors.textHeaderColor
+                        : AppColors.textBodyColor,
                   ),
                 ),
                 const YBox(Insets.dim_18),

@@ -46,21 +46,30 @@ final String r6 = 'r6'.reasonsSvg;
 final String bvnSvg = 'bvn'.verificationSvg;
 final String idCardSvg = 'passport'.verificationSvg;
 final String driverLicenseSvg = 'drivers'.verificationSvg;
+
 // nav icons
-final String homeActive = 'home_active'.navSvg;
-final String homeInActive = 'home_inactive'.navSvg;
-final String walletInactive = 'wallet_inactive'.navSvg;
-final String referralInactive = 'referral_inactive'.navSvg;
-final String payBillsInactive = 'pay_bills_inactive'.navSvg;
+final String homeActive = 'home'.navSvg;
+final String homeInActive = 'homeInactive'.navSvg;
+final String myCardInactive = 'myCardInactive'.navSvg;
+final String myCardActive = 'myCard'.navSvg;
+final String activityInactive = 'activityInactive'.navSvg;
+final String activityActive = 'activity'.navSvg;
+final String profileInactive = 'profileInactive'.navSvg;
+final String profileActive = 'profile'.navSvg;
+final String scanSvg = 'scan'.navSvg;
 
 // dashboard
-final String noTransaction = 'no_transaction'.svg;
-final String notificationBell = 'notification_bell'.svg;
-final String verificationIcon = 'verirication_complete_icon'.svg;
-final String fingerPrint = 'fingerprint'.png;
-final String referralCard = 'referral_card_bg'.png;
-final String dashboardBg = 'dashboard_background_1'.png;
-final String fingerprint = 'fingerprint'.png;
+final String dataSvg = 'data'.dashboardSvg;
+final String depositSvg = 'deposit'.dashboardSvg;
+final String electricitySvg = 'electricity'.dashboardSvg;
+final String moreSvg = 'more'.dashboardSvg;
+final String referEarnSvg = 'refer_earn'.dashboardSvg;
+final String safeRideSvg = 'safe_ride'.dashboardSvg;
+final String schoolSvg = 'school'.dashboardSvg;
+final String sentSvg = 'sent'.dashboardSvg;
+final String transferSvg = 'transfer'.dashboardSvg;
+final String tvSvg = 'tv'.dashboardSvg;
+final String withdrawSvg = 'withdraw'.dashboardSvg;
 
 // profile icons
 final String faqLogoIcon = 'faq_icon'.profileSvg;
@@ -96,6 +105,9 @@ extension ImageExtension on String {
 
   //get reasons svg path
   String get reasonsSvg => '$baseSvgPath/reasons/$this.svg';
+
+  //get dashboard svg path
+  String get dashboardSvg => '$baseSvgPath/dashboard/$this.svg';
 
   //get verification svg path
   String get verificationSvg => '$baseSvgPath/verification/$this.svg';

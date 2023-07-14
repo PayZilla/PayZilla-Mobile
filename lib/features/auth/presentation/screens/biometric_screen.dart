@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
@@ -60,9 +61,7 @@ class _BiometricScreenState extends State<BiometricScreen> with FormMixin {
             ),
             const YBox(Insets.dim_26),
             InkWell(
-              onTap: () {
-                // Navigate to Get free card
-              },
+              onTap: () => AppNavigator.of(context).push(AppRoutes.home),
               child: const Text(
                 'I’ll do this later',
                 style: TextStyle(
