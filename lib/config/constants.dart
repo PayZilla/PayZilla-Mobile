@@ -27,6 +27,7 @@ class CacheKeys {
 class AppColors {
   static const scaffold = Color(0xffffffff);
   static const btnPrimaryColor = Color(0xff0A4D6A);
+  static const appSecondaryColor = Color(0xff08C0CA);
   static const iconColor = Color(0xFF1A1A1A);
   static const textHeaderColor = Color(0xFF1D3A70);
   static const textBodyColor = Color(0xFF6B7280);

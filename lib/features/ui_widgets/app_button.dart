@@ -40,7 +40,7 @@ class AppGradientButton extends AppButton {
               end: Alignment(1, -0.01),
               colors: [
                 Color(0xFF0A4D6A),
-                Color(0xFF08C0CA),
+                AppColors.appSecondaryColor,
               ],
             ),
             shape: RoundedRectangleBorder(

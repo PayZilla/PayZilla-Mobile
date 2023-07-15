@@ -106,7 +106,7 @@ class _SignInState extends State<SignIn> with FormMixin {
                 child: const Text(
                   'Forgot your password?',
                   style: TextStyle(
-                    color: Color(0xff08C0CA),
+                    color: AppColors.appSecondaryColor,
                     fontWeight: FontWeight.w700,
                     fontSize: Insets.dim_16,
                     fontStyle: FontStyle.normal,

@@ -78,7 +78,7 @@ class _VerifyEmailOtpRecoveryState extends State<VerifyEmailOtpRecovery>
                   child: const Text(
                     'Resend Code',
                     style: TextStyle(
-                      color: Color(0xff08C0CA),
+                      color: AppColors.appSecondaryColor,
                       fontWeight: FontWeight.w700,
                       fontSize: Insets.dim_16,
                       fontStyle: FontStyle.normal,

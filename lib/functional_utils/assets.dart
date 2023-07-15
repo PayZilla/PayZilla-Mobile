@@ -71,6 +71,12 @@ final String transferSvg = 'transfer'.dashboardSvg;
 final String tvSvg = 'tv'.dashboardSvg;
 final String withdrawSvg = 'withdraw'.dashboardSvg;
 
+// ATM security
+final String atmLineSvg = 'atm_line'.atmSvg;
+final String atmLogoSvg = 'atm_logo'.atmSvg;
+final String atmChipSvg = 'atm_chip'.atmSvg;
+final String atmNfcSvg = 'nfc'.atmSvg;
+
 // profile icons
 final String faqLogoIcon = 'faq_icon'.profileSvg;
 final String helpAndSupportIcon = 'help_and_support_icon'.profileSvg;
@@ -108,6 +114,9 @@ extension ImageExtension on String {
 
   //get dashboard svg path
   String get dashboardSvg => '$baseSvgPath/dashboard/$this.svg';
+
+  //get atm svg path
+  String get atmSvg => '$baseSvgPath/atm/$this.svg';
 
   //get verification svg path
   String get verificationSvg => '$baseSvgPath/verification/$this.svg';

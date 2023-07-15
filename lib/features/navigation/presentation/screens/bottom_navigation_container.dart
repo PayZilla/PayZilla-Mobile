@@ -107,7 +107,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
               width: context.getHeight(0.1),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xff08C0CA),
+                color: AppColors.appSecondaryColor,
               ),
               child: Center(
                 child: LocalSvgImage(

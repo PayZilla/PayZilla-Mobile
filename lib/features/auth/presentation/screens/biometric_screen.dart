@@ -65,7 +65,7 @@ class _BiometricScreenState extends State<BiometricScreen> with FormMixin {
               child: const Text(
                 'I’ll do this later',
                 style: TextStyle(
-                  color: Color(0xff08C0CA),
+                  color: AppColors.appSecondaryColor,
                   fontWeight: FontWeight.w700,
                   fontSize: Insets.dim_16,
                   fontStyle: FontStyle.normal,

@@ -117,6 +117,7 @@ flutter:
     - assets/svgs/verification/
     - assets/svgs/dashboard/
     - assets/svgs/nav/
+    - assets/svgs/atm/
 
     - .env
 
