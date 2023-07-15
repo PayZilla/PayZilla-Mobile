@@ -42,6 +42,7 @@ class AtmCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       LocalSvgImage(atmChipSvg),
+                      const XBox(Insets.dim_22),
                       LocalSvgImage(atmNfcSvg),
                     ],
                   ),
