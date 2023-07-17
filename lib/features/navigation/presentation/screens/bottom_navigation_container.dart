@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
@@ -101,7 +102,10 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           top: -5,
           left: context.getWidth(.39),
           child: GestureDetector(
-            onTap: () => Log().debug('Send money tab'),
+            onTap: () => AppNavigator.of(context).push(
+              AppRoutes.qrScan,
+              args: QRScreenArgs('238838392923848'),
+            ),
             child: Container(
               height: context.getHeight(0.07),
               width: context.getHeight(0.1),

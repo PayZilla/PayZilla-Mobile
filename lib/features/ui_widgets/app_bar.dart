@@ -51,7 +51,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             )
           : titleWidget ?? const SizedBox.shrink(),
-      leading: leading ?? const AppBackButton(),
+      leading: leading ?? const AppBoxedButton(),
       leadingWidth: leadingWidth,
       actions: [
         ...?actions,
@@ -64,9 +64,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(65);
 }
 
-class AppBackButton extends StatelessWidget {
-  const AppBackButton({super.key, this.onPressed});
+class AppBoxedButton extends StatelessWidget {
+  const AppBoxedButton({super.key, this.onPressed, this.icon});
   final Function()? onPressed;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +88,12 @@ class AppBackButton extends StatelessWidget {
         child: IconButton(
           padding: EdgeInsets.zero,
           onPressed: onPressed ?? AppNavigator.of(context).pop,
-          icon: const Icon(
-            Icons.chevron_left_rounded,
-            size: 35,
-            color: AppColors.black,
-          ),
+          icon: icon ??
+              const Icon(
+                Icons.chevron_left_rounded,
+                size: 35,
+                color: AppColors.black,
+              ),
           color: AppColors.black,
           splashRadius: 30,
         ),

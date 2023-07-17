@@ -28,7 +28,7 @@ class _SignInState extends State<SignIn> with FormMixin {
       appBar: CustomAppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBackButton(
+          child: AppBoxedButton(
             onPressed: () =>
                 AppNavigator.of(context).push(AppRoutes.onboarding),
           ),

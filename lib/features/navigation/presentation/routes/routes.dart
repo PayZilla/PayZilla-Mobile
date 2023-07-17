@@ -25,11 +25,6 @@ class AppRoutes {
   static const bvnToReasons = '/pin/country/bvn-verification/reasons';
   static const reasonsToPin = '/pin/country/bvn-verification/reasons/pin';
 
-  // bvn verification
-
-  //dashboard screen
-  static const profileAvatarUpload = '/tab/home/profile-avatar-upload';
-
   static String tab(AppNavTab tab) {
     return '/tab/${tab.toString().split('.').last}';
   }
@@ -39,4 +34,7 @@ class AppRoutes {
   static const myCard = '/tab/card';
   static const activity = '/tab/activity';
   static const profile = '/tab/profile';
+
+  /// Scanner routes
+  static const qrScan = '/tab/home/qr-scanner';
 }

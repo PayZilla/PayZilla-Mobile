@@ -26,7 +26,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> with FormMixin {
       appBar: const CustomAppBar(
         leading: Padding(
           padding: EdgeInsets.only(left: Insets.dim_24),
-          child: AppBackButton(),
+          child: AppBoxedButton(),
         ),
         leadingWidth: 80,
       ),

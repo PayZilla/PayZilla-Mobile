@@ -50,7 +50,7 @@ class _BiometricScreenState extends State<BiometricScreen> with FormMixin {
               textAlign: TextAlign.center,
             ),
             const Spacer(),
-            LocalSvgImage(biometricSvg),
+            LocalImage(biometricPng, height: context.getHeight(0.15)),
             YBox(context.getHeight(0.34)),
             AppSolidButton(
               textTitle: 'Enable biometric access',

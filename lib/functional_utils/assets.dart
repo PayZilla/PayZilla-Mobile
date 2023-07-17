@@ -32,7 +32,7 @@ final String appleSvg = 'apple'.svg;
 final String recoverySvg = 'recovery'.svg;
 
 // biometric screen assets
-final String biometricSvg = 'biometric'.svg;
+final String biometricPng = 'biometric'.png;
 
 // reasons screen assets
 final String r1 = 'r1'.reasonsSvg;
@@ -77,28 +77,10 @@ final String atmLogoSvg = 'atm_logo'.atmSvg;
 final String atmChipSvg = 'atm_chip'.atmSvg;
 final String atmNfcSvg = 'nfc'.atmSvg;
 
-// profile icons
-final String faqLogoIcon = 'faq_icon'.profileSvg;
-final String helpAndSupportIcon = 'help_and_support_icon'.profileSvg;
-final String intercomIcon = 'intercom_icon'.profileSvg;
-final String instagramIcon = 'instagram_icon'.profileSvg;
-final String twitterIcon = 'twitter_icon'.profileSvg;
-final String facebookIcon = 'facebook_icon'.profileSvg;
-
-//wallet
-final String debitTransaction = 'transaction_out'.walletSvg;
-final String creditTransaction = 'transaction_in'.walletSvg;
-final String walletCardPatternedBg = 'wallet_balance_bg'.png;
-
-//security
-final String playStore = 'playstore_icon'.png;
-final String deleteAccount = 'delete_thrash'.svg;
-
-//transaction
-final String pendingIcon = 'transaction_pending'.svg;
-final String successIcon = 'transaction_successful'.svg;
-final String failedIcon = 'transaction_failed'.svg;
-final String deleteFileIcon = 'delete-file'.png;
+// QR code
+final String qrBgPng = 'qr_bg'.png;
+final String qrBorderSvg = 'qr_border'.qrSvg;
+final String qrBoltSvg = 'qr_bolt'.qrSvg;
 
 // extensions
 extension ImageExtension on String {
@@ -123,10 +105,7 @@ extension ImageExtension on String {
 
   // get nav assets
   String get navSvg => '$baseSvgPath/nav/$this.svg';
-  //get wallet assets
-  String get walletSvg => '$baseSvgPath/wallet/$this.svg';
-  // get profile assets
-  String get profileSvg => '$baseSvgPath/profile/$this.svg';
-  // get profile assets
-  String get transactionSvg => '$baseSvgPath/transaction/$this.svg';
+
+  // get qr assets
+  String get qrSvg => '$baseSvgPath/qr/$this.svg';
 }

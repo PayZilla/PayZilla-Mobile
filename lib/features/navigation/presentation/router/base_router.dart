@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/splash_screen/splash_screen.dart';
 
 final _savedArgs = {};
@@ -87,6 +88,17 @@ GoRouter getBaseRouter() {
         },
         routes: [
           //Note (Dev)=> create sub routes for nav tabs
+          GoRoute(
+            path: 'qr-scanner',
+            builder: (context, state) {
+              return QRScanScreen(
+                args: argsRegistry<QRScreenArgs>(
+                  'qr-scanner',
+                  state.extra,
+                )!,
+              );
+            },
+          )
         ],
       )
     ],
