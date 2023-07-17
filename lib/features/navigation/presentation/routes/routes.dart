@@ -37,4 +37,5 @@ class AppRoutes {
 
   /// Scanner routes
   static const qrScan = '/tab/home/qr-scanner';
+  static const qrShowScan = '/tab/home/qr-show-scanner';
 }

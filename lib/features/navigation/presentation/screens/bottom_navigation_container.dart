@@ -103,8 +103,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           left: context.getWidth(.39),
           child: GestureDetector(
             onTap: () => AppNavigator.of(context).push(
-              AppRoutes.qrScan,
-              args: QRScreenArgs('238838392923848'),
+              AppRoutes.qrShowScan,
+              args: QrShowScreenArgs('238838392923848'),
             ),
             child: Container(
               height: context.getHeight(0.07),

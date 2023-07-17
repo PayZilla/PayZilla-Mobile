@@ -74,7 +74,7 @@ class QRScanScreen extends StatelessWidget {
                         borderRadius: Corners.mdBorder,
                       ),
                       child: QrImageView(
-                        data: '1234567890',
+                        data: args.qrValue,
                         size: 200,
                         backgroundColor: AppColors.white,
                       ),

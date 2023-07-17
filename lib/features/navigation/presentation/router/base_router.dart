@@ -98,6 +98,17 @@ GoRouter getBaseRouter() {
                 )!,
               );
             },
+          ),
+          GoRoute(
+            path: 'qr-show-scanner',
+            builder: (context, state) {
+              return QrShowScreen(
+                args: argsRegistry<QrShowScreenArgs>(
+                  'qr-show-scanner',
+                  state.extra,
+                )!,
+              );
+            },
           )
         ],
       )
