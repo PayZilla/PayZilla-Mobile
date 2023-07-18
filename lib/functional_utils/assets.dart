@@ -75,7 +75,10 @@ final String withdrawSvg = 'withdraw'.dashboardSvg;
 final String atmLineSvg = 'atm_line'.atmSvg;
 final String atmLogoSvg = 'atm_logo'.atmSvg;
 final String atmChipSvg = 'atm_chip'.atmSvg;
+final String atmGoldChipSvg = 'atm_gold_chip'.atmSvg;
 final String atmNfcSvg = 'nfc'.atmSvg;
+final String atmPatternSvg = 'atm_pattern'.atmSvg;
+final String atmMultiCardPng = 'atm_multi_card'.png;
 
 // QR code
 final String qrBgPng = 'qr_bg'.png;

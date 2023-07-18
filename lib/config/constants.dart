@@ -33,10 +33,10 @@ class AppColors {
   static const textBodyColor = Color(0xFF6B7280);
   static const black = Color(0xFF000000);
   static const white = Color(0xFFFFFFFF);
-  static const grey = Color(0xFF676D7E);
   static const borderErrorColor = Color(0xFFDC3030);
   static Color borderColor = const Color(0xffF9FAFB);
   static const orangeColor = Color(0xffF97066);
+  static const grey = Color(0xffF3F4F6);
 }
 
 class Corners {

@@ -53,7 +53,7 @@ class QrShowScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Scan QR Code',
+                  'John O.Willams',
                   style: context.textTheme.bodyMedium!.copyWith(
                     color: AppColors.textHeaderColor,
                     fontWeight: FontWeight.w600,
@@ -84,7 +84,7 @@ class QrShowScreen extends StatelessWidget {
                 borderRadius: Corners.mdBorder,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.textBodyColor.withOpacity(0.5),
+                    color: AppColors.textBodyColor.withOpacity(0.05),
                     blurRadius: 10,
                     spreadRadius: 0.2,
                     offset: const Offset(-5, 10),

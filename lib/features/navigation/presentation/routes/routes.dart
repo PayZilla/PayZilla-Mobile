@@ -38,4 +38,11 @@ class AppRoutes {
   /// Scanner routes
   static const qrScan = '/tab/home/qr-scanner';
   static const qrShowScan = '/tab/home/qr-show-scanner';
+
+  // My cards
+  static const startCreateCard = '/tab/card/start-create-card';
+  static const chooseCardStyle =
+      '/tab/card/start-create-card/choose-card-style';
+  static const editCardScreen =
+      '/tab/card/start-create-card/choose-card-style/edit-card';
 }
