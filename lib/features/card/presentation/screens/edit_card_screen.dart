@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
@@ -21,6 +23,9 @@ class EditCardScreen extends StatefulWidget {
 }
 
 class _EditCardScreenState extends State<EditCardScreen> {
+  bool mag = false;
+  bool contact = false;
+  bool card = false;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -29,9 +34,13 @@ class _EditCardScreenState extends State<EditCardScreen> {
         useBodyPadding: false,
         appBar: CustomAppBar(
           centerTitle: true,
-          leading: const Padding(
-            padding: EdgeInsets.only(left: Insets.dim_24),
-            child: AppBoxedButton(),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: Insets.dim_24),
+            child: AppBoxedButton(
+              onPressed: () {
+                AppNavigator.of(context).push(AppRoutes.myCard);
+              },
+            ),
           ),
           leadingWidth: 80,
           titleWidget: Text(
@@ -105,16 +114,47 @@ class _EditCardScreenState extends State<EditCardScreen> {
                             const Center(
                               child: Text('Personal page'),
                             ),
-                            Column(
-                              children: [
-                                const Text('Manage Page'),
-                                const Spacer(),
-                                AppSolidButton(
-                                  textTitle: 'Get Free Card',
-                                  action: () {},
-                                ),
-                                const YBox(Insets.dim_44),
-                              ],
+                            Scrollbar(
+                              thumbVisibility: false,
+                              thickness: 0.7,
+                              child: ListView(
+                                children: [
+                                  const YBox(Insets.dim_32),
+                                  manageOptionWidget(
+                                    context,
+                                    switched: card,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        card = value;
+                                      });
+                                    },
+                                  ),
+                                  manageOptionWidget(
+                                    context,
+                                    switched: contact,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        contact = value;
+                                      });
+                                    },
+                                  ),
+                                  manageOptionWidget(
+                                    context,
+                                    switched: mag,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        mag = value;
+                                      });
+                                    },
+                                  ),
+                                  const YBox(Insets.dim_44),
+                                  AppSolidButton(
+                                    textTitle: 'Save',
+                                    action: () {},
+                                  ),
+                                  const YBox(Insets.dim_44),
+                                ],
+                              ),
                             ),
                             const Center(
                               child: Text('Details Page'),
@@ -127,6 +167,52 @@ class _EditCardScreenState extends State<EditCardScreen> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget manageOptionWidget(
+    BuildContext context, {
+    bool switched = false,
+    void Function(bool)? onChanged,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.black.withOpacity(0.2),
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: Insets.dim_14),
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Container(
+            decoration: BoxDecoration(
+              color: AppColors.borderColor,
+              borderRadius: Corners.mdBorder,
+            ),
+            padding: const EdgeInsets.all(8),
+            child: const Icon(
+              Icons.credit_card_rounded,
+              size: 32,
+            ),
+          ),
+          title: Text(
+            'Freeze physical card',
+            style: context.textTheme.bodyMedium!.copyWith(
+              color: AppColors.textHeaderColor,
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              letterSpacing: 0.30,
+            ),
+          ),
+          trailing: CupertinoSwitch(
+            value: switched,
+            onChanged: onChanged,
           ),
         ),
       ),

@@ -2,6 +2,8 @@
 const String baseSvgPath = 'assets/svgs';
 const String basePngPath = 'assets/pngs';
 
+const String selfie = 'assets/pngs/selfie.jpg';
+
 // app logo path
 final String logoSvg = 'logo'.svg;
 final String logoWithNamePng = 'logo_and_name'.png;
@@ -85,6 +87,16 @@ final String qrBgPng = 'qr_bg'.png;
 final String qrBorderSvg = 'qr_border'.qrSvg;
 final String qrBoltSvg = 'qr_bolt'.qrSvg;
 
+// profile
+final String accountInfoSvg = 'account_info'.profileSvg;
+final String contactListSvg = 'contact_list'.profileSvg;
+final String generalSvg = 'general'.profileSvg;
+final String languageSvg = 'language'.profileSvg;
+final String passwordSvg = 'password'.profileSvg;
+final String referralSvg = 'referral'.profileSvg;
+final String defaultNotificationSvg = 'default_notification'.profileSvg;
+final String referralCodeSvg = 'referral_screen'.profileSvg;
+
 // extensions
 extension ImageExtension on String {
   // get png paths
@@ -111,4 +123,7 @@ extension ImageExtension on String {
 
   // get qr assets
   String get qrSvg => '$baseSvgPath/qr/$this.svg';
+
+  // get qr assets
+  String get profileSvg => '$baseSvgPath/profile/$this.svg';
 }

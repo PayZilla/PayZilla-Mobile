@@ -45,4 +45,15 @@ class AppRoutes {
       '/tab/card/start-create-card/choose-card-style';
   static const editCardScreen =
       '/tab/card/start-create-card/choose-card-style/edit-card';
+  static const editCardFromMyCardScreen = '/tab/card/edit-card';
+
+  // profile routes
+  static const referral = '/tab/profile/referral';
+  static const accountInfo = '/tab/profile/account-info';
+  static const editAccountInfo = '/tab/profile/account-info/edit';
+  static const contact = '/tab/profile/contact';
+  static const language = '/tab/profile/language';
+  static const general = '/tab/profile/general';
+  static const password = '/tab/profile/password';
+  static const faq = '/tab/profile/faq';
 }

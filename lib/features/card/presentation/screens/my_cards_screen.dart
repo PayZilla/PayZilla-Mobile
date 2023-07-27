@@ -4,12 +4,15 @@ import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:provider/provider.dart';
 
 class MyCardScreen extends StatelessWidget {
   const MyCardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final cardProvider = context.read<MyCardsProvider>();
+
     return AppScaffold(
       useBodyPadding: false,
       appBar: CustomAppBar(
@@ -29,14 +32,22 @@ class MyCardScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
         child: Column(
           children: [
-            const AtmCardWidget(
-              color: AppColors.textHeaderColor,
+            Expanded(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const YBox(Insets.dim_24),
+                itemCount: cardProvider.screens.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () => AppNavigator.of(context).push(
+                    AppRoutes.editCardFromMyCardScreen,
+                    args: EditCardScreenArgs(
+                      card: cardProvider.screens[index],
+                      cardPrimaryColor: cardProvider.cardColors[index],
+                    ),
+                  ),
+                  child: cardProvider.screens[index],
+                ),
+              ),
             ),
-            const YBox(Insets.dim_22),
-            const AtmCardWidget2(
-              color: AppColors.textHeaderColor,
-            ),
-            const YBox(Insets.dim_22),
             InkWell(
               onTap: () =>
                   AppNavigator.of(context).push(AppRoutes.startCreateCard),
@@ -67,9 +78,19 @@ class MyCardScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const YBox(Insets.dim_14),
           ],
         ),
       ),
     );
   }
+
+  // const AtmCardWidget(
+  //           color: AppColors.textHeaderColor,
+  //         ),
+  //         const YBox(Insets.dim_22),
+  //         const AtmCardWidget2(
+  //           color: AppColors.textHeaderColor,
+  //         ),
+  //         const YBox(Insets.dim_22),
 }

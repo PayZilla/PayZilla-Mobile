@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -24,8 +25,16 @@ class QrShowScreen extends StatelessWidget {
         centerTitle: true,
         appBarTitleColor: AppColors.textHeaderColor,
         title: 'Scan QR Code',
+        leadingWidth: 80,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: Insets.dim_24),
+          child: AppBoxedButton(
+            onPressed: () => AppNavigator.of(context).pop(),
+          ),
+        ),
         actions: [
           AppBoxedButton(
+            width: 60,
             onPressed: () {},
             icon: const Icon(
               Icons.more_horiz_rounded,
@@ -33,7 +42,7 @@ class QrShowScreen extends StatelessWidget {
               color: AppColors.black,
             ),
           ),
-          const XBox(Insets.dim_12),
+          const XBox(Insets.dim_16)
         ],
       ),
       body: Column(

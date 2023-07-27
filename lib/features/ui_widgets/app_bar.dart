@@ -65,14 +65,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class AppBoxedButton extends StatelessWidget {
-  const AppBoxedButton({super.key, this.onPressed, this.icon});
+  const AppBoxedButton({super.key, this.onPressed, this.icon, this.width = 40});
   final Function()? onPressed;
   final Widget? icon;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
+      width: width,
       height: 40,
       padding: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,

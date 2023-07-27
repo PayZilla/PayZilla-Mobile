@@ -120,6 +120,7 @@ flutter:
     - assets/svgs/nav/
     - assets/svgs/atm/
     - assets/svgs/qr/
+    - assets/svgs/profile/
 
     - .env
 

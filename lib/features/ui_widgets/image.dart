@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 /// simple wrapper around CachedNetworkImage that provides any boilerplate we need for images in the app
@@ -37,8 +41,8 @@ class HostedImage extends StatelessWidget {
       ),
       errorWidget: (_, s, ___) =>
           fallbackImage ??
-          LocalSvgImage(
-            logoSvg,
+          LocalImage(
+            selfie,
             fit: fit,
             height: height,
             width: width,
@@ -97,5 +101,37 @@ class LocalSvgImage extends StatelessWidget {
       width: width,
       color: color,
     );
+  }
+}
+
+class ChooseUploadOption extends StatelessWidget with BaseBottomSheetMixin {
+  const ChooseUploadOption({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final child = Column(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.photo),
+          title: const Text('Upload a photo'),
+          onTap: () async {
+            final pickedImage =
+                await ImagePicker().pickImage(source: ImageSource.gallery);
+            Navigator.of(context).pop(pickedImage);
+          },
+        ),
+        const YBox(Insets.dim_16),
+        ListTile(
+          leading: const Icon(Icons.camera_alt_outlined),
+          title: const Text('Take a photo'),
+          onTap: () async {
+            final pickedImage =
+                await ImagePicker().pickImage(source: ImageSource.camera);
+            Navigator.of(context).pop(pickedImage);
+          },
+        )
+      ],
+    );
+    return BaseBottomSheet(title: 'Select Option', child: child);
   }
 }

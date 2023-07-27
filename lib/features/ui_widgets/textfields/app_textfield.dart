@@ -33,6 +33,7 @@ class AppTextFormField extends StatelessWidget {
     this.labelStyle,
     this.hintStyle,
     this.isLoading = false,
+    this.labelDistance = Insets.dim_4,
     this.suffixText,
     this.decoration,
     this.autoValidateMode,
@@ -62,6 +63,7 @@ class AppTextFormField extends StatelessWidget {
   final bool showAsterisk;
   final String? suffixText;
   final InputDecoration? decoration;
+  final double labelDistance;
   final AutovalidateMode? autoValidateMode;
 
   @override
@@ -75,8 +77,11 @@ class AppTextFormField extends StatelessWidget {
               Text(
                 labelText!,
                 style: labelStyle ??
-                    context.textTheme.bodyMedium
-                        ?.apply(color: AppColors.textHeaderColor),
+                    context.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textBodyColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
               ),
               Visibility(
                 visible: showAsterisk,
@@ -89,7 +94,7 @@ class AppTextFormField extends StatelessWidget {
               ),
             ],
           ),
-          const YBox(Insets.dim_4),
+          YBox(labelDistance),
         ],
         IgnorePointer(
           ignoring: isLoading,
@@ -251,6 +256,7 @@ class PhoneNumberTextFormField extends StatefulWidget {
     this.enabled = true,
     this.labelStyle,
     this.style,
+    this.labelDistance = Insets.dim_4,
     this.showCountryList = true,
     this.phoneNumberCountry,
   }) : super(key: key);
@@ -269,6 +275,7 @@ class PhoneNumberTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final bool enabled;
   final bool showCountryList;
+  final double labelDistance;
   final TextStyle? labelStyle, style;
   final CountryData? phoneNumberCountry;
 
@@ -290,54 +297,11 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
   Widget build(BuildContext context) {
     return AppTextFormField(
       style: widget.style,
-      /*
-      prefixIcon: SizedBox(
-        height: 40,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const XBox(Insets.dim_8),
-            LocalSvgImage(phoneNumberCountry.flag),
-            const XBox(Insets.dim_4),
-            Text(phoneNumberCountry.countryPhoneCode),
-            const XBox(Insets.dim_4),
-            const Icon(
-              PhosphorIcons.caretDown,
-              size: 18,
-              color: AppColors.black,
-            ),
-            const XBox(Insets.dim_4),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: Insets.dim_14),
-              child: VerticalDivider(width: 0, thickness: 1.5),
-            ),
-            const XBox(Insets.dim_10),
-          ],
-        ),
-      ).onTap(() async {
-        if (!widget.showCountryList) return;
-        final country = await FutureBottomSheet<CountryData>(
-          title: 'Select country',
-          future: () => Future.value(phoneNumberCountryList()),
-          itemBuilder: (context, item) {
-            return ListTile(
-              leading: Padding(
-                padding: const EdgeInsets.only(top: Insets.dim_4),
-                child: LocalSvgImage(item.flag),
-              ),
-              title: Text('(${item.countryPhoneCode}) ${item.countryName}'),
-            );
-          },
-        ).show(context);
-        if (country != null) {
-          setState(() {
-            phoneNumberCountry = country;
-          });
-        }
-      }),*/
       hintText: widget.hintText ?? 'Enter phone number',
       initialValue: widget.initialValue?.number,
       suffixIcon: widget.textFieldIcon,
+      labelDistance: widget.labelDistance,
+      labelText: widget.labelText,
       inputType: TextInputType.number,
       onChanged: widget.onChanged,
       onEditingComplete: widget.onEditingComplete,
