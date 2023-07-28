@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/splash_screen/splash_screen.dart';
 
@@ -89,6 +90,12 @@ GoRouter getBaseRouter() {
         },
         routes: [
           //Note (Dev)=> create sub routes for nav tabs
+          GoRoute(
+            path: 'notifications',
+            builder: (context, state) {
+              return const NotificationScreen();
+            },
+          ),
           GoRoute(
             path: 'qr-scanner',
             builder: (context, state) {

@@ -6,4 +6,5 @@ export 'presentation/screens/general_settings_screen.dart';
 export 'presentation/screens/profile_screen.dart';
 export 'presentation/screens/referral_code_screen.dart';
 export 'presentation/viewmodel/profile_provider.dart';
+export 'presentation/widget/contact_widget.dart';
 export 'presentation/widget/profile_listtile_widget.dart';

@@ -35,6 +35,9 @@ class AppRoutes {
   static const activity = '/tab/activity';
   static const profile = '/tab/profile';
 
+  // dashboard routes
+  static const homeToNotifications = '/tab/home/notifications';
+
   /// Scanner routes
   static const qrScan = '/tab/home/qr-scanner';
   static const qrShowScan = '/tab/home/qr-show-scanner';

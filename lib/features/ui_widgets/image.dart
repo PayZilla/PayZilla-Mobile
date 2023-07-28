@@ -30,24 +30,28 @@ class HostedImage extends StatelessWidget {
     if (url.contains('http://')) {
       secureUrl = secureUrl.replaceAll('http://', 'https://');
     }
-    return CachedNetworkImage(
-      imageUrl: secureUrl,
-      fit: fit,
-      height: height,
-      width: width,
-      progressIndicatorBuilder: (_, s, i) =>
-          CupertinoActivityIndicator.partiallyRevealed(
-        progress: i.progress ?? 1,
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: const BoxDecoration(shape: BoxShape.circle),
+      child: CachedNetworkImage(
+        imageUrl: secureUrl,
+        fit: fit,
+        height: height,
+        width: width,
+        progressIndicatorBuilder: (_, s, i) =>
+            CupertinoActivityIndicator.partiallyRevealed(
+          progress: i.progress ?? 1,
+        ),
+        errorWidget: (_, s, ___) =>
+            fallbackImage ??
+            LocalImage(
+              selfie,
+              fit: fit,
+              height: height,
+              width: width,
+            ),
+        fadeInDuration: 1.seconds,
       ),
-      errorWidget: (_, s, ___) =>
-          fallbackImage ??
-          LocalImage(
-            selfie,
-            fit: fit,
-            height: height,
-            width: width,
-          ),
-      fadeInDuration: 1.seconds,
     );
   }
 }

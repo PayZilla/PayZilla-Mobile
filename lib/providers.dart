@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
+import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:provider/provider.dart';
@@ -18,5 +19,8 @@ final List<SingleChildWidget> providers = [
   ),
   ChangeNotifierProvider<ProfileProvider>(
     create: (_) => GetIt.I<ProfileProvider>(),
+  ),
+  ChangeNotifierProvider<NotificationProvider>(
+    create: (_) => GetIt.I<NotificationProvider>(),
   ),
 ];

@@ -2,6 +2,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
+import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 
@@ -16,5 +17,8 @@ void registerViewModelProviders(GetIt getIt) {
     )
     ..registerFactory(
       ProfileProvider.new,
+    )
+    ..registerFactory(
+      NotificationProvider.new,
     );
 }

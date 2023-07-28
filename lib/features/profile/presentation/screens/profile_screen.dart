@@ -26,7 +26,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
+      body: ListView(
         children: [
           Container(
             padding: const EdgeInsets.all(Insets.dim_12),
@@ -50,32 +50,37 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: const LocalImage(
                 selfie,
-                fit: BoxFit.contain,
+                fit: BoxFit.fitWidth,
               ),
             ),
           ),
           const YBox(Insets.dim_12),
-          Text(
-            'John O. Williams',
-            style: context.textTheme.bodyMedium!.copyWith(
-              color: AppColors.textHeaderColor,
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
-              letterSpacing: 0.30,
+          Center(
+            child: Text(
+              'John O. Williams',
+              style: context.textTheme.bodyMedium!.copyWith(
+                color: AppColors.textHeaderColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+                letterSpacing: 0.30,
+              ),
             ),
           ),
           const YBox(Insets.dim_6),
-          Text(
-            'tommyjason@gmail.com',
-            style: context.textTheme.bodyMedium!.copyWith(
-              color: AppColors.textBodyColor,
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-              letterSpacing: 0.30,
+          Center(
+            child: Text(
+              'tommyjason@gmail.com',
+              style: context.textTheme.bodyMedium!.copyWith(
+                color: AppColors.textBodyColor,
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                letterSpacing: 0.30,
+              ),
             ),
           ),
           const YBox(Insets.dim_12),
-          Expanded(
+          SizedBox(
+            height: context.getHeight(0.3),
             child: ListView.builder(
               itemCount: profile.profileWidget.take(4).length,
               itemBuilder: (context, index) {
@@ -109,6 +114,13 @@ class ProfileScreen extends StatelessWidget {
               asset: profile.profileWidget[5].asset,
               title: profile.profileWidget[5].title,
               onTap: () => profile.profileWidget[5].todo!(context),
+            ),
+          ),
+          ProfileListTileWidget(
+            args: ProfileListTileWidgetArgs(
+              asset: profile.profileWidget[6].asset,
+              title: profile.profileWidget[6].title,
+              onTap: () => profile.profileWidget[6].todo!(context),
             ),
           ),
           const YBox(Insets.dim_18),

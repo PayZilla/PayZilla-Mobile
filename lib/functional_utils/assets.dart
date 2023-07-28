@@ -72,6 +72,10 @@ final String sentSvg = 'sent'.dashboardSvg;
 final String transferSvg = 'transfer'.dashboardSvg;
 final String tvSvg = 'tv'.dashboardSvg;
 final String withdrawSvg = 'withdraw'.dashboardSvg;
+final String notificationCheckSvg = 'notification_check'.dashboardSvg;
+final String rewardSvg = 'reward'.dashboardSvg;
+final String paymentSvg = 'payment'.dashboardSvg;
+final String cashbackSvg = 'cashback'.dashboardSvg;
 
 // ATM security
 final String atmLineSvg = 'atm_line'.atmSvg;

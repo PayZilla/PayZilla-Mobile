@@ -52,7 +52,6 @@ class ProfileListTileWidget extends StatelessWidget {
                 color: args.assetColor,
               ),
             ),
-      subtitle: args.subtitle,
       title: Text(
         args.title,
         style: context.textTheme.bodyMedium!.copyWith(
@@ -62,6 +61,7 @@ class ProfileListTileWidget extends StatelessWidget {
           letterSpacing: 0.30,
         ),
       ),
+      subtitle: args.subtitle,
       trailing: args.trailing ??
           Icon(
             Icons.arrow_forward_ios_rounded,
