@@ -84,13 +84,4 @@ class MyCardScreen extends StatelessWidget {
       ),
     );
   }
-
-  // const AtmCardWidget(
-  //           color: AppColors.textHeaderColor,
-  //         ),
-  //         const YBox(Insets.dim_22),
-  //         const AtmCardWidget2(
-  //           color: AppColors.textHeaderColor,
-  //         ),
-  //         const YBox(Insets.dim_22),
 }
