@@ -42,8 +42,8 @@ class BaseBottomSheet extends StatelessWidget {
             if (title != null) ...[
               Text(
                 title ?? '',
-                style: context.textTheme.headlineLarge!
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.textTheme.headlineMedium!
+                    .copyWith(fontWeight: FontWeight.w500),
               ),
             ],
             if (desc != null) ...[

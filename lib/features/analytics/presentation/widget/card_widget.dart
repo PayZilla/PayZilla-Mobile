@@ -23,7 +23,7 @@ class AtmCardWidget extends StatelessWidget {
           LocalSvgImage(
             atmLineSvg,
             width: double.infinity,
-            color: const Color(0xff1DAB87),
+            color: AppColors.appGreen,
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),

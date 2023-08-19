@@ -65,10 +65,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class AppBoxedButton extends StatelessWidget {
-  const AppBoxedButton({super.key, this.onPressed, this.icon, this.width = 40});
+  const AppBoxedButton({
+    super.key,
+    this.onPressed,
+    this.icon,
+    this.width = 40,
+    this.color,
+  });
   final Function()? onPressed;
   final Widget? icon;
   final double width;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +86,8 @@ class AppBoxedButton extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            color: Color(0xFFE5E7EB),
+          side: BorderSide(
+            color: color ?? const Color(0xFFE5E7EB),
           ),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -90,12 +97,12 @@ class AppBoxedButton extends StatelessWidget {
           padding: EdgeInsets.zero,
           onPressed: onPressed ?? AppNavigator.of(context).pop,
           icon: icon ??
-              const Icon(
+              Icon(
                 Icons.chevron_left_rounded,
                 size: 35,
-                color: AppColors.black,
+                color: color ?? AppColors.black,
               ),
-          color: AppColors.black,
+          color: color ?? AppColors.black,
           splashRadius: 30,
         ),
       ),

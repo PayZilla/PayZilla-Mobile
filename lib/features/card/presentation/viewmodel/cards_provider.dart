@@ -6,7 +6,7 @@ class MyCardsProvider extends ChangeNotifier {
   final cardColors = [
     AppColors.textHeaderColor,
     AppColors.textHeaderColor,
-    const Color(0xff1DAB87),
+    AppColors.appGreen,
   ];
   final screens = [
     const AtmCardWidget2(
@@ -16,7 +16,7 @@ class MyCardsProvider extends ChangeNotifier {
       color: AppColors.textHeaderColor,
     ),
     const AtmCardWidget3(
-      color: Color(0xff1DAB87),
+      color: AppColors.appGreen,
     )
   ];
 }

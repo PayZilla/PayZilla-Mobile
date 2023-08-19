@@ -37,6 +37,7 @@ class AppColors {
   static Color borderColor = const Color(0xffF9FAFB);
   static const orangeColor = Color(0xffF97066);
   static const grey = Color(0xffF3F4F6);
+  static const appGreen = Color(0xff1DAB87);
 }
 
 class Corners {

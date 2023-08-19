@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:provider/provider.dart';
 
 class TransactionList extends StatelessWidget {
   const TransactionList({
     super.key,
+    this.edgeInsets,
   });
+
+  final EdgeInsets? edgeInsets;
 
   @override
   Widget build(BuildContext context) {
+    final tp = context.watch<TransactionProvider>();
     final money = context.money();
     return ListView.separated(
       separatorBuilder: (context, index) => const YBox(Insets.dim_26),
       itemCount: 12,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () =>
-              Log().debug('The index of the transaction tapped', index),
+          onTap: () {
+            tp.onTransactionTapped(index);
+          },
           child: Container(
             height: 50,
-            margin: const EdgeInsets.symmetric(
-              horizontal: Insets.dim_22,
-            ),
+            margin: edgeInsets ??
+                const EdgeInsets.symmetric(
+                  horizontal: Insets.dim_22,
+                ),
             color: AppColors.white,
             child: Row(
               children: [

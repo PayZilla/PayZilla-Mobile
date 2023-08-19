@@ -37,6 +37,11 @@ class AppRoutes {
 
   // dashboard routes
   static const homeToNotifications = '/tab/home/notifications';
+  static const allTransactions = '/tab/home/all-transactions';
+  static const transfer = '/tab/home/transfer';
+  static const sendMoney = '/tab/home/transfer/send-money';
+
+  static const successfulTransaction = '/transfer-success';
 
   /// Scanner routes
   static const qrScan = '/tab/home/qr-scanner';

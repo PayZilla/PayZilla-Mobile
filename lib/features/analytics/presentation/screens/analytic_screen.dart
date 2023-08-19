@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/analytics/analytics.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/extensions/context_extension.dart';
 import 'package:pay_zilla/functional_utils/extensions/extensions.dart';
@@ -25,6 +27,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     final analyticProvider = context.watch<AnalyticProvider>();
+    final authProvider = context.watch<AuthProvider>();
     final money = context.money();
     return DefaultTabController(
       length: 4,
@@ -43,7 +46,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             ),
           ),
         ),
-        body: Column(
+        body: ListView(
           children: [
             Column(
               children: [
@@ -74,141 +77,189 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ],
             ),
             const YBox(Insets.dim_24),
-            Expanded(
-              child: Container(
-                height: context.getHeight(0.5),
-                width: context.getWidth(),
-                margin: const EdgeInsets.symmetric(horizontal: Insets.dim_16),
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: Corners.mdBorder,
-                  border: Border.all(
-                    width: 2,
-                    color: AppColors.borderColor,
-                  ),
+            Container(
+              height: context.getHeight(0.4),
+              width: context.getWidth(),
+              margin: const EdgeInsets.symmetric(horizontal: Insets.dim_16),
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: Corners.mdBorder,
+                border: Border.all(
+                  width: 2,
+                  color: AppColors.borderColor,
                 ),
-                child: Column(
-                  children: [
-                    const YBox(Insets.dim_24),
-                    Text(
-                      'Total Spending',
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textBodyColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        letterSpacing: 0.30,
-                      ),
+              ),
+              child: Column(
+                children: [
+                  const YBox(Insets.dim_24),
+                  Text(
+                    'Total Spending',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textBodyColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      letterSpacing: 0.30,
                     ),
-                    const YBox(Insets.dim_4),
-                    Text(
-                      money.formatValue(521500),
+                  ),
+                  const YBox(Insets.dim_4),
+                  Text(
+                    money.formatValue(521500),
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textHeaderColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 24,
+                    ),
+                  ),
+                  const YBox(Insets.dim_24),
+                  Container(
+                    height: context.getHeight(0.06),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Insets.dim_4,
+                      vertical: Insets.dim_4,
+                    ),
+                    decoration: const BoxDecoration(
+                      borderRadius: Corners.mdBorder,
+                    ),
+                    child: TabBar(
+                      indicator: BoxDecoration(
+                        color: AppColors.borderColor,
+                        borderRadius: Corners.mdBorder,
+                      ),
+                      labelColor: AppColors.black,
+                      unselectedLabelColor: AppColors.textBodyColor,
+                      tabs: const [
+                        Tab(
+                          text: 'Day',
+                        ),
+                        Tab(
+                          text: 'Week',
+                        ),
+                        Tab(
+                          text: 'Month',
+                        ),
+                        Tab(
+                          text: 'Year',
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        const TabBarView(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Insets.dim_24,
+                              ),
+                              child: LineChartWidget(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Insets.dim_24,
+                              ),
+                              child: LineChartWidget(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Insets.dim_24,
+                              ),
+                              child: LineChartWidget(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Insets.dim_24,
+                              ),
+                              child: LineChartWidget(),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Colors.black
+                                .withOpacity(isShowingMainData ? 1.0 : 0.5),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isShowingMainData = !isShowingMainData;
+                            });
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const YBox(Insets.dim_22),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Insets.dim_16),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: Text(
+                      'Transaction',
                       style: context.textTheme.bodyMedium!.copyWith(
                         color: AppColors.textHeaderColor,
                         fontWeight: FontWeight.w700,
-                        fontSize: 24,
+                        fontSize: 20,
                       ),
                     ),
-                    const YBox(Insets.dim_24),
-                    Container(
-                      height: context.getHeight(0.06),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Insets.dim_4,
-                        vertical: Insets.dim_4,
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: ClickableFormField(
+                      hintText: 'All',
+                      labelStyle: context.textTheme.bodyMedium!.copyWith(
+                        color: AppColors.textHeaderColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
                       ),
-                      decoration: const BoxDecoration(
-                        borderRadius: Corners.mdBorder,
-                      ),
-                      child: TabBar(
-                        indicator: BoxDecoration(
-                          color: AppColors.borderColor,
-                          borderRadius: Corners.mdBorder,
-                        ),
-                        labelColor: AppColors.black,
-                        unselectedLabelColor: AppColors.textBodyColor,
-                        tabs: const [
-                          Tab(
-                            text: 'Day',
-                          ),
-                          Tab(
-                            text: 'Week',
-                          ),
-                          Tab(
-                            text: 'Month',
-                          ),
-                          Tab(
-                            text: 'Year',
-                          ),
-                        ],
-                      ),
+                      onPressed: () async {
+                        authProvider.showNavBar = true;
+                        final result = await FutureBottomSheet<String>(
+                          future: () => Future.value([
+                            'All',
+                            'Pending',
+                            'Done',
+                          ]),
+                          title: 'Select an option',
+                          itemBuilder: (context, item) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 14,
+                                horizontal: 8,
+                              ),
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            );
+                          },
+                        ).show(context);
+                        authProvider.showNavBar = false;
+
+                        if (result != null) {
+                          setState(() {});
+                        }
+                      },
                     ),
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          const TabBarView(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: Insets.dim_24,
-                                ),
-                                child: LineChartWidget(),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: Insets.dim_24,
-                                ),
-                                child: LineChartWidget(),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: Insets.dim_24,
-                                ),
-                                child: LineChartWidget(),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: Insets.dim_24,
-                                ),
-                                child: LineChartWidget(),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.refresh,
-                              color: Colors.black
-                                  .withOpacity(isShowingMainData ? 1.0 : 0.5),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isShowingMainData = !isShowingMainData;
-                              });
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            const YBox(Insets.dim_34),
+            const YBox(Insets.dim_22),
+            SizedBox(
+              height: context.getHeight(0.5),
+              child: const TransactionList(),
+            ),
+            const YBox(Insets.dim_14),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildDot({int index = 0, int currentPage = 0}) {
-    return AnimatedContainer(
-      duration: kAnimationDuration,
-      width: currentPage == index ? Insets.dim_10 : Insets.dim_6,
-      height: currentPage == index ? Insets.dim_10 : Insets.dim_6,
-      margin: const EdgeInsets.only(right: 5),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: currentPage == index
-            ? AppColors.textBodyColor
-            : AppColors.black.withOpacity(0.4),
       ),
     );
   }

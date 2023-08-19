@@ -101,6 +101,14 @@ final String referralSvg = 'referral'.profileSvg;
 final String defaultNotificationSvg = 'default_notification'.profileSvg;
 final String referralCodeSvg = 'referral_screen'.profileSvg;
 
+// activity
+final String amazonSvg = 'amazon'.activitySvg;
+final String sportsSvg = 'sports'.activitySvg;
+
+final String cardsPng = 'cards'.png;
+final String successfulTransferSvg = 'success-transfer'.transactionSvg;
+final String allTransactSvg = 'all-transact-bg'.transactionSvg;
+
 // extensions
 extension ImageExtension on String {
   // get png paths
@@ -130,4 +138,10 @@ extension ImageExtension on String {
 
   // get qr assets
   String get profileSvg => '$baseSvgPath/profile/$this.svg';
+
+  // get activity assets
+  String get activitySvg => '$baseSvgPath/activity/$this.svg';
+
+  // get transaction assets
+  String get transactionSvg => '$baseSvgPath/transaction/$this.svg';
 }

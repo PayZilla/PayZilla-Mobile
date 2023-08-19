@@ -3,8 +3,8 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
-class ProfileListTileWidgetArgs {
-  ProfileListTileWidgetArgs({
+class ListTileWidgetArgs {
+  ListTileWidgetArgs({
     this.onTap,
     this.asset,
     required this.title,
@@ -23,13 +23,13 @@ class ProfileListTileWidgetArgs {
   final Widget? leading;
 }
 
-class ProfileListTileWidget extends StatelessWidget {
-  const ProfileListTileWidget({
+class AppListTileWidget extends StatelessWidget {
+  const AppListTileWidget({
     super.key,
     required this.args,
   });
 
-  final ProfileListTileWidgetArgs args;
+  final ListTileWidgetArgs args;
 
   @override
   Widget build(BuildContext context) {

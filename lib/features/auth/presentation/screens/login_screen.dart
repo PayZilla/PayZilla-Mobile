@@ -179,7 +179,7 @@ class _SignInState extends State<SignIn> with FormMixin {
                       TextSpan(
                         text: 'Sign up',
                         style: Theme.of(context).textTheme.bodyMedium!.apply(
-                              color: const Color(0xff1DAB87),
+                              color: AppColors.appGreen,
                               fontWeightDelta: 2,
                             ),
                         recognizer: TapGestureRecognizer()

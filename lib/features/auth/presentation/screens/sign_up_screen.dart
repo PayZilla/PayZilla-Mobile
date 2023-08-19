@@ -54,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
                     TextSpan(
                       text: ' PayZilla\n',
                       style: context.textTheme.headlineLarge!.copyWith(
-                        color: const Color(0xff1DAB87),
+                        color: AppColors.appGreen,
                         fontWeight: FontWeight.w700,
                         fontSize: Insets.dim_24,
                       ),
@@ -182,7 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
                       TextSpan(
                         text: 'Sign In',
                         style: Theme.of(context).textTheme.bodyMedium!.apply(
-                              color: const Color(0xff1DAB87),
+                              color: AppColors.appGreen,
                               fontWeightDelta: 2,
                             ),
                         recognizer: TapGestureRecognizer()

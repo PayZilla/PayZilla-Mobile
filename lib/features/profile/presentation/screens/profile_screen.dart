@@ -85,8 +85,8 @@ class ProfileScreen extends StatelessWidget {
               itemCount: profile.profileWidget.take(4).length,
               itemBuilder: (context, index) {
                 final data = profile.profileWidget[index];
-                return ProfileListTileWidget(
-                  args: ProfileListTileWidgetArgs(
+                return AppListTileWidget(
+                  args: ListTileWidgetArgs(
                     asset: data.asset,
                     title: data.title,
                     onTap: () => data.todo!(context),
@@ -102,22 +102,22 @@ class ProfileScreen extends StatelessWidget {
             endIndent: Insets.dim_24,
           ),
           const YBox(Insets.dim_12),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               asset: profile.profileWidget[4].asset,
               title: profile.profileWidget[4].title,
               onTap: () => profile.profileWidget[4].todo!(context),
             ),
           ),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               asset: profile.profileWidget[5].asset,
               title: profile.profileWidget[5].title,
               onTap: () => profile.profileWidget[5].todo!(context),
             ),
           ),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               asset: profile.profileWidget[6].asset,
               title: profile.profileWidget[6].title,
               onTap: () => profile.profileWidget[6].todo!(context),

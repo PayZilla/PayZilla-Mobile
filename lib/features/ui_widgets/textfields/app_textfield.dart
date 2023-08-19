@@ -207,6 +207,7 @@ class ClickableFormField extends StatelessWidget {
           child: IgnorePointer(
             child: AppTextFormField(
               hintText: hintText,
+              hintStyle: labelStyle,
               initialValue: initialValue,
               prefixIcon: prefixIcon,
               suffixIcon: suffixIcon ??
@@ -296,6 +297,7 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
   @override
   Widget build(BuildContext context) {
     return AppTextFormField(
+      prefixIcon: widget.prefixIcon,
       style: widget.style,
       hintText: widget.hintText ?? 'Enter phone number',
       initialValue: widget.initialValue?.number,

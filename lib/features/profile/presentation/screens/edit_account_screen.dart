@@ -95,7 +95,7 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
                 key: ValueKey(requestDto.phoneNumber),
                 initialValue: requestDto.phoneNumber,
                 labelText: 'Phone number',
-                labelDistance: Insets.dim_16,
+                // labelDistance: Insets.dim_16,
                 hintText: '081xxxxxxxx',
                 onSaved: (phoneNumber) {
                   requestDto = requestDto.copyWith(

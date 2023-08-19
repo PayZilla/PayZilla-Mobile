@@ -7,6 +7,7 @@ import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -18,6 +19,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
+    final dsProvider = context.watch<DashboardProvider>();
     return AppScaffold(
       useBodyPadding: false,
       body: Stack(
@@ -109,7 +111,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Log().debug('The action tapped is deposit');
                           },
                           () {
-                            Log().debug('The action tapped is Transfers');
+                            dsProvider.goTo(AppRoutes.transfer, context);
                           },
                           () {
                             Log().debug('The action tapped is Withdraw');
@@ -172,31 +174,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                                 const Spacer(),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () => AppNavigator.of(context)
+                                      .push(AppRoutes.allTransactions),
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        'All transactions',
-                                        style: context.textTheme.bodyMedium!
-                                            .copyWith(
-                                          color: AppColors.textHeaderColor,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14,
-                                          letterSpacing: 0.30,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: Insets.dim_4,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          'All transactions',
+                                          style: context.textTheme.bodyMedium!
+                                              .copyWith(
+                                            color: AppColors.textHeaderColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                            letterSpacing: 0.30,
+                                          ),
                                         ),
-                                      ),
-                                      const XBox(Insets.dim_8),
-                                      const Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        color: AppColors.black,
-                                        size: Insets.dim_14,
-                                      ),
-                                    ],
+                                        const XBox(Insets.dim_8),
+                                        const Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: AppColors.black,
+                                          size: Insets.dim_14,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],

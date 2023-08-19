@@ -54,8 +54,8 @@ class NotificationScreen extends StatelessWidget {
             const YBox(Insets.dim_6),
             ...List.generate(
               2,
-              (index) => ProfileListTileWidget(
-                args: ProfileListTileWidgetArgs(
+              (index) => AppListTileWidget(
+                args: ListTileWidgetArgs(
                   asset: notProvider.notificationList[index].asset,
                   title: notProvider.notificationList[index].title,
                   subtitle: Text(notProvider.notificationList[index].subtitle),
@@ -76,8 +76,8 @@ class NotificationScreen extends StatelessWidget {
             const YBox(Insets.dim_6),
             ...List.generate(
               notProvider.notificationList.length,
-              (index) => ProfileListTileWidget(
-                args: ProfileListTileWidgetArgs(
+              (index) => AppListTileWidget(
+                args: ListTileWidgetArgs(
                   asset: notProvider.notificationList[index].asset,
                   title: notProvider.notificationList[index].title,
                   subtitle: Text(notProvider.notificationList[index].subtitle),

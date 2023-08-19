@@ -37,16 +37,16 @@ class GeneralSettingsScreen extends StatelessWidget {
       body: Column(
         children: [
           const YBox(Insets.dim_40),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               asset: defaultNotificationSvg,
               title: 'Default Notification Actions',
             ),
           ),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               asset: generalSvg,
-              assetColor: const Color(0xff1DAB87),
+              assetColor: AppColors.appGreen,
               title: 'Manage Notifications',
             ),
           ),
@@ -57,12 +57,12 @@ class GeneralSettingsScreen extends StatelessWidget {
             endIndent: Insets.dim_24,
           ),
           const YBox(Insets.dim_24),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               trailing: CupertinoSwitch(
                 onChanged: (value) {},
                 value: true,
-                activeColor: const Color(0xff1DAB87),
+                activeColor: AppColors.appGreen,
               ),
               title: 'Manage Notifications',
               subtitle: Padding(
@@ -80,12 +80,12 @@ class GeneralSettingsScreen extends StatelessWidget {
               ),
             ),
           ),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               trailing: CupertinoSwitch(
                 onChanged: (value) {},
                 value: false,
-                activeColor: const Color(0xff1DAB87),
+                activeColor: AppColors.appGreen,
               ),
               title: 'Bills Calendar',
               subtitle: Padding(
@@ -103,12 +103,12 @@ class GeneralSettingsScreen extends StatelessWidget {
               ),
             ),
           ),
-          ProfileListTileWidget(
-            args: ProfileListTileWidgetArgs(
+          AppListTileWidget(
+            args: ListTileWidgetArgs(
               trailing: CupertinoSwitch(
                 onChanged: (value) {},
                 value: true,
-                activeColor: const Color(0xff1DAB87),
+                activeColor: AppColors.appGreen,
               ),
               title: 'Credit Score Calendar',
               subtitle: Padding(

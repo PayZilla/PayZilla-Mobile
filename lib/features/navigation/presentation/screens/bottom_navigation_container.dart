@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavigationContainer extends StatefulWidget {
   const BottomNavigationContainer({
@@ -24,7 +26,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     with ChangeNotifier {
   @override
   Widget build(BuildContext context) {
-    if (widget.hideNav) {
+    final authProvider = context.watch<AuthProvider>();
+    if (widget.hideNav || authProvider.showNavBar) {
       return Container();
     }
     return Stack(

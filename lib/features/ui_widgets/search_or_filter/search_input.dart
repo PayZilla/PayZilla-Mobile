@@ -9,6 +9,7 @@ class SearchTextInputField extends StatelessWidget {
     this.title = 'Search',
     this.showLeading = true,
     this.onChanged,
+    this.onCancelPressed,
     this.showTrailing = true,
     Key? key,
   }) : super(key: key);
@@ -16,6 +17,7 @@ class SearchTextInputField extends StatelessWidget {
   final bool showTrailing;
   final String title;
   final ValueChanged<String>? onChanged;
+  final void Function()? onCancelPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,7 @@ class SearchTextInputField extends StatelessWidget {
           Visibility(
             visible: showTrailing,
             child: TextButton(
-              onPressed: () {},
+              onPressed: onCancelPressed,
               child: Text(
                 'Cancel',
                 style: context.textTheme.bodyMedium!.copyWith(

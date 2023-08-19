@@ -71,7 +71,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> with FormMixin {
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color: Color(0xff1DAB87),
+                        color: AppColors.appGreen,
                       ),
                     ),
                   ),

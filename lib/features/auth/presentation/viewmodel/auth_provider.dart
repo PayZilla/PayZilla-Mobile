@@ -15,6 +15,13 @@ class AuthProvider extends ChangeNotifier {
 
   final deBouncer = DeBouncer(milliseconds: 200);
 
+  bool _showNavBar = false;
+  bool get showNavBar => _showNavBar;
+  set showNavBar(bool val) {
+    _showNavBar = val;
+    notifyListeners();
+  }
+
   ApiResult<AuthResponseData> genericAuthResp =
       ApiResult<AuthResponseData>.idle();
 

@@ -6,6 +6,7 @@ import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/splash_screen/splash_screen.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 
 final _savedArgs = {};
 
@@ -69,6 +70,15 @@ GoRouter getBaseRouter() {
           return const BiometricScreen();
         },
       ),
+      GoRoute(
+        path: '/transfer-success',
+        builder: (context, state) => TransactionSuccessScreen(
+          args: argsRegistry<TransactionSuccessArgs>(
+            'transfer-success',
+            state.extra,
+          )!,
+        ),
+      ),
       //Note (Dev)=> create sub routes for nav tabs inside this routes list
       GoRoute(
         path: '/tab/:tab_name',
@@ -90,34 +100,7 @@ GoRouter getBaseRouter() {
         },
         routes: [
           //Note (Dev)=> create sub routes for nav tabs
-          GoRoute(
-            path: 'notifications',
-            builder: (context, state) {
-              return const NotificationScreen();
-            },
-          ),
-          GoRoute(
-            path: 'qr-scanner',
-            builder: (context, state) {
-              return QRScanScreen(
-                args: argsRegistry<QRScreenArgs>(
-                  'qr-scanner',
-                  state.extra,
-                )!,
-              );
-            },
-          ),
-          GoRoute(
-            path: 'qr-show-scanner',
-            builder: (context, state) {
-              return QrShowScreen(
-                args: argsRegistry<QrShowScreenArgs>(
-                  'qr-show-scanner',
-                  state.extra,
-                )!,
-              );
-            },
-          ),
+          ...dashboardRouter,
           myCardRouter(),
           GoRoute(
             path: 'edit-card',
@@ -128,7 +111,7 @@ GoRouter getBaseRouter() {
               )!,
             ),
           ),
-          ...profileRouter
+          ...profileRouter,
         ],
       )
     ],
