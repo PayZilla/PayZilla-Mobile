@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
@@ -72,7 +71,8 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
                 labelText: 'Occupation',
                 validator: (input) => Validators.validateString()(input),
                 onPressed: () async {
-                  await provider.showCountry(context: context).show(context);
+                  await showCountry(context: context, provider: provider)
+                      .show(context);
                 },
               ),
               const YBox(Insets.dim_24),

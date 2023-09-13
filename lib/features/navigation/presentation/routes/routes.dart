@@ -20,10 +20,10 @@ class AppRoutes {
   // country of residence, onboarding reasons, pin
   static const pin = '/pin';
 
-  static const country = '/pin/country';
-  static const countryToBvn = '/pin/country/bvn-verification';
-  static const bvnToReasons = '/pin/country/bvn-verification/reasons';
-  static const reasonsToPin = '/pin/country/bvn-verification/reasons/pin';
+  static const country = '/country';
+  static const countryToBvn = '/country/bvn-verification';
+  static const bvnToReasons = '/country/bvn-verification/reasons';
+  static const reasonsToPin = '/country/bvn-verification/reasons/pin';
 
   static String tab(AppNavTab tab) {
     return '/tab/${tab.toString().split('.').last}';

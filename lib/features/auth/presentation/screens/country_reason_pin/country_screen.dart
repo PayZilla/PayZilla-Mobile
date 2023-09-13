@@ -61,17 +61,22 @@ class _CountryScreenState extends State<CountryScreen> with FormMixin {
             const YBox(Insets.dim_40),
             ClickableFormField(
               hintText: 'Select country',
+              controller: TextEditingController(
+                text: registeringCountries.first.currencyCode,
+              ),
               validator: (input) => Validators.validateString()(input),
               onPressed: () async {
-                await provider.showCountry(context: context).show(context);
+                await showCountry(context: context, provider: provider)
+                    .show(context);
               },
             ),
             const Spacer(),
             AppSolidButton(
               textTitle: 'Continue',
               showLoading: provider.genericAuthResp.isLoading,
-              action: () =>
-                  AppNavigator.of(context).push(AppRoutes.countryToBvn),
+              action: () => validate(
+                () => AppNavigator.of(context).push(AppRoutes.countryToBvn),
+              ),
             ),
             const YBox(Insets.dim_26),
           ],

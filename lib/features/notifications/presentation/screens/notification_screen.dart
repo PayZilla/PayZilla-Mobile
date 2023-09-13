@@ -4,7 +4,6 @@ import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
-import 'package:pay_zilla/functional_utils/assets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
 

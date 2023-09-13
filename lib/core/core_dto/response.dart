@@ -8,6 +8,7 @@ class ResponseDto extends Equatable {
     required this.statusCode,
     required this.status,
     required this.data,
+    required this.errors,
   });
 
   factory ResponseDto.fromMap(Map<String, dynamic> map) {
@@ -16,6 +17,7 @@ class ResponseDto extends Equatable {
       statusCode: map['statusCode'] ?? 0,
       status: map['status'] ?? false,
       data: map['data'],
+      errors: map['errors'],
     );
   }
 
@@ -24,6 +26,7 @@ class ResponseDto extends Equatable {
         'statusCode': statusCode,
         'status': status,
         'data': data,
+        'errors': errors,
       };
   String toMap() => json.encode(toJson());
 
@@ -31,6 +34,7 @@ class ResponseDto extends Equatable {
   final String message;
   final int statusCode;
   final dynamic data;
+  final dynamic errors;
 
   bool get isResultOk =>
       status &&
@@ -38,5 +42,5 @@ class ResponseDto extends Equatable {
           204; //NOTE: this validates that all response from server is OK
 
   @override
-  List<Object> get props => [message, statusCode, data];
+  List<Object> get props => [message, statusCode, data, errors];
 }

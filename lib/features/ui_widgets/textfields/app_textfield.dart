@@ -262,10 +262,10 @@ class PhoneNumberTextFormField extends StatefulWidget {
     this.phoneNumberCountry,
   }) : super(key: key);
   final String? labelText;
-  final PhoneNumber? initialValue;
+  final String? initialValue;
   final Widget? textFieldIcon;
   final Function(String input)? onChanged;
-  final Function(PhoneNumber?)? onSaved;
+  final Function(String?)? onSaved;
   final Function()? onEditingComplete;
   final FocusNode? focusNode;
   final bool enableInteractiveSelection;
@@ -291,7 +291,7 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
   void initState() {
     super.initState();
     phoneNumberCountry =
-        widget.phoneNumberCountry ?? phoneNumberCountryList()[0];
+        widget.phoneNumberCountry ?? phoneNumberCountryList().first;
   }
 
   @override
@@ -300,21 +300,17 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField> {
       prefixIcon: widget.prefixIcon,
       style: widget.style,
       hintText: widget.hintText ?? 'Enter phone number',
-      initialValue: widget.initialValue?.number,
+      initialValue: widget.initialValue,
       suffixIcon: widget.textFieldIcon,
       labelDistance: widget.labelDistance,
       labelText: widget.labelText,
       inputType: TextInputType.number,
       onChanged: widget.onChanged,
       onEditingComplete: widget.onEditingComplete,
-      onSaved: (input) => widget.onSaved?.call(
-        PhoneNumber(
-          number: '$input',
-          dialCode: phoneNumberCountry.countryPhoneCode,
-        ),
-      ),
+      onSaved: (input) => widget.onSaved?.call(input),
       validator: (input) => Validators.validatePhoneNumber(
         maxLength: phoneNumberCountry.maxLength,
+        title: widget.labelText ?? 'Phone',
       )(input),
       inputFormatters: [
         LengthLimitingTextInputFormatter(phoneNumberCountry.maxLength),

@@ -72,16 +72,14 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
               ),
               const YBox(Insets.dim_40),
               AppTextFormField(
-                initialValue: requestDto.email,
+                initialValue: requestDto.fullName,
                 hintText: 'Full name',
                 isLoading: provider.genericAuthResp.isLoading,
-                inputType: TextInputType.emailAddress,
+                inputType: TextInputType.text,
                 onSaved: (value) {
-                  requestDto = requestDto.copyWith(email: value);
+                  requestDto = requestDto.copyWith(fullName: value);
                 },
-                validator: (input) => Validators.validateEmail(
-                  value: input,
-                ),
+                validator: (input) => Validators.validateFullName()(input),
               ),
               const YBox(Insets.dim_24),
               AppTextFormField(
@@ -135,13 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
                 textTitle: 'Sign Up',
                 showLoading: provider.genericAuthResp.isLoading,
                 action: () {
-                  AppNavigator.of(context).push(
-                    AppRoutes.pin,
-                    args: VerifyEmailOtpRecoveryArgs(
-                      'test@example.com',
-                      AppRoutes.country,
-                    ),
-                  );
+                  validate(() => provider.signUp(requestDto, context));
                 },
               ),
               const YBox(Insets.dim_26),

@@ -4,15 +4,27 @@ import 'package:pay_zilla/core/core.dart';
 
 // auth endpoints
 class _AuthEndpoints {
-  final login = '/Auth/login';
-  final signUp = '/Auth/register/login';
+  final login = '/auth/login';
+  final signUp = '/auth/register';
 
-  final resendVerificationEmail = '/Auth/resendConfirmationEmail';
+  final forgotPasswordInitiated = '/auth/forgot-password/initiate';
+  final forgotPasswordVerify = '/auth/forgot-password/verify';
+  final forgotPasswordReset = '/auth/forgot-password/reset';
+
+  final emailVerificationInitiate = '/auth/email-verification/initiate';
+  final emailVerificationVerify = '/auth/email-verification/verify';
+
+  final getKyc = '/kycs';
+  final bvnInitialize = '/kycs/bvn/initialize';
+  final bvnVerification = '/kycs/bvn/verify';
+  final bvnUpdate = '/kycs/bvn/update-name';
+
+  final submitPurpose = '/profile/registration-purpose';
 }
 
 // user endpoints
 class _UserEndpoints {
-  final getUser = '/User';
+  final getUser = '/profile';
   final updateUserProfile = '/v3/User/profile';
   final getBeneficiaries = '/User/GetBeneficiaryByUserId';
   final getVerificationProgress = '/User/verificationprogress';
@@ -54,6 +66,10 @@ class _MapEndpoints {
 
 class _OTPEndpoints {
   final otp = '/User/RequestVerificationOTP';
+}
+
+class _AccountEndpoints {
+  final pinSetup = '/accounts/pin/setup';
 }
 
 class _OtherEndpoints {
@@ -122,3 +138,4 @@ final otherEndpoints = _OtherEndpoints();
 final otpEndpoints = _OTPEndpoints();
 final securityEndpoints = _SecurityEndpoints();
 final bankEndpoints = _BankEndpoints();
+final accountEndpoints = _AccountEndpoints();

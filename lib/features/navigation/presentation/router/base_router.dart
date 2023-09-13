@@ -3,8 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
-import 'package:pay_zilla/features/notifications/notifications.dart';
-import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/splash_screen/splash_screen.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
@@ -63,6 +61,7 @@ GoRouter getBaseRouter() {
       ),
       onboardingRouter(),
       authRouter(),
+      pinRouter(),
       countryRouter(),
       GoRoute(
         path: '/biometric',

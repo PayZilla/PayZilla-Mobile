@@ -16,15 +16,12 @@ class ReasonsScreen extends StatefulWidget {
 
 class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
   late List<MultiSelectItem<ReasonsModel>> listItems;
+  List<String> selected = [];
 
   @override
   void initState() {
     super.initState();
-    listItems = context
-        .read<AuthProvider>()
-        .reasonsList
-        .map(MultiSelectItem.new)
-        .toList();
+    listItems = reasonsList.map(MultiSelectItem.new).toList();
   }
 
   @override
@@ -70,7 +67,7 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
             const YBox(Insets.dim_16),
             Expanded(
               child: GridView.builder(
-                itemCount: provider.reasonsList.length,
+                itemCount: reasonsList.length,
                 padding: EdgeInsets.zero,
                 physics: const BouncingScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -93,8 +90,17 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
             ),
             AppSolidButton(
               textTitle: 'Continue',
-              action: () =>
-                  AppNavigator.of(context).push(AppRoutes.reasonsToPin),
+              showLoading: provider.onboardingResp.isLoading,
+              action: () async {
+                selected = [];
+                for (final i in listItems) {
+                  if (i.selected) {
+                    selected
+                        .add(i.value.title.replaceAll(' ', '_').toLowerCase());
+                  }
+                }
+                await provider.purpose(selected, context);
+              },
             ),
             const YBox(Insets.dim_16),
           ],

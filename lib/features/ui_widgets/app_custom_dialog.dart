@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
-import 'package:pay_zilla/features/navigation/navigation.dart';
-import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class CustomDialogBox extends StatefulWidget {
-  const CustomDialogBox(
-      {super.key, this.title, this.descriptions, this.text, this.img});
+  const CustomDialogBox({
+    super.key,
+    this.title,
+    this.descriptions,
+    this.text,
+    this.img,
+  });
   final String? title, descriptions, text;
   final Image? img;
 

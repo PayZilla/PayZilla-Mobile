@@ -2,324 +2,207 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-class PZillaichangeUserData extends Equatable {
-  const PZillaichangeUserData({
-    required this.firstName,
-    required this.middleName,
-    required this.lastName,
-    required this.dateOfBirth,
-    required this.gender,
-    required this.referralCode,
-    required this.profilePictureUrl,
-    required this.address,
-    required this.isDeactivated,
-    required this.isPinEnabled,
-    required this.pin,
-    required this.dateDeactivated,
-    required this.deactivationReason,
-    required this.userType,
-    required this.isKycVerified,
-    required this.verficationId,
-    required this.kycResponseString,
-    required this.userHandle,
-    required this.appType,
-    required this.city,
-    required this.occupation,
-    required this.residenceCountry,
-    required this.verificationStage,
-    required this.firstProfileUpdateCompleted,
-    required this.promoCode,
-    required this.interactEmail,
-    required this.secretQuestion,
-    required this.secretAnswer,
-    required this.applicationType,
-    required this.socialSecurityNumber,
-    required this.userPrivateKey,
-    required this.kycStatus,
-    required this.kycReferenceId,
-    required this.kycTrials,
-    required this.state,
-    required this.postalCode,
-    required this.walletAddress,
-    required this.id,
-    required this.bvn,
-    required this.userName,
-    required this.email,
-    required this.emailConfirmed,
-    required this.phoneNumber,
-    required this.phoneNumberConfirmed,
-    required this.twoFactorEnabled,
-    required this.hasCompletedOnboardingQuestions,
-  });
+class UserAuthModel extends Equatable {
+  const UserAuthModel({required this.accessToken, required this.user});
 
-  factory PZillaichangeUserData.fromJson(String source) =>
-      PZillaichangeUserData.fromMap(json.decode(source));
+  factory UserAuthModel.empty() => UserAuthModel(
+        accessToken: '',
+        user: User.empty(),
+      );
 
-  factory PZillaichangeUserData.fromMap(Map<String, dynamic> json) {
-    if (json.isEmpty) return PZillaichangeUserData.empty();
+  factory UserAuthModel.fromMap(Map<String, dynamic> json) {
+    if (json.isEmpty) return UserAuthModel.empty();
 
-    return PZillaichangeUserData(
-      firstName: json['firstName'] ?? '',
-      middleName: json['middleName'] ?? '',
-      lastName: json['lastName'] ?? '',
-      dateOfBirth: json['dateOfBirth'] ?? '',
-      referralCode: json['referralCode'] ?? '',
-      profilePictureUrl: json['profilePictureUrl'] ?? '',
-      address: json['address'] ?? '',
-      isDeactivated: json['isDeactivated'] ?? false,
-      isPinEnabled: json['isPinEnabled'] ?? false,
-      hasCompletedOnboardingQuestions:
-          json['hasCompletedOnboardingQuestions'] ?? false,
-      pin: json['pin']?.toString() ?? '',
-      dateDeactivated: json['dateDeactivated'] ?? '',
-      deactivationReason: json['deactivationReason'] ?? '',
-      isKycVerified: json['isKYCVerified'] ?? false,
-      verficationId: json['verficationId'] ?? '',
-      kycResponseString: json['kycResponseString'] ?? '',
-      userHandle: json['userHandle'] ?? '',
-      appType: json['appType']?.toString() ?? '',
-      city: json['city'] ?? '',
-      occupation: json['occupation'] ?? '',
-      residenceCountry: json['residenceCountry'] ?? '',
-      bvn: json['bvn'] ?? '',
-      firstProfileUpdateCompleted: json['firstProfileUpdateCompleted'] ?? false,
-      promoCode: json['promoCode'] ?? '',
-      interactEmail: json['interactEmail'] ?? '',
-      secretQuestion: json['secretQuestion'] ?? '',
-      secretAnswer: json['secretAnswer'] ?? '',
-      socialSecurityNumber: json['socialSecurityNumber'] ?? '',
-      userPrivateKey: json['userPrivateKey'] ?? '',
-      kycReferenceId: json['kycReferenceId'] ?? '',
-      kycTrials: json['kycTrials'] ?? '',
-      state: json['state'] ?? '',
-      postalCode: json['postalCode'] ?? '',
-      walletAddress: json['walletAddress'] ?? '',
-      id: json['id'] ?? '',
-      userName: json['userName'] ?? '',
-      email: json['email'] ?? '',
-      emailConfirmed: json['emailConfirmed'] ?? false,
-      phoneNumber: json['phoneNumber'] ?? '',
-      phoneNumberConfirmed: json['phoneNumberConfirmed'] ?? false,
-      twoFactorEnabled: json['twoFactorEnabled'] ?? false,
-      verificationStage: json['verificationStage'] ?? 0,
-      gender: json['gender'] ?? 0,
-      userType: json['userType'] ?? 0,
-      kycStatus: json['kycStatus'] ?? 0,
-      // data type that are not sure but works with this
-      applicationType: json['applicationType']?.toString() ?? '',
+    return UserAuthModel(
+      accessToken: json['access_token'] ?? '',
+      user: User.fromMap(json['user']),
     );
   }
 
-  factory PZillaichangeUserData.empty() => const PZillaichangeUserData(
-        kycStatus: 0,
-        verificationStage: 0,
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        dateOfBirth: '',
-        referralCode: '',
-        isDeactivated: false,
-        isPinEnabled: false,
-        dateDeactivated: '',
-        isKycVerified: false,
-        firstProfileUpdateCompleted: false,
-        secretQuestion: '',
-        secretAnswer: '',
-        bvn: '',
-        phoneNumber: '',
-        hasCompletedOnboardingQuestions: false,
-        socialSecurityNumber: '',
-        userPrivateKey: '',
-        userHandle: '',
-        appType: '',
-        city: '',
-        occupation: '',
-        residenceCountry: '',
-        promoCode: '',
-        interactEmail: '',
-        applicationType: '',
-        kycReferenceId: '',
-        kycTrials: '',
-        state: '',
-        postalCode: '',
-        walletAddress: '',
-        gender: 0,
-        profilePictureUrl: '',
-        address: '',
-        pin: '',
-        deactivationReason: '',
-        userType: 0,
-        verficationId: '',
-        kycResponseString: '',
-        id: '',
-        userName: '',
-        email: '',
-        emailConfirmed: false,
-        phoneNumberConfirmed: false,
-        twoFactorEnabled: false,
-      );
-
-  final String firstName;
-  final String middleName;
-  final String lastName;
-  final String dateOfBirth;
-  final int gender;
-  final String referralCode;
-  final String profilePictureUrl;
-  final String address;
-  final bool isDeactivated;
-  final bool isPinEnabled;
-  final String pin;
-  final String dateDeactivated;
-  final String deactivationReason;
-  final int userType;
-  final bool isKycVerified;
-  final String verficationId;
-  final String kycResponseString;
-  final String userHandle;
-  final String appType;
-  final String city;
-  final String occupation;
-  final String residenceCountry;
-  final int verificationStage;
-  final bool firstProfileUpdateCompleted;
-  final String promoCode;
-  final String interactEmail;
-  final String secretQuestion;
-  final String secretAnswer;
-  final String applicationType;
-  final String socialSecurityNumber;
-  final String userPrivateKey;
-  final int kycStatus;
-  final String kycReferenceId;
-  final String kycTrials;
-  final String state;
-  final String postalCode;
-  final String walletAddress;
-  final String id;
-  final String userName;
-  final String bvn;
-  final String email;
-  final bool emailConfirmed;
-  final String phoneNumber;
-  final bool phoneNumberConfirmed;
-  final bool twoFactorEnabled;
-  final bool hasCompletedOnboardingQuestions;
-
-//NOTE: this validates first profile completion data
-  bool get getFirstProfileComplete => firstProfileUpdateCompleted;
-
-//NOTE: this validates first profile completion data and KYC validation
-  bool get getAbsoluteVerification => isKycVerified && getFirstProfileComplete;
-
-//NOTE: this validates if user has done questionnaire
-  bool get getQuestionnaireStatus => hasCompletedOnboardingQuestions;
-
-  String get fullName => '$firstName $lastName';
-
-  bool get isEmpty => this == PZillaichangeUserData.empty();
+  final String accessToken;
+  final User user;
 
   Map<String, dynamic> toMap() {
-    return {
-      'firstName': firstName,
-      'middleName': middleName,
-      'lastName': lastName,
-      'dateOfBirth': dateOfBirth,
-      'gender': gender,
-      'referralCode': referralCode,
-      'profilePictureUrl': profilePictureUrl,
-      'address': address,
-      'isDeactivated': isDeactivated,
-      'isPinEnabled': isPinEnabled,
-      'pin': pin,
-      'dateDeactivated': dateDeactivated,
-      'deactivationReason': deactivationReason,
-      'userType': userType,
-      'isKYCVerified': isKycVerified,
-      'verficationId': verficationId,
-      'kycResponseString': kycResponseString,
-      'bvn': bvn,
-      'userHandle': userHandle,
-      'appType': appType,
-      'city': city,
-      'occupation': occupation,
-      'residenceCountry': residenceCountry,
-      'verificationStage': verificationStage,
-      'firstProfileUpdateCompleted': firstProfileUpdateCompleted,
-      'promoCode': promoCode,
-      'interactEmail': interactEmail,
-      'secretQuestion': secretQuestion,
-      'secretAnswer': secretAnswer,
-      'applicationType': applicationType,
-      'socialSecurityNumber': socialSecurityNumber,
-      'userPrivateKey': userPrivateKey,
-      'kycStatus': kycStatus,
-      'kycReferenceId': kycReferenceId,
-      'kycTrials': kycTrials,
-      'state': state,
-      'postalCode': postalCode,
-      'walletAddress': walletAddress,
-      'id': id,
-      'userName': userName,
-      'email': email,
-      'emailConfirmed': emailConfirmed,
-      'phoneNumber': phoneNumber,
-      'phoneNumberConfirmed': phoneNumberConfirmed,
-      'twoFactorEnabled': twoFactorEnabled,
-      'hasCompletedOnboardingQuestions': hasCompletedOnboardingQuestions
-    };
+    final data = <String, dynamic>{};
+    data['access_token'] = accessToken;
+    data['user'] = user.toJson();
+    return data;
   }
 
   String toJson() => json.encode(toMap());
 
   @override
-  List<Object?> get props {
-    return [
-      firstName,
-      lastName,
-      dateOfBirth,
-      referralCode,
-      isDeactivated,
-      isPinEnabled,
-      dateDeactivated,
-      isKycVerified,
-      firstProfileUpdateCompleted,
-      secretQuestion,
-      secretAnswer,
-      bvn,
-      phoneNumber,
-      hasCompletedOnboardingQuestions,
-      socialSecurityNumber,
-      userPrivateKey,
-      userHandle,
-      appType,
-      city,
-      occupation,
-      residenceCountry,
-      verificationStage,
-      promoCode,
-      interactEmail,
-      applicationType,
-      kycStatus,
-      kycReferenceId,
-      kycTrials,
-      state,
-      postalCode,
-      walletAddress,
-      gender,
-      profilePictureUrl,
-      address,
-      pin,
-      deactivationReason,
-      userType,
-      verficationId,
-      kycResponseString,
-      id,
-      userName,
-      email,
-      emailConfirmed,
-      phoneNumberConfirmed,
-      twoFactorEnabled,
-    ];
+  List<Object?> get props => [accessToken, user];
+}
+
+class User extends Equatable {
+  const User({
+    required this.uuid,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phoneNumber,
+    required this.profileImage,
+    required this.phoneNumberVerifiedAt,
+    required this.emailVerifiedAt,
+    required this.countryCode,
+    required this.dateOfBirth,
+    required this.gender,
+    required this.referralCode,
+    required this.refereeId,
+    required this.settings,
+    required this.registrationPurpose,
+    required this.occupation,
+    required this.employer,
+    required this.ngCitizen,
+    required this.deactivatedAt,
+    required this.createdAt,
+    required this.hasSetPassword,
+    required this.hasVerifiedEmail,
+    required this.hasVerifiedPhoneNumber,
+  });
+
+  factory User.empty() => const User(
+        uuid: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        profileImage: '',
+        phoneNumberVerifiedAt: '',
+        emailVerifiedAt: '',
+        countryCode: '',
+        dateOfBirth: '',
+        gender: '',
+        referralCode: '',
+        refereeId: '',
+        settings: '',
+        registrationPurpose: [],
+        occupation: '',
+        employer: '',
+        ngCitizen: false,
+        deactivatedAt: '',
+        createdAt: '',
+        hasSetPassword: false,
+        hasVerifiedEmail: false,
+        hasVerifiedPhoneNumber: false,
+      );
+
+  factory User.fromMap(Map<String, dynamic> json) {
+    if (json.isEmpty) return User.empty();
+
+    return User(
+      uuid: json['uuid'] ?? '',
+      firstName: json['first_name'] ?? '',
+      lastName: json['last_name'] ?? '',
+      email: json['email'] ?? '',
+      phoneNumber: json['phone_number'] ?? '',
+      profileImage: json['profile_image'] ?? '',
+      phoneNumberVerifiedAt: json['phone_number_verified_at'] ?? '',
+      emailVerifiedAt: json['email_verified_at'] ?? '',
+      countryCode: json['country_code'] ?? '',
+      dateOfBirth: json['date_of_birth'] ?? '',
+      gender: json['gender'] ?? '',
+      referralCode: json['referral_code'] ?? '',
+      refereeId: json['referee_id'] ?? '',
+      settings: json['settings'] ?? '',
+      registrationPurpose: json['registration_purpose'] ?? <dynamic>[],
+      occupation: json['occupation'] ?? '',
+      employer: json['employer'] ?? '',
+      ngCitizen: json['ng_citizen'] ?? false,
+      deactivatedAt: json['deactivated_at'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      hasSetPassword: json['has_set_password'] ?? false,
+      hasVerifiedEmail: json['has_verified_email'] ?? false,
+      hasVerifiedPhoneNumber: json['has_verified_phone_number'] ?? false,
+    );
   }
+  final String uuid;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phoneNumber;
+  final String profileImage;
+  final dynamic phoneNumberVerifiedAt;
+  final String emailVerifiedAt;
+  final String countryCode;
+  final String dateOfBirth;
+  final dynamic gender;
+  final String referralCode;
+  final dynamic refereeId;
+  final dynamic settings;
+  final List<dynamic> registrationPurpose;
+  final String occupation;
+  final String employer;
+  final bool ngCitizen;
+  final dynamic deactivatedAt;
+  final String createdAt;
+  final bool hasSetPassword;
+  final bool hasVerifiedEmail;
+  final bool hasVerifiedPhoneNumber;
+
+//NOTE: this validates first profile completion data
+  bool get getAbsoluteVerification =>
+      hasVerifiedEmail && hasVerifiedPhoneNumber;
+
+  String get fullName => '$firstName $lastName';
+
+  bool get isEmpty => this == User.empty();
+
+  Map<String, dynamic> toMap() {
+    final data = <String, dynamic>{};
+    data['uuid'] = uuid;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
+    data['profile_image'] = profileImage;
+    data['phone_number_verified_at'] = phoneNumberVerifiedAt;
+    data['email_verified_at'] = emailVerifiedAt;
+    data['country_code'] = countryCode;
+    data['date_of_birth'] = dateOfBirth;
+    data['gender'] = gender;
+    data['referral_code'] = referralCode;
+    data['referee_id'] = refereeId;
+    data['settings'] = settings;
+    data['registration_purpose'] = registrationPurpose;
+    data['occupation'] = occupation;
+    data['employer'] = employer;
+    data['ng_citizen'] = ngCitizen;
+    data['deactivated_at'] = deactivatedAt;
+    data['created_at'] = createdAt;
+    data['has_set_password'] = hasSetPassword;
+    data['has_verified_email'] = hasVerifiedEmail;
+    data['has_verified_phone_number'] = hasVerifiedPhoneNumber;
+    return data;
+  }
+
+  String toJson() => json.encode(toMap());
+
+  @override
+  List<Object?> get props => [
+        uuid,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        profileImage,
+        phoneNumberVerifiedAt,
+        emailVerifiedAt,
+        countryCode,
+        dateOfBirth,
+        gender,
+        referralCode,
+        refereeId,
+        settings,
+        registrationPurpose,
+        occupation,
+        employer,
+        ngCitizen,
+        deactivatedAt,
+        createdAt,
+        hasSetPassword,
+        hasVerifiedEmail,
+        hasVerifiedPhoneNumber,
+      ];
 }

@@ -18,8 +18,8 @@ GoRoute authRouter() {
           GoRoute(
             path: 'verify',
             builder: (context, state) {
-              return VerifyEmailOtpRecovery(
-                args: argsRegistry<VerifyEmailOtpRecoveryArgs>(
+              return GenericTokenVerification(
+                args: argsRegistry<GenericTokenVerificationArgs>(
                   'verify',
                   state.extra,
                 )!,
@@ -29,7 +29,12 @@ GoRoute authRouter() {
               GoRoute(
                 path: 'new-password',
                 builder: (context, state) {
-                  return const NewPasswordScreen();
+                  return NewPasswordScreen(
+                    args: argsRegistry<NewPasswordArgs>(
+                      'new-password',
+                      state.extra,
+                    )!,
+                  );
                 },
               )
             ],
@@ -40,6 +45,12 @@ GoRoute authRouter() {
         path: 'sign-up',
         builder: (context, state) {
           return const SignUpScreen();
+        },
+      ),
+      GoRoute(
+        path: 'country',
+        builder: (context, state) {
+          return const CountryScreen();
         },
       ),
     ],

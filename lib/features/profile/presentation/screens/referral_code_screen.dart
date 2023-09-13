@@ -94,7 +94,6 @@ class ReferralScreen extends StatelessWidget {
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Icon(

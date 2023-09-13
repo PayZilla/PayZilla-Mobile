@@ -56,7 +56,7 @@ class _PinTextFieldState extends State<PinTextField> {
           obscureText: widget.obscureText!,
           length: widget.numOfDigits,
           keyboardType: widget.keyboardType,
-          onSubmitted: widget.onSaved,
+          onChanged: widget.onSaved,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           inputFormatters: [
             LengthLimitingTextInputFormatter(widget.numOfDigits),

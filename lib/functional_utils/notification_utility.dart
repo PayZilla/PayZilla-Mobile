@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pay_zilla/config/config.dart';
 
 enum NotificationMessageType { info, error, success }
 
@@ -120,7 +121,7 @@ _NotificationItem _getNotificationItemFromType(NotificationMessageType type) {
       return _NotificationItem(
         title: 'Success',
         iconData: Icons.check_circle_outline_rounded,
-        itemColor: const Color(0xff7165E3),
+        itemColor: AppColors.btnPrimaryColor,
       );
   }
 }

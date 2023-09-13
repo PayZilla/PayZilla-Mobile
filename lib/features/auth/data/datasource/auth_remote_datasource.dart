@@ -2,10 +2,19 @@ import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 
 abstract class IAuthRemoteDataSource {
-  Future<dynamic> login(AuthParams params);
-  Future<dynamic> getUser();
-  Future<dynamic> signUp(AuthParams params);
+  Future<UserAuthModel> login(AuthParams params);
+  Future<bool> forgotPasswordInit(AuthParams params);
+  Future<bool> forgotPasswordReset(AuthParams params);
+  Future<User> getUser();
+  Future<List<dynamic>> getKyc();
+  Future<UserAuthModel> signUp(AuthParams params);
   Future<List<ReasonsModel>> fetchReasons();
+  Future<String> emailVerificationInitiate();
+  Future<String> tokenVerification(AuthParams params, {required String path});
+  Future<bool> initializeBvn(AuthParams params);
+  Future<bool> updateBvn(AuthParams params);
+  Future<User> purpose(List<String> purpose);
+  Future<User> setPin(String pin);
 }
 
 class AuthRemoteDataSource implements IAuthRemoteDataSource {
@@ -13,7 +22,7 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   final HttpManager http;
 
   @override
-  Future<dynamic> login(AuthParams params) async {
+  Future<UserAuthModel> login(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -22,7 +31,7 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
         ),
       );
       if (response.isResultOk) {
-        return AuthResponseData.fromJson(response.data);
+        return UserAuthModel.fromMap(response.data);
       }
       throw AppServerException(response.message);
     } catch (_) {
@@ -31,13 +40,13 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   }
 
   @override
-  Future<dynamic> getUser() async {
+  Future<User> getUser() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(userEndpoints.getUser),
       );
       if (response.isResultOk) {
-        return response.data;
+        return User.fromMap(response.data);
       }
       throw AppServerException(response.message);
     } catch (_) {
@@ -46,16 +55,16 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   }
 
   @override
-  Future<dynamic> signUp(AuthParams params) async {
+  Future<UserAuthModel> signUp(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
-        await http.patch(
+        await http.post(
           authEndpoints.signUp,
           params.toMap(),
         ),
       );
       if (response.isResultOk) {
-        return AuthResponseData.fromJson(response.toJson());
+        return UserAuthModel.fromMap(response.data);
       }
 
       throw AppServerException(response.message);
@@ -72,6 +81,177 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
       );
       if (response.isResultOk) {
         return [];
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> emailVerificationInitiate() async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          authEndpoints.emailVerificationInitiate,
+          {},
+        ),
+      );
+      if (response.isResultOk) {
+        return response.message;
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> tokenVerification(
+    AuthParams params, {
+    required String path,
+  }) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          path,
+          params.toMap(),
+        ),
+      );
+      if (response.isResultOk) {
+        return response.message;
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> initializeBvn(AuthParams params) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          authEndpoints.bvnInitialize,
+          params.toMap(),
+        ),
+      );
+      if (response.isResultOk) {
+        return response.status;
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> updateBvn(AuthParams params) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          authEndpoints.bvnUpdate,
+          params.toMap(),
+        ),
+      );
+      if (response.isResultOk) {
+        return response.status;
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List> getKyc() async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.get(authEndpoints.getKyc),
+      );
+      if (response.isResultOk) {
+        return response.data;
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<User> purpose(List<String> purpose) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          authEndpoints.submitPurpose,
+          {'registration_purpose': purpose},
+        ),
+      );
+      if (response.isResultOk) {
+        return User.fromMap(response.data);
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<User> setPin(String pin) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          accountEndpoints.pinSetup,
+          {'pin': pin},
+        ),
+      );
+      if (response.isResultOk) {
+        return User.fromMap(response.data);
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> forgotPasswordInit(AuthParams params) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          authEndpoints.forgotPasswordInitiated,
+          params.toMap(),
+        ),
+      );
+      if (response.isResultOk) {
+        return response.status;
+      }
+
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> forgotPasswordReset(AuthParams params) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          authEndpoints.forgotPasswordReset,
+          params.toMap(),
+        ),
+      );
+      if (response.isResultOk) {
+        return response.status;
       }
 
       throw AppServerException(response.message);

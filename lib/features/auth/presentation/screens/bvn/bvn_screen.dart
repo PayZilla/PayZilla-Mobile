@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
@@ -5,6 +7,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 class BvnScreen extends StatefulWidget {
@@ -74,107 +77,130 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
                   )
                 ],
               ),
-              child: Column(
+              child: ExpansionTile(
+                initiallyExpanded: true,
+                iconColor: AppColors.btnPrimaryColor,
+                childrenPadding:
+                    const EdgeInsets.symmetric(horizontal: Insets.dim_16),
+                leading: Container(
+                  height: 50,
+                  width: 50,
+                  padding: const EdgeInsets.all(13),
+                  decoration: const BoxDecoration(
+                    color: Color(0xffEEEEEE),
+                    shape: BoxShape.circle,
+                  ),
+                  child: LocalSvgImage(bvnSvg),
+                ),
+                title: ListTile(
+                  title: Row(
+                    children: [
+                      Text(
+                        'BVN',
+                        style: context.textTheme.headlineLarge!.copyWith(
+                          color: AppColors.textHeaderColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: Insets.dim_16,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Insets.dim_14,
+                        ),
+                        child: Icon(
+                          Icons.star,
+                          color: AppColors.borderErrorColor,
+                          size: 16,
+                        ),
+                      ),
+                      Text(
+                        '(mandatory field)',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.textBodyColor,
+                          fontWeight: FontWeight.w300,
+                          fontSize: Insets.dim_12,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                ),
                 children: [
                   const YBox(Insets.dim_24),
-                  verificationWidget(context, bvnSvg, 'BVN'),
-                  const Divider(),
-                  const YBox(Insets.dim_24),
-                  verificationWidget(
-                    context,
-                    bvnSvg,
-                    'Passport',
-                    show: false,
+                  PhoneNumberTextFormField(
+                    key: const ValueKey('123'),
+                    initialValue: requestDto.bvn,
+                    hintText: '232********',
+                    labelText: 'BVN',
+                    onSaved: (bvn) {
+                      requestDto = requestDto.copyWith(
+                        bvn: bvn,
+                      );
+                    },
                   ),
-                  const YBox(Insets.dim_24),
-                  verificationWidget(
-                    context,
-                    idCardSvg,
-                    'Identity Card',
-                    show: false,
+                  const YBox(Insets.dim_18),
+                  ClickableFormField(
+                    labelText: 'Date Of Birth',
+                    hintText: 'Select date',
+                    key: const ValueKey('456'),
+                    controller: TextEditingController(text: requestDto.dob),
+                    validator: (input) => Validators.validateString(
+                      error: 'This field is required',
+                    )(input),
+                    onPressed: () {
+                      unawaited(
+                        DatePickerUtil.adaptive(
+                          context,
+                          isDateOfBirth: true,
+                          onDateTimeChanged: (date) {
+                            setState(() {
+                              requestDto = requestDto.copyWith(
+                                dob: DateFormatUtil.formatDate(
+                                  apiRangeFormat,
+                                  date.toString(),
+                                ),
+                              );
+                            });
+                          },
+                        ),
+                      );
+                    },
+                    suffixIcon: const Icon(
+                      PhosphorIcons.calendarBlank,
+                      size: 18,
+                    ),
                   ),
-                  const YBox(Insets.dim_24),
-                  const Divider(),
-                  const YBox(Insets.dim_12),
-                  verificationWidget(
-                    context,
-                    driverLicenseSvg,
-                    'Driver LieLicense ',
-                    show: false,
-                  ),
-                  const YBox(Insets.dim_24),
+                  const YBox(Insets.dim_18),
                 ],
               ),
             ),
             const Spacer(),
             AppSolidButton(
               textTitle: 'Verify Identity',
-              showLoading: provider.genericAuthResp.isLoading,
+              showLoading: provider.onboardingResp.isLoading,
               action: () {
-                AppNavigator.of(context).push(AppRoutes.bvnToReasons);
+                validate(
+                  () {
+                    provider.initializeBvn(requestDto, context).then((value) {
+                      if (provider.onboardingResp.isSuccess) {
+                        AppNavigator.of(context).push(
+                          AppRoutes.pin,
+                          args: GenericTokenVerificationArgs(
+                            'your BVN data',
+                            AppRoutes.bvnToReasons,
+                            authEndpoints.bvnVerification,
+                          ),
+                        );
+                      }
+                    });
+                  },
+                );
               },
             ),
             const YBox(Insets.dim_26),
           ],
         ),
-      ),
-    );
-  }
-
-  ListTile verificationWidget(
-    BuildContext context,
-    String asset,
-    String title, {
-    bool show = true,
-  }) {
-    return ListTile(
-      leading: Container(
-        height: 50,
-        width: 50,
-        padding: const EdgeInsets.all(13),
-        decoration: const BoxDecoration(
-          color: Color(0xffEEEEEE),
-          shape: BoxShape.circle,
-        ),
-        child: LocalSvgImage(asset),
-      ),
-      title: Row(
-        children: [
-          Text(
-            title,
-            style: context.textTheme.headlineLarge!.copyWith(
-              color: AppColors.textHeaderColor,
-              fontWeight: FontWeight.w700,
-              fontSize: Insets.dim_16,
-            ),
-            textAlign: TextAlign.start,
-          ),
-          if (show) ...[
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: Insets.dim_14,
-              ),
-              child: Icon(
-                Icons.star,
-                color: AppColors.borderErrorColor,
-                size: 16,
-              ),
-            ),
-            Text(
-              '(mandatory field)',
-              style: context.textTheme.bodyMedium!.copyWith(
-                color: AppColors.textBodyColor,
-                fontWeight: FontWeight.w300,
-                fontSize: Insets.dim_12,
-              ),
-              textAlign: TextAlign.start,
-            ),
-          ]
-        ],
-      ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios_rounded,
-        size: Insets.dim_18,
       ),
     );
   }

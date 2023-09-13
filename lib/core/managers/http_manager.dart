@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:dio/dio.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
@@ -16,7 +18,7 @@ class HttpManager {
     required this.enableLogging,
   }) {
     _dio1 = dio1 ?? Dio();
-    _dio1.options.baseUrl = '$baseUrl/api';
+    _dio1.options.baseUrl = baseUrl;
     _dio1.options.connectTimeout = 30000;
     _dio1.options.receiveTimeout = 30000;
     _dio1.interceptors.add(
@@ -149,15 +151,10 @@ class HttpManager {
   String _handleException(dynamic err) {
     if (enableLogging) Log().error('Exception handler logger', err.toString());
     if (err != null && err.toString().isNotEmpty) {
-      // ignore: avoid_dynamic_calls
-      if (err['message'] != null) {
-        // ignore: avoid_dynamic_calls
+      if (err['errors'] != null) {
+        return err['errors'].toString();
+      } else if (err['message'] != null) {
         return err['message'].toString();
-      }
-      // ignore: avoid_dynamic_calls
-      if (err['error'] != null) {
-        // ignore: avoid_dynamic_calls
-        return err['error'].toString();
       }
     }
     // this colon at the end of the string is used to identify the error in the logs which means that

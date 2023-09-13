@@ -7,36 +7,57 @@ import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
 
-class VerifyEmailOtpRecoveryArgs {
-  VerifyEmailOtpRecoveryArgs(this.email, this.path);
+class GenericTokenVerificationArgs {
+  GenericTokenVerificationArgs(this.email, this.path, this.endpointPath);
 
   final String email;
   final String path;
+  final String endpointPath;
 }
 
-class VerifyEmailOtpRecovery extends StatefulWidget {
-  const VerifyEmailOtpRecovery({Key? key, required this.args})
+class GenericTokenVerification extends StatefulWidget {
+  const GenericTokenVerification({Key? key, required this.args})
       : super(key: key);
-  final VerifyEmailOtpRecoveryArgs args;
+  final GenericTokenVerificationArgs args;
 
   @override
-  State<VerifyEmailOtpRecovery> createState() => _VerifyEmailOtpRecoveryState();
+  State<GenericTokenVerification> createState() =>
+      _GenericTokenVerificationState();
 }
 
-class _VerifyEmailOtpRecoveryState extends State<VerifyEmailOtpRecovery>
-    with FormMixin {
+class _GenericTokenVerificationState extends State<GenericTokenVerification>
+    with FormMixin, OtpTimeoutMixin {
   AuthParams requestDto = AuthParams.empty();
   bool obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      // only use this when coming from sign-up screen
+      if (widget.args.email.contains('@') &&
+          widget.args.endpointPath.contains('email-verification')) {
+        await context.read<AuthProvider>().emailVerificationInitiate();
+      } else if (widget.args.email.contains('@') &&
+          widget.args.endpointPath.contains('forgot-password')) {
+        requestDto = requestDto.copyWith(email: widget.args.email);
+      }
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AuthProvider>();
 
     return AppScaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         leading: Padding(
-          padding: EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(),
+          padding: const EdgeInsets.only(left: Insets.dim_24),
+          child: AppBoxedButton(
+            onPressed: () =>
+                AppNavigator.of(context).push(AppRoutes.onboardingAuth),
+          ),
         ),
         leadingWidth: 80,
       ),
@@ -69,15 +90,23 @@ class _VerifyEmailOtpRecoveryState extends State<VerifyEmailOtpRecovery>
               ),
               const YBox(Insets.dim_40),
               PinTextField(
-                onSaved: (input) {},
+                validator: (input) => Validators.validateString()(input),
+                onSaved: (input) {
+                  requestDto = requestDto.copyWith(token: input);
+                },
               ),
               const YBox(Insets.dim_48),
               Center(
                 child: InkWell(
-                  onTap: () {},
-                  child: const Text(
-                    'Resend Code',
-                    style: TextStyle(
+                  onTap: () {
+                    if (isTimerExpired && !provider.onboardingResp.isLoading) {
+                      startTimer();
+                      provider.emailVerificationInitiate();
+                    }
+                  },
+                  child: Text(
+                    getCurrentOtpTimeoutCount(),
+                    style: const TextStyle(
                       color: AppColors.appSecondaryColor,
                       fontWeight: FontWeight.w700,
                       fontSize: Insets.dim_16,
@@ -89,9 +118,17 @@ class _VerifyEmailOtpRecoveryState extends State<VerifyEmailOtpRecovery>
               YBox(context.getHeight(0.12)),
               AppSolidButton(
                 textTitle: 'Confirm',
-                showLoading: provider.genericAuthResp.isLoading,
+                deActivate: provider.onboardingResp.isLoading,
+                showLoading: provider.onboardingResp.isLoading,
                 action: () {
-                  AppNavigator.of(context).push(widget.args.path);
+                  validate(
+                    () => provider.tokenVerification(
+                      requestDto,
+                      context,
+                      widget.args.path,
+                      endpointPath: widget.args.endpointPath,
+                    ),
+                  );
                 },
               ),
             ],

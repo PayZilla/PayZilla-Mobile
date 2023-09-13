@@ -1,60 +1,85 @@
 import 'package:equatable/equatable.dart';
-import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 
 class AuthParams extends Equatable {
   const AuthParams({
     required this.email,
-    required this.signUpEmail,
     required this.password,
     required this.countryCode,
     required this.phoneNumber,
     required this.applicationType,
+    required this.fullName,
+    required this.token,
+    required this.dob,
+    required this.bvn,
+    required this.pin,
   });
 
-  factory AuthParams.empty() => AuthParams(
+  factory AuthParams.empty() => const AuthParams(
         email: '',
-        signUpEmail: '',
         password: '',
         countryCode: '',
-        phoneNumber: PhoneNumber.empty(),
+        fullName: '',
+        phoneNumber: '',
         applicationType: 0,
+        token: '',
+        dob: '',
+        bvn: '',
+        pin: '',
       );
   final String email;
-  final String signUpEmail;
   final String password;
-  final PhoneNumber phoneNumber;
+  final String phoneNumber;
   final String countryCode;
   final int applicationType;
+  final String fullName;
+  final String token;
+  final String dob;
+  final String bvn;
+  final String pin;
 
   AuthParams copyWith({
     String? email,
     String? signUpEmail,
     String? password,
-    PhoneNumber? phoneNumber,
+    String? phoneNumber,
     String? countryCode,
     int? applicationType,
+    String? fullName,
+    String? token,
+    String? dob,
+    String? bvn,
+    String? pin,
   }) {
     return AuthParams(
       email: email ?? this.email,
-      signUpEmail: signUpEmail ?? this.signUpEmail,
+      token: token ?? this.token,
+      fullName: fullName ?? this.fullName,
       password: password ?? this.password,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       countryCode: countryCode ?? this.countryCode,
       applicationType: applicationType ?? this.applicationType,
+      dob: dob ?? this.dob,
+      bvn: bvn ?? this.bvn,
+      pin: pin ?? this.pin,
     );
   }
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
+    const Pattern fullNameSplitPattern = r'\s+';
+    final regex = RegExp(fullNameSplitPattern.toString());
 
-    map['password'] = password.trim();
+    if (password.isNotEmpty) {
+      map['password'] = password.trim();
+    }
 
     if (email.isNotEmpty) {
       map['email'] = email.trim();
     }
 
-    if (signUpEmail.isNotEmpty) {
-      map['emailAddress'] = signUpEmail.trim();
+    if (fullName.isNotEmpty && regex.hasMatch(fullName.trim())) {
+      map['first_name'] = fullName.split(' ').first;
+      map['last_name'] = fullName.split(' ').last;
     }
 
     if (applicationType > 0) {
@@ -65,7 +90,20 @@ class AuthParams extends Equatable {
     }
 
     if (phoneNumber.isNotEmpty) {
-      map['phoneNumber'] = phoneNumber.number.trim();
+      map['phone_number'] = '+234${phoneNumber.trim()}';
+    }
+
+    if (token.isNotEmpty) {
+      map['token'] = token.trim();
+    }
+    if (dob.isNotEmpty) {
+      map['date_of_birth'] = dob.trim();
+    }
+    if (bvn.isNotEmpty) {
+      map['bvn'] = bvn.trim();
+    }
+    if (pin.isNotEmpty) {
+      map['pin'] = pin.trim();
     }
 
     return map;
@@ -77,6 +115,11 @@ class AuthParams extends Equatable {
         password,
         countryCode,
         applicationType,
+        fullName,
         phoneNumber,
+        token,
+        dob,
+        bvn,
+        pin,
       ];
 }

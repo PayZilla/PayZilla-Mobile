@@ -1,6 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
-import 'package:pay_zilla/core/data/core_data.dart';
+import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
@@ -22,36 +24,96 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  ApiResult<AuthResponseData> genericAuthResp =
-      ApiResult<AuthResponseData>.idle();
+  ApiResult<UserAuthModel> genericAuthResp = ApiResult<UserAuthModel>.idle();
 
   ApiResult<List<ReasonsModel>> reasonsResp =
       ApiResult<List<ReasonsModel>>.idle();
 
+  ApiResult<String> onboardingResp = ApiResult<String>.idle();
+
   PasswordValidationState passValidState = PasswordValidationState.initial();
 
   Future<void> login(AuthParams requestDto, BuildContext context) async {
-    genericAuthResp = ApiResult<AuthResponseData>.loading('Logging in....');
+    genericAuthResp = ApiResult<UserAuthModel>.loading('Logging in....');
     notifyListeners();
 
     final failureOrLogin = await authRepository.login(requestDto);
     await failureOrLogin.fold(
       (failure) {
-        genericAuthResp = ApiResult<AuthResponseData>.error(failure.message);
+        genericAuthResp = ApiResult<UserAuthModel>.error(failure.message);
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
       },
       (res) async {
-        if (res.getNextProfileUpdate) {
-          //  navigate accordingly
-        } else {
-          await getUser(context);
+        //1. Handle all conditions on login response first
+        if (!res.user.hasVerifiedEmail) {
+          final verificationMsg =
+              'You have not verified either phone number (${res.user.phoneNumber}) or email (${res.user.email})';
+          showInfoNotification(verificationMsg, durationInMills: 3500);
+          genericAuthResp = ApiResult<UserAuthModel>.error(verificationMsg);
+          notifyListeners();
+          AppNavigator.of(context).push(
+            AppRoutes.pin,
+            args: GenericTokenVerificationArgs(
+              res.user.email,
+              AppRoutes.country,
+              authEndpoints.emailVerificationVerify,
+            ),
+          );
+          return;
         }
-        AppNavigator.of(context).push(AppRoutes.biometric);
+        if (!res.user.hasVerifiedPhoneNumber) {
+          genericAuthResp = ApiResult<UserAuthModel>.error(
+            'You have not verified phone number (${res.user.phoneNumber})',
+          );
+          showInfoNotification(genericAuthResp.message, durationInMills: 3500);
+          notifyListeners();
+          // ignore: use_build_context_synchronously
+          AppNavigator.of(context).push(AppRoutes.country);
+          return;
+        }
 
-        genericAuthResp = ApiResult<AuthResponseData>.success(res);
+        if (res.user.registrationPurpose.isEmpty) {
+          genericAuthResp = ApiResult<UserAuthModel>.success(res);
+          AppNavigator.of(context).push(AppRoutes.bvnToReasons);
+          notifyListeners();
+          return;
+        }
+        //2. Now handle user journey on kyc status
+
+        await getKyc(context);
+
+        genericAuthResp = ApiResult<UserAuthModel>.success(res);
         notifyListeners();
+      },
+    );
+  }
+
+  Future<void> getKyc(BuildContext context) async {
+    final failureOrKYC = await authRepository.getKyc();
+
+    await failureOrKYC.fold(
+      (failure) {
+        Log().debug('The KYC failed', failure.message);
+      },
+      (res) async {
+        if (res.isEmpty) {
+          AppNavigator.of(context).push(AppRoutes.countryToBvn);
+        } else {
+          await authRepository.canUseBiometric().then(
+                (value) => {
+                  if (value)
+                    {
+                      AppNavigator.of(context).push(AppRoutes.biometric),
+                    }
+                  else
+                    {
+                      AppNavigator.of(context).push(AppRoutes.home),
+                    }
+                },
+              );
+        }
       },
     );
   }
@@ -77,20 +139,28 @@ class AuthProvider extends ChangeNotifier {
   }
 
 // Sign up
-  Future<void> signUp(AuthParams requestDto) async {
-    genericAuthResp = ApiResult<AuthResponseData>.loading('Signing up....');
+  Future<void> signUp(AuthParams requestDto, BuildContext context) async {
+    genericAuthResp = ApiResult<UserAuthModel>.loading('Signing up....');
     notifyListeners();
 
     final failureOrLogin = await authRepository.signUp(requestDto);
     failureOrLogin.fold(
       (failure) {
-        genericAuthResp = ApiResult<AuthResponseData>.error(failure.message);
+        genericAuthResp = ApiResult<UserAuthModel>.error(failure.message);
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
       },
       (res) {
-        genericAuthResp = ApiResult<AuthResponseData>.success(res);
+        AppNavigator.of(context).push(
+          AppRoutes.pin,
+          args: GenericTokenVerificationArgs(
+            res.user.email,
+            AppRoutes.country,
+            authEndpoints.emailVerificationVerify,
+          ),
+        );
+        genericAuthResp = ApiResult<UserAuthModel>.success(res);
 
         notifyListeners();
       },
@@ -120,131 +190,200 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  final reasonsList = <ReasonsModel>[
-    ReasonsModel(
-      title: 'Spend or save daily',
-      image: r1,
-    ),
-    ReasonsModel(
-      title: 'Fast my transactions',
-      image: r2,
-    ),
-    ReasonsModel(
-      title: 'Payments to friends',
-      image: r3,
-    ),
-    ReasonsModel(
-      title: 'Online payments',
-      image: r4,
-    ),
-    ReasonsModel(
-      title: 'Spend while traveling',
-      image: r5,
-    ),
-    ReasonsModel(
-      title: 'Your financial assets',
-      image: r6,
-    ),
-  ];
+  Future<void> emailVerificationInitiate() async {
+    onboardingResp = ApiResult<String>.loading('Loading up....');
 
-  // get started button
-  final registeringCountries = [
-    CountryData(
-      countryId: 'NG',
-      countryName: 'Nigeria',
-      currencyCode: 'NGN',
-      flag: nigeriaSvg,
-      slug: 'Nigerian',
-      applicationType: 4,
-      countryPhoneCode: '+234',
-      maxLength: 11,
-    ),
-    CountryData(
-      countryId: 'SG',
-      countryName: 'Singapore',
-      currencyCode: 'USD',
-      flag: singaporeSvg,
-      slug: 'Singapore',
-      applicationType: 4,
-      countryPhoneCode: '+234',
-      maxLength: 11,
-    ),
-    CountryData(
-      countryId: 'USA',
-      countryName: 'United States America',
-      currencyCode: 'USD',
-      flag: usaSvg,
-      slug: 'Americans',
-      applicationType: 2,
-      countryPhoneCode: '+911',
-      maxLength: 10,
-    ),
-    CountryData(
-      countryId: 'CH',
-      countryName: 'China',
-      currencyCode: 'YENG',
-      flag: chinaSvg,
-      slug: 'Chinese',
-      applicationType: 4,
-      countryPhoneCode: '+01',
-      maxLength: 11,
-    ),
-    CountryData(
-      countryId: 'NL',
-      countryName: 'Netherlands',
-      currencyCode: 'USD',
-      flag: netherlandsSvg,
-      slug: 'Netherlands',
-      applicationType: 4,
-      countryPhoneCode: '+044',
-      maxLength: 11,
-    ),
-    CountryData(
-      countryId: 'ID',
-      countryName: 'Indonesia',
-      currencyCode: 'USD',
-      flag: indonesiaSvg,
-      slug: 'Indonesia',
-      applicationType: 4,
-      countryPhoneCode: '+044',
-      maxLength: 11,
-    ),
-  ];
+    notifyListeners();
 
-  FutureBottomSheet<CountryData> showCountry({
-    bool dismissible = true,
-    void Function(CountryData)? onTap,
-    required BuildContext context,
-  }) {
-    return FutureBottomSheet<CountryData>(
-      future: () => Future.value(registeringCountries),
-      height: context.getHeight(0.6),
-      isDismissible: dismissible,
-      searchWidget: SearchTextInputField(
-        title: 'Search ',
-        onChanged: onChanged,
-      ),
-      itemBuilder: (context, item) {
-        return ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            item.countryName.capitalize(),
-            style: const TextStyle(fontSize: 15),
-          ),
-          leading: LocalSvgImage(
-            item.flag,
-            height: Insets.dim_24.dy,
-            width: Insets.dim_24.dx,
-          ),
-          onTap: () {
-            if (onTap == null) {
-              countrySelected(item, context);
-            } else {
-              onTap(item);
-              AppNavigator.of(context).popDialog();
-            }
-          },
+    final failureOrLogin = await authRepository.emailVerificationInitiate();
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        showErrorNotification(failure.message, durationInMills: 2000);
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(res);
+        // Just so that the message from login can show and nothing spoils if this still comes from registration also :)
+        Future.delayed(3500.milliseconds).then((value) {
+          showSuccessNotification(
+            onboardingResp.data ?? '',
+            durationInMills: 2500,
+          );
+        });
+
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> tokenVerification(
+    AuthParams params,
+    BuildContext context,
+    String routerPath, {
+    required String endpointPath,
+  }) async {
+    onboardingResp = ApiResult<String>.idle();
+    onboardingResp = ApiResult<String>.loading('Loading up....');
+
+    notifyListeners();
+
+    final failureOrLogin = await authRepository.tokenVerification(
+      params,
+      path: endpointPath,
+    );
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        showErrorNotification(failure.message, durationInMills: 2000);
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(res);
+        // attach the params to the router for reset password screen
+        AppNavigator.of(context).push(
+          routerPath,
+          args: endpointPath.contains('forgot-password')
+              ? NewPasswordArgs(params)
+              : null,
         );
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> initializeBvn(AuthParams params, BuildContext context) async {
+    onboardingResp = ApiResult<String>.idle();
+    onboardingResp = ApiResult<String>.loading('Loading up....');
+
+    notifyListeners();
+
+    final failureOrLogin = await authRepository.initializeBvn(params);
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        if (failure.message == 'Bvn name not match') {
+          showInfoNotification(failure.message, durationInMills: 2500);
+          showBvnInfoUpdate(
+            context: context,
+            onTap: (p0) {
+              if (p0.isNotEmpty) {
+                var requestDto = AuthParams.empty();
+                requestDto = requestDto.copyWith(
+                  fullName: p0.first,
+                  phoneNumber: p0.last,
+                );
+                updateBvn(requestDto);
+              }
+            },
+          ).show(context);
+        } else {
+          showErrorNotification(failure.message, durationInMills: 3000);
+        }
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(res.toString());
+
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> updateBvn(AuthParams params) async {
+    onboardingResp = ApiResult<String>.loading('Loading up....');
+
+    notifyListeners();
+
+    final failureOrLogin = await authRepository.updateBvn(params);
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        showErrorNotification(failure.message, durationInMills: 2000);
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(res.toString());
+
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> purpose(List<String> purpose, BuildContext context) async {
+    onboardingResp = ApiResult<String>.idle();
+    onboardingResp = ApiResult<String>.loading('Loading up....');
+
+    notifyListeners();
+
+    final failureOrLogin = await authRepository.purpose(purpose);
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        showErrorNotification(failure.message, durationInMills: 2000);
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(jsonEncode(res));
+        AppNavigator.of(context).push(AppRoutes.reasonsToPin);
+
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> forgotPasswordInit(AuthParams params) async {
+    onboardingResp = ApiResult<String>.idle();
+    onboardingResp = ApiResult<String>.loading('Loading up....');
+
+    notifyListeners();
+
+    final failureOrLogin = await authRepository.forgotPasswordInit(params);
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        showErrorNotification(failure.message, durationInMills: 2000);
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(jsonEncode(res));
+
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> forgotPasswordReset(AuthParams params) async {
+    onboardingResp = ApiResult<String>.idle();
+    onboardingResp = ApiResult<String>.loading('Loading up....');
+
+    notifyListeners();
+
+    final failureOrLogin = await authRepository.forgotPasswordReset(params);
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        showErrorNotification(failure.message, durationInMills: 2000);
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(jsonEncode(res));
+        showSuccessNotification('Password reset successfully');
+        notifyListeners();
       },
     );
   }

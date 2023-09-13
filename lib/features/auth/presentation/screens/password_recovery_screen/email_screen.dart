@@ -56,7 +56,7 @@ class _EmailRecoveryState extends State<EmailRecovery> with FormMixin {
               AppTextFormField(
                 initialValue: requestDto.email,
                 hintText: 'Email',
-                isLoading: provider.genericAuthResp.isLoading,
+                isLoading: provider.onboardingResp.isLoading,
                 inputType: TextInputType.emailAddress,
                 onSaved: (value) {
                   requestDto = requestDto.copyWith(email: value);
@@ -68,15 +68,22 @@ class _EmailRecoveryState extends State<EmailRecovery> with FormMixin {
               const YBox(Insets.dim_40),
               AppSolidButton(
                 textTitle: 'Send me email',
-                showLoading: provider.genericAuthResp.isLoading,
+                showLoading: provider.onboardingResp.isLoading,
                 action: () {
-                  AppNavigator.of(context).push(
-                    AppRoutes.recoveryToVerify,
-                    args: VerifyEmailOtpRecoveryArgs(
-                      'test@example.com',
-                      AppRoutes.verifyToPassword,
-                    ),
-                  );
+                  validate(() async {
+                    await provider.forgotPasswordInit(requestDto).then((value) {
+                      if (provider.onboardingResp.isSuccess) {
+                        AppNavigator.of(context).push(
+                          AppRoutes.recoveryToVerify,
+                          args: GenericTokenVerificationArgs(
+                            requestDto.email,
+                            AppRoutes.verifyToPassword,
+                            authEndpoints.forgotPasswordVerify,
+                          ),
+                        );
+                      }
+                    });
+                  });
                 },
               ),
             ],

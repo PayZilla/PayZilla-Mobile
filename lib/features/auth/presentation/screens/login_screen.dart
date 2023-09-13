@@ -118,18 +118,16 @@ class _SignInState extends State<SignIn> with FormMixin {
                 textTitle: 'Sign In',
                 showLoading: provider.genericAuthResp.isLoading,
                 action: () async {
-                  AppNavigator.of(context).push(AppRoutes.biometric);
-                  return;
                   if (kDebugMode) {
                     final formState = formKey.currentState;
                     formState?.save();
                     await provider.login(
                       requestDto.copyWith(
                         email: requestDto.email.isEmpty
-                            ? 'jboy9140@yahoo.com'
+                            ? 'judah.osinski@mailinator.com'
                             : requestDto.email,
                         password: requestDto.password.isEmpty
-                            ? '.joshThings1@'
+                            ? 'password'
                             : requestDto.password,
                       ),
                       context,

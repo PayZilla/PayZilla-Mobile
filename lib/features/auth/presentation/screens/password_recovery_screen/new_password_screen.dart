@@ -7,8 +7,15 @@ import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
 
+class NewPasswordArgs {
+  NewPasswordArgs(this.params);
+
+  final AuthParams params;
+}
+
 class NewPasswordScreen extends StatefulWidget {
-  const NewPasswordScreen({Key? key}) : super(key: key);
+  const NewPasswordScreen({Key? key, required this.args}) : super(key: key);
+  final NewPasswordArgs args;
 
   @override
   State<NewPasswordScreen> createState() => _NewPasswordScreenState();
@@ -18,6 +25,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> with FormMixin {
   AuthParams requestDto = AuthParams.empty();
   bool obscurePassword = true;
   bool obscurePassword2 = true;
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +73,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> with FormMixin {
               AppTextFormField(
                 initialValue: requestDto.password,
                 hintText: 'Password',
-                isLoading: provider.genericAuthResp.isLoading,
+                isLoading: provider.onboardingResp.isLoading,
                 inputType: TextInputType.text,
                 suffixIcon: IconButton(
                   onPressed: () {
@@ -88,7 +96,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> with FormMixin {
               AppTextFormField(
                 initialValue: requestDto.password,
                 hintText: 'Confirm password',
-                isLoading: provider.genericAuthResp.isLoading,
+                isLoading: provider.onboardingResp.isLoading,
                 inputType: TextInputType.text,
                 suffixIcon: IconButton(
                   onPressed: () {
@@ -103,15 +111,39 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> with FormMixin {
                 ),
                 obscureText: obscurePassword,
                 onSaved: (value) {
-                  requestDto = requestDto.copyWith(password: value);
+                  if (value != null) {
+                    setState(() => password = value);
+                  }
                 },
                 validator: (input) => Validators.validatePassword()(input),
               ),
               YBox(context.getHeight(0.4)),
               AppSolidButton(
                 textTitle: 'Create new password',
-                showLoading: provider.genericAuthResp.isLoading,
-                action: () {},
+                showLoading: provider.onboardingResp.isLoading,
+                action: () async {
+                  validate(() async {
+                    if (requestDto.password == password) {
+                      requestDto = requestDto.copyWith(
+                        email: widget.args.params.email,
+                        token: widget.args.params.token,
+                      );
+                      await provider
+                          .forgotPasswordReset(requestDto)
+                          .then((value) {
+                        if (provider.onboardingResp.isSuccess) {
+                          AppNavigator.of(context)
+                              .push(AppRoutes.onboardingAuth);
+                        }
+                      });
+                    } else {
+                      showInfoNotification(
+                        'Password does not match',
+                        durationInMills: 2500,
+                      );
+                    }
+                  });
+                },
               ),
             ],
           ),

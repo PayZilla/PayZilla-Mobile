@@ -90,9 +90,8 @@ class AtmCardWidget extends StatelessWidget {
   }
 }
 
-/**
- * ATM Card Widget 2
- */
+//  * ATM Card Widget 2
+//  * Use this in the card widget
 
 class AtmCardWidget2 extends StatelessWidget {
   const AtmCardWidget2({super.key, this.color});
@@ -159,9 +158,7 @@ class AtmCardWidget2 extends StatelessWidget {
   }
 }
 
-/**
- * ATM Card Widget 3
- */
+//  * ATM Card Widget 3
 
 class AtmCardWidget3 extends StatelessWidget {
   const AtmCardWidget3({super.key, this.color});

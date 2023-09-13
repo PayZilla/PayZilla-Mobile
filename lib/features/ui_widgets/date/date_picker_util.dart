@@ -5,44 +5,49 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 
 class DatePickerUtil {
-  static void adaptive(
+  static Future<void> adaptive(
     BuildContext context, {
     required Function(DateTime) onDateTimeChanged,
     bool isDateOfBirth = false,
-  }) {
-    Platform.isIOS
-        ? cupertinoDatePicker(
-            context,
-            onDateTimeChanged: onDateTimeChanged,
-            isDOB: isDateOfBirth,
-          )
-        : androidDatePicker(
-            context,
-            onDateTimeChanged: onDateTimeChanged,
-            isDOB: isDateOfBirth,
-          );
+  }) async {
+    if (Platform.isIOS) {
+      final choosenDate = await cupertinoDatePicker(
+        context,
+        onDateTimeChanged: onDateTimeChanged,
+        isDOB: isDateOfBirth,
+      );
+      onDateTimeChanged(choosenDate);
+    } else {
+      await androidDatePicker(
+        context,
+        onDateTimeChanged: onDateTimeChanged,
+        isDOB: isDateOfBirth,
+      );
+    }
   }
 
-  static void cupertinoDatePicker(
+  static Future<DateTime> cupertinoDatePicker(
     BuildContext context, {
     bool isDOB = true,
     required Function(DateTime) onDateTimeChanged,
-  }) {
-    showCupertinoModalPopup(
+  }) async {
+    final currentDate = DateTime.now();
+    final approvedAge = currentDate.year - 18;
+    final newDate = DateTime(
+      currentDate.year + 10,
+      currentDate.month,
+      currentDate.day,
+    );
+    final initialDate = DateTime(
+      currentDate.year - 1,
+      currentDate.month,
+      currentDate.day,
+    );
+    final initialDateTime = !isDOB ? DateTime.now() : DateTime(approvedAge);
+    var choosenDate = initialDateTime.copyWith();
+    await showCupertinoModalPopup(
       context: context,
       builder: (_) {
-        final currentDate = DateTime.now();
-        final approvedAge = currentDate.year - 18;
-        final newDate = DateTime(
-          currentDate.year + 10,
-          currentDate.month,
-          currentDate.day,
-        );
-        final initialDate = DateTime(
-          currentDate.year - 1,
-          currentDate.month,
-          currentDate.day,
-        );
         return Container(
           height: 400.dy,
           color: const Color.fromARGB(255, 255, 255, 255),
@@ -53,10 +58,12 @@ class DatePickerUtil {
                 child: CupertinoDatePicker(
                   minimumDate: !isDOB ? initialDate : DateTime(1947),
                   maximumDate: !isDOB ? newDate : DateTime(approvedAge),
-                  initialDateTime:
-                      !isDOB ? DateTime.now() : DateTime(approvedAge),
+                  initialDateTime: initialDateTime,
                   mode: CupertinoDatePickerMode.date,
-                  onDateTimeChanged: onDateTimeChanged,
+                  onDateTimeChanged: (datePicked) {
+                    choosenDate = datePicked;
+                    onDateTimeChanged(datePicked);
+                  },
                 ),
               ),
             ],
@@ -64,6 +71,7 @@ class DatePickerUtil {
         );
       },
     );
+    return choosenDate;
   }
 
   static Future<void> androidDatePicker(
@@ -84,17 +92,19 @@ class DatePickerUtil {
       currentDate.month,
       currentDate.day,
     );
+    final initialDate = !isDOB ? DateTime.now() : DateTime(approvedAge);
     final dateTime = await showDatePicker(
       context: context,
-      initialDate: !isDOB ? DateTime.now() : DateTime(approvedAge),
+      initialDate: initialDate,
       firstDate: !isDOB ? firstDate : DateTime(1947),
       lastDate: !isDOB ? newDate : DateTime(approvedAge),
       keyboardType: TextInputType.datetime,
       builder: (_, __) {
         return Theme(
           data: ThemeData.light().copyWith(
+            // ignore: prefer_const_constructors
             colorScheme: ColorScheme.light(
-              primary: AppColors.borderColor,
+              primary: AppColors.btnPrimaryColor,
             ),
           ),
           child: __!,

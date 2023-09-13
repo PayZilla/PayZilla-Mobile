@@ -19,16 +19,19 @@ class Validators {
     };
   }
 
-  static String? Function(String?) validatePhoneNumber({int maxLength = 10}) {
+  static String? Function(String?) validatePhoneNumber({
+    int maxLength = 10,
+    String title = 'phone',
+  }) {
     return (String? value) {
       value = harmonize(value);
       const Pattern pattern = '^[0-9]';
       final regex = RegExp(pattern.toString());
       if (value.isEmpty || !regex.hasMatch(value)) {
-        return 'please enter a valid phone number';
+        return 'please enter a valid $title number';
       }
       if (value.length < maxLength) {
-        return 'Phone number must be an $maxLength characters digits';
+        return '$title number must be an $maxLength characters digits';
       }
       return null;
     };
@@ -69,6 +72,39 @@ class Validators {
       }
       if (maxLength != null && res.length < maxLength) {
         return 'Field must not have more than $maxLength characters';
+      }
+      return null;
+    };
+  }
+
+  static String? Function(String?) validateFullName({
+    int minLength = 1,
+    int? maxLength,
+    String? error,
+  }) {
+    const Pattern fullNameSplitPattern = r'\s+';
+    final regex = RegExp(fullNameSplitPattern.toString());
+    return (String? value) {
+      final res = harmonize(value);
+      if (res.isEmpty && res.length < minLength) {
+        return error ?? 'Field is required.';
+      }
+
+      if (maxLength != null) {
+        if (minLength == maxLength && res.length != minLength) {
+          return 'Field must be $minLength characters';
+        }
+        if (res.length < minLength || res.length > maxLength) {
+          return 'Field must be $minLength-$maxLength characters';
+        }
+      }
+
+      if (maxLength != null && res.length < maxLength) {
+        return 'Field must not have more than $maxLength characters';
+      }
+
+      if (!regex.hasMatch(res)) {
+        return 'Enter first and last name';
       }
       return null;
     };

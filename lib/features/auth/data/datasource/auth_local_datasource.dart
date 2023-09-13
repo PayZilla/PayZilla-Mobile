@@ -16,7 +16,7 @@ abstract class IAuthLocalDataSource {
   void saveUserPassword(String password);
   void saveToken(String token);
   void saveBiometricMode({required bool value});
-  void saveAuthUserPref(dynamic pref);
+  void saveAuthUserPref(User pref);
   void flushLocalStorage();
   void saveBiometricStatus({required bool status});
 }
@@ -124,7 +124,7 @@ class AuthLocalDataSource implements IAuthLocalDataSource {
   }
 
   @override
-  void saveAuthUserPref(dynamic pref) {
+  void saveAuthUserPref(User pref) {
     unawaited(_localCache.put(CacheKeys.user, pref.toJson()));
   }
 }
