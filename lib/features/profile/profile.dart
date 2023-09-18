@@ -1,3 +1,5 @@
+export 'data/datasource/profile_remote_datasource.dart';
+export 'domain/profile_repository.dart';
 export 'presentation/screens/account_info_screen.dart';
 export 'presentation/screens/contact_screen.dart';
 export 'presentation/screens/edit_account_screen.dart';

@@ -25,19 +25,7 @@ class _AuthEndpoints {
 // user endpoints
 class _UserEndpoints {
   final getUser = '/profile';
-  final updateUserProfile = '/v3/User/profile';
-  final getBeneficiaries = '/User/GetBeneficiaryByUserId';
-  final getVerificationProgress = '/User/verificationprogress';
-
-  final verifyUsername = '/User/verifyusername';
-
-  final uploadProfilePicture = '/User/v2/profile/picture';
-
-  final updateUserName = '/User/username';
-
-  final requestOnfidoToken = '/User/SdkToken';
-
-  final requestOnfidoCheck = '/User/onfidoCheck';
+  final avatarUpload = '/profile/avatar';
 }
 
 class _TransactionEndpoints {

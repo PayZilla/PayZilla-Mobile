@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
@@ -26,6 +27,15 @@ class HostedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (url.isEmpty) {
+      return GestureDetector(
+        onTap: () => AppNavigator.of(context).push(AppRoutes.accountInfo),
+        child: const Icon(
+          Icons.person_add_alt,
+          size: Insets.dim_50,
+        ),
+      );
+    }
     var secureUrl = url;
     if (url.contains('http://')) {
       secureUrl = secureUrl.replaceAll('http://', 'https://');
@@ -45,7 +55,7 @@ class HostedImage extends StatelessWidget {
         errorWidget: (_, s, ___) =>
             fallbackImage ??
             LocalImage(
-              selfie,
+              logoWithNamePng,
               fit: fit,
               height: height,
               width: width,

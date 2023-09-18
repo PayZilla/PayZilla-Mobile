@@ -5,7 +5,6 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
-import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -21,6 +20,13 @@ class AuthProvider extends ChangeNotifier {
   bool get showNavBar => _showNavBar;
   set showNavBar(bool val) {
     _showNavBar = val;
+    notifyListeners();
+  }
+
+  User _user = User.empty();
+  User get user => _user;
+  set user(User val) {
+    _user = val;
     notifyListeners();
   }
 
@@ -104,13 +110,9 @@ class AuthProvider extends ChangeNotifier {
           await authRepository.canUseBiometric().then(
                 (value) => {
                   if (value)
-                    {
-                      AppNavigator.of(context).push(AppRoutes.biometric),
-                    }
+                    {AppNavigator.of(context).push(AppRoutes.biometric)}
                   else
-                    {
-                      AppNavigator.of(context).push(AppRoutes.home),
-                    }
+                    {AppNavigator.of(context).push(AppRoutes.home)}
                 },
               );
         }
@@ -118,14 +120,19 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> getUser(BuildContext context) async {
+  Future<User> getUser() async {
+    _user = User.empty();
     final failureOrUser = await authRepository.getUser();
     failureOrUser.fold(
       (failure) {
         showErrorNotification(failure.message, durationInMills: 2000);
       },
-      (res) {},
+      (res) {
+        _user = res;
+        notifyListeners();
+      },
     );
+    return user;
   }
 
   void onChanged(String input) {
@@ -395,14 +402,17 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void sessionTimeout(String reason) {
+  void sessionTimeout(String reason, BuildContext context) {
     showErrorNotification(reason);
     authRepository.localDataSource.flushLocalStorage();
+    AppNavigator.of(context).push(AppRoutes.onboardingAuth);
     notifyListeners();
   }
 
-  void logout() {
+  void logout(BuildContext context) {
     authRepository.localDataSource.flushLocalStorage();
+    AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+
     notifyListeners();
   }
 }

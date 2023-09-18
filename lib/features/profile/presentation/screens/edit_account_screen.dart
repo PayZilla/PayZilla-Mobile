@@ -3,6 +3,7 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AuthProvider>();
-
+    final profileProvider = context.read<ProfileProvider>();
     return AppScaffold(
       appBar: CustomAppBar(
         titleWidget: Text(
@@ -53,77 +54,66 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
             children: [
               AppTextFormField(
                 labelDistance: Insets.dim_16,
-                initialValue: requestDto.email,
-                hintText: 'Full name',
+                initialValue:
+                    '${provider.user.firstName} ${provider.user.lastName}',
+                enabled: false,
                 labelText: 'Your name',
-                isLoading: provider.genericAuthResp.isLoading,
-                inputType: TextInputType.emailAddress,
-                onSaved: (value) {
-                  requestDto = requestDto.copyWith(email: value);
-                },
-                validator: (input) => Validators.validateEmail(
-                  value: input,
-                ),
-              ),
-              const YBox(Insets.dim_24),
-              ClickableFormField(
-                hintText: 'Select Occupation',
-                labelText: 'Occupation',
-                validator: (input) => Validators.validateString()(input),
-                onPressed: () async {
-                  await showCountry(context: context, provider: provider)
-                      .show(context);
-                },
               ),
               const YBox(Insets.dim_24),
               AppTextFormField(
                 labelDistance: Insets.dim_16,
-                initialValue: requestDto.email,
-                hintText: 'Enter company name',
-                labelText: 'Employer',
-                isLoading: provider.genericAuthResp.isLoading,
+                initialValue: provider.user.occupation,
+                hintText: 'Enter current occupation',
+                labelText: 'Occupation',
+                isLoading: profileProvider.userProfileUpdate.isLoading,
                 inputType: TextInputType.emailAddress,
                 onSaved: (value) {
-                  requestDto = requestDto.copyWith(email: value);
+                  requestDto = requestDto.copyWith(occupation: value);
                 },
-                validator: (input) => Validators.validateEmail(
-                  value: input,
-                ),
+                validator: (input) => Validators.validateString()(input),
+              ),
+              const YBox(Insets.dim_24),
+              AppTextFormField(
+                labelDistance: Insets.dim_16,
+                initialValue: provider.user.employer,
+                hintText: 'Enter company name',
+                labelText: 'Employer',
+                isLoading: profileProvider.userProfileUpdate.isLoading,
+                inputType: TextInputType.emailAddress,
+                onSaved: (value) {
+                  requestDto = requestDto.copyWith(employer: value);
+                },
+                validator: (input) => Validators.validateString()(input),
               ),
               const YBox(Insets.dim_24),
               PhoneNumberTextFormField(
                 key: ValueKey(requestDto.phoneNumber),
-                initialValue: requestDto.phoneNumber,
+                initialValue: provider.user.phoneNumber,
+                enabled: false,
                 labelText: 'Phone number',
-                // labelDistance: Insets.dim_16,
-                hintText: '081xxxxxxxx',
-                onSaved: (phoneNumber) {
-                  requestDto = requestDto.copyWith(
-                    phoneNumber: phoneNumber,
-                  );
-                },
               ),
               const YBox(Insets.dim_24),
               AppTextFormField(
                 labelDistance: Insets.dim_16,
-                initialValue: requestDto.email,
-                hintText: 'Email',
+                initialValue: provider.user.email,
                 labelText: 'Email',
-                isLoading: provider.genericAuthResp.isLoading,
-                inputType: TextInputType.emailAddress,
-                onSaved: (value) {
-                  requestDto = requestDto.copyWith(email: value);
-                },
-                validator: (input) => Validators.validateEmail(
-                  value: input,
-                ),
+                enabled: false,
               ),
               YBox(context.getHeight(0.09)),
               AppSolidButton(
                 textTitle: 'Save',
-                showLoading: provider.genericAuthResp.isLoading,
-                action: () =>
-                    AppNavigator.of(context).push(AppRoutes.accountInfo),
+                showLoading: profileProvider.userProfileUpdate.isLoading,
+                action: () {
+                  validate(() async {
+                    await profileProvider
+                        .profileUpdate(requestDto)
+                        .then((value) {
+                      if (profileProvider.userProfileUpdate.isSuccess) {
+                        AppNavigator.of(context).push(AppRoutes.home);
+                      }
+                    });
+                  });
+                },
               ),
             ],
           ),

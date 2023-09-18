@@ -177,6 +177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  cloudinary_sdk:
+    dependency: "direct main"
+    description:
+      name: cloudinary_sdk
+      sha256: d6afd3a37de837766323203c332b3b243e2cc13f845d1fbad5c15e5618b2296a
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1+7"
   collection:
     dependency: transitive
     description:

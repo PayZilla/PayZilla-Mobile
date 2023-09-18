@@ -7,6 +7,7 @@ export './data/core_data.dart';
 export './error/exception.dart';
 export './error/failure.dart';
 export './managers/api_endpoints_manager.dart';
+export './managers/cloud_image_manager.dart';
 export './managers/http_manager.dart';
 export './managers/network_manager.dart';
 export './managers/notification_manager.dart';

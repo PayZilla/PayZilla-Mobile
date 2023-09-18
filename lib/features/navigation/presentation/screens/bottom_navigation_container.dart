@@ -24,9 +24,19 @@ class BottomNavigationContainer extends StatefulWidget {
 
 class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     with ChangeNotifier {
+  late AuthProvider authProvider;
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      authProvider.getUser();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
+    authProvider = context.watch<AuthProvider>();
     if (widget.hideNav || authProvider.showNavBar) {
       return Container();
     }
@@ -42,6 +52,10 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           height: context.getHeight(0.08),
           onTabSelected: (tab) {
             if (tab == AppNavTab.none) return;
+
+            if (tab == AppNavTab.profile) {
+              authProvider.getUser();
+            }
             AppNavigator.of(context).push(AppRoutes.tab(tab));
           },
           items: [

@@ -12,6 +12,8 @@ class AuthParams extends Equatable {
     required this.dob,
     required this.bvn,
     required this.pin,
+    required this.occupation,
+    required this.employer,
   });
 
   factory AuthParams.empty() => const AuthParams(
@@ -25,6 +27,8 @@ class AuthParams extends Equatable {
         dob: '',
         bvn: '',
         pin: '',
+        occupation: '',
+        employer: '',
       );
   final String email;
   final String password;
@@ -36,6 +40,8 @@ class AuthParams extends Equatable {
   final String dob;
   final String bvn;
   final String pin;
+  final String occupation;
+  final String employer;
 
   AuthParams copyWith({
     String? email,
@@ -49,6 +55,8 @@ class AuthParams extends Equatable {
     String? dob,
     String? bvn,
     String? pin,
+    String? occupation,
+    String? employer,
   }) {
     return AuthParams(
       email: email ?? this.email,
@@ -61,6 +69,8 @@ class AuthParams extends Equatable {
       dob: dob ?? this.dob,
       bvn: bvn ?? this.bvn,
       pin: pin ?? this.pin,
+      occupation: occupation ?? this.occupation,
+      employer: employer ?? this.employer,
     );
   }
 
@@ -106,6 +116,14 @@ class AuthParams extends Equatable {
       map['pin'] = pin.trim();
     }
 
+    if (occupation.isNotEmpty) {
+      map['occupation'] = occupation;
+    }
+    if (employer.isNotEmpty) {
+      map['employer'] = employer;
+      map['ng_citizen'] = true;
+    }
+
     return map;
   }
 
@@ -121,5 +139,7 @@ class AuthParams extends Equatable {
         dob,
         bvn,
         pin,
+        occupation,
+        employer,
       ];
 }

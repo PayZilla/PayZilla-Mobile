@@ -124,10 +124,10 @@ class _SignInState extends State<SignIn> with FormMixin {
                     await provider.login(
                       requestDto.copyWith(
                         email: requestDto.email.isEmpty
-                            ? 'judah.osinski@mailinator.com'
+                            ? 'josh3@yopmail.com'
                             : requestDto.email,
                         password: requestDto.password.isEmpty
-                            ? 'password'
+                            ? 'P@ssw0rd'
                             : requestDto.password,
                       ),
                       context,

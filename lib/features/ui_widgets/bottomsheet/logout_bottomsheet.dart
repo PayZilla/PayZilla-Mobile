@@ -6,7 +6,7 @@ import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 
 class LogoutBottomSheet extends StatelessWidget
     with BaseBottomSheetMixin, LogoutMixin {
-  const LogoutBottomSheet({Key? key}) : super(key: key);
+  LogoutBottomSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

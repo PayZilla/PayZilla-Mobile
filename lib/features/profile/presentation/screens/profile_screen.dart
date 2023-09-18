@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
@@ -11,6 +12,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<ProfileProvider>();
+    final authUser = context.watch<AuthProvider>();
+
     return AppScaffold(
       useBodyPadding: false,
       appBar: CustomAppBar(
@@ -48,8 +51,8 @@ class ProfileScreen extends StatelessWidget {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: const LocalImage(
-                selfie,
+              child: HostedImage(
+                authUser.user.profileImage,
                 fit: BoxFit.fitWidth,
               ),
             ),
@@ -57,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
           const YBox(Insets.dim_12),
           Center(
             child: Text(
-              'John O. Williams',
+              '${authUser.user.firstName} ${authUser.user.lastName}',
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.textHeaderColor,
                 fontWeight: FontWeight.w700,
@@ -69,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
           const YBox(Insets.dim_6),
           Center(
             child: Text(
-              'tommyjason@gmail.com',
+              authUser.user.email,
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.textBodyColor,
                 fontWeight: FontWeight.w400,

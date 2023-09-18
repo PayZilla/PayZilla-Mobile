@@ -19,7 +19,7 @@ void registerViewModelProviders(GetIt getIt) {
       MyCardsProvider.new,
     )
     ..registerFactory(
-      ProfileProvider.new,
+      () => ProfileProvider(getIt(), getIt()),
     )
     ..registerFactory(
       NotificationProvider.new,
