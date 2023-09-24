@@ -26,6 +26,7 @@ class _AuthEndpoints {
 class _UserEndpoints {
   final getUser = '/profile';
   final avatarUpload = '/profile/avatar';
+  final qrValidate = '/accounts/transfer/validate';
 }
 
 class _TransactionEndpoints {

@@ -46,6 +46,7 @@ class AppRoutes {
   /// Scanner routes
   static const qrScan = '/tab/home/qr-scanner';
   static const qrShowScan = '/tab/home/qr-show-scanner';
+  static const scanQrScreen = '/tab/home/qr-scanner/scan-qr-screen';
 
   // My cards
   static const startCreateCard = '/tab/card/start-create-card';

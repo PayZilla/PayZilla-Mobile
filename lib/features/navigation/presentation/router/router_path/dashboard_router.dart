@@ -46,6 +46,14 @@ final dashboardRouter = [
         )!,
       );
     },
+    routes: [
+      GoRoute(
+        path: 'scan-qr-screen',
+        builder: (context, state) {
+          return const ScanQrScreen();
+        },
+      ),
+    ],
   ),
   GoRoute(
     path: 'qr-show-scanner',

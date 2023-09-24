@@ -25,18 +25,24 @@ class BottomNavigationContainer extends StatefulWidget {
 class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     with ChangeNotifier {
   late AuthProvider authProvider;
+  ValidateQRDto requestDto = ValidateQRDto.empty();
+  WalletChannel walletChannel = WalletChannel.empty();
+  late QrProvider qrProvider;
   @override
   void initState() {
     super.initState();
 
-    Future.microtask(() {
-      authProvider.getUser();
+    Future.microtask(() async {
+      await authProvider.getUser();
+
+      setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
     authProvider = context.watch<AuthProvider>();
+    qrProvider = context.watch<QrProvider>();
     if (widget.hideNav || authProvider.showNavBar) {
       return Container();
     }
@@ -119,10 +125,20 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           top: -5,
           left: context.getWidth(.39),
           child: GestureDetector(
-            onTap: () => AppNavigator.of(context).push(
-              AppRoutes.qrShowScan,
-              args: QrShowScreenArgs('238838392923848'),
-            ),
+            onTap: () {
+              walletChannel = walletChannel.copyWith(
+                paymentId: authProvider.user.phoneNumber,
+              );
+              requestDto = requestDto.copyWith(
+                walletChannel: walletChannel,
+                walletType: WalletType.wallet,
+              );
+              AppNavigator.of(context).push(
+                AppRoutes.qrScan,
+                args: QRScreenArgs(authProvider.user.phoneNumber),
+              );
+              qrProvider.validateQR(requestDto);
+            },
             child: Container(
               height: context.getHeight(0.07),
               width: context.getHeight(0.1),

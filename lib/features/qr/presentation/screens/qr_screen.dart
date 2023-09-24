@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class QRScreenArgs {
@@ -16,12 +19,17 @@ class QRScanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final qrProvider = context.watch<QrProvider>();
+
     return AppScaffold(
       extendedBody: true,
       useBodyPadding: false,
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage(qrBgPng), fit: BoxFit.cover),
+          image: DecorationImage(
+            image: AssetImage(qrBgPng),
+            fit: BoxFit.cover,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -61,67 +69,79 @@ class QRScanScreen extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    LocalSvgImage(
-                      qrBorderSvg,
-                    ),
-                    Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: const BoxDecoration(
-                        borderRadius: Corners.mdBorder,
-                      ),
-                      child: QrImageView(
-                        data: args.qrValue,
-                        size: 200,
-                        backgroundColor: AppColors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const YBox(Insets.dim_40),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: Insets.dim_12),
-                height: Insets.dim_50,
-                margin:
-                    EdgeInsets.symmetric(horizontal: context.getWidth(0.15)),
-                decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.4),
-                  borderRadius: Corners.mdBorder,
-                  border: Border.all(color: AppColors.white),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LocalSvgImage(scanSvg),
-                    const XBox(Insets.dim_12),
-                    Text(
-                      'Scan QR code ready',
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              Container(
-                height: Insets.dim_80,
-                padding: const EdgeInsets.all(Insets.dim_20),
-                decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.4),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.white),
-                ),
-                child: LocalSvgImage(
-                  qrBoltSvg,
-                  fit: BoxFit.contain,
+              if (qrProvider.qrResponse.isLoading)
+                const AppLoadingWidget(
                   color: AppColors.white,
+                  size: Insets.dim_32,
+                )
+              else ...[
+                Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      LocalSvgImage(
+                        qrBorderSvg,
+                      ),
+                      Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: const BoxDecoration(
+                          borderRadius: Corners.mdBorder,
+                        ),
+                        child: QrImageView(
+                          data: args.qrValue,
+                          size: 200,
+                          backgroundColor: AppColors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const YBox(Insets.dim_40),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: Insets.dim_12),
+                  height: Insets.dim_50,
+                  margin:
+                      EdgeInsets.symmetric(horizontal: context.getWidth(0.15)),
+                  decoration: BoxDecoration(
+                    color: AppColors.white.withOpacity(0.4),
+                    borderRadius: Corners.mdBorder,
+                    border: Border.all(color: AppColors.white),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LocalSvgImage(scanSvg),
+                      const XBox(Insets.dim_12),
+                      Text(
+                        'Scan QR code ready',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              const Spacer(),
+              InkWell(
+                onTap: () =>
+                    AppNavigator.of(context).push(AppRoutes.scanQrScreen),
+                child: Container(
+                  height: Insets.dim_80,
+                  padding: const EdgeInsets.all(Insets.dim_20),
+                  decoration: BoxDecoration(
+                    color: AppColors.white.withOpacity(0.4),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.white),
+                  ),
+                  child: LocalSvgImage(
+                    qrBoltSvg,
+                    fit: BoxFit.contain,
+                    color: AppColors.white,
+                  ),
                 ),
               ),
               const YBox(Insets.dim_28),

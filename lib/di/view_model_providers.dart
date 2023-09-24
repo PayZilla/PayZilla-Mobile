@@ -7,6 +7,7 @@ import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
+import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
 void registerViewModelProviders(GetIt getIt) {
@@ -32,5 +33,8 @@ void registerViewModelProviders(GetIt getIt) {
     )
     ..registerFactory(
       TransactionProvider.new,
+    )
+    ..registerFactory(
+      () => QrProvider(getIt()),
     );
 }
