@@ -30,13 +30,9 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
 
     return AppScaffold(
       appBar: CustomAppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () => AppNavigator.of(context).pop(),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () => AppNavigator.of(context).pop(),
         ),
-        leadingWidth: 80,
       ),
       body: Form(
         key: formKey,

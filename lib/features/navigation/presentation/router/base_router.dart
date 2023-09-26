@@ -101,15 +101,7 @@ GoRouter getBaseRouter() {
           //Note (Dev)=> create sub routes for nav tabs
           ...dashboardRouter,
           myCardRouter(),
-          GoRoute(
-            path: 'edit-card',
-            builder: (context, state) => EditCardScreen(
-              args: argsRegistry<EditCardScreenArgs>(
-                'edit-card',
-                state.extra,
-              )!,
-            ),
-          ),
+
           ...profileRouter,
         ],
       )

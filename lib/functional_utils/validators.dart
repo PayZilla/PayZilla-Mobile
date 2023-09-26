@@ -212,6 +212,9 @@ class Validators {
   static String harmonize(String? value) =>
       value == null ? '' : value.replaceAll(',', '').trim();
 
+  static String harmonizeForContacts(String? value) =>
+      value == null ? '' : value.replaceAll(RegExp('[^0-9]'), '');
+
   static bool hasSpecialCharacter(String? value) {
     final res = harmonize(value);
     if (res.isEmpty) return false;

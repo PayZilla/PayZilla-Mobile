@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
@@ -20,6 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final dsProvider = context.watch<DashboardProvider>();
+    final authProvider = context.watch<AuthProvider>();
     return AppScaffold(
       useBodyPadding: false,
       body: Stack(
@@ -54,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           const YBox(Insets.dim_10),
                           Text(
-                            'John O.Williams',
+                            authProvider.user.fullName,
                             style: context.textTheme.bodyMedium!.copyWith(
                               color: AppColors.white,
                               fontWeight: FontWeight.w700,
@@ -108,7 +110,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                         todo: [
                           () {
-                            Log().debug('The action tapped is deposit');
+                            AppNavigator.of(context)
+                                .push(AppRoutes.fundingAccountDetails);
                           },
                           () {
                             dsProvider.goTo(AppRoutes.transfer, context);
@@ -116,45 +119,125 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           () {
                             Log().debug('The action tapped is Withdraw');
                           },
-                          () {
-                            Log().debug('The action tapped is Refer');
-                          }
+                          () =>
+                              AppNavigator.of(context).push(AppRoutes.referral)
                         ],
                       ),
-                      DashboardIconActionWidget(
-                        icon: [dataSvg, dataSvg, safeRideSvg, tvSvg],
-                        name: const ['Airtime', 'Data', 'Safe Ride', 'TV'],
-                        todo: [
-                          () {
-                            Log().debug('The action tapped is airtime');
-                          },
-                          () {
-                            Log().debug('The action tapped is data');
-                          },
-                          () {
-                            Log().debug('The action tapped is safe ride');
-                          },
-                          () {
-                            Log().debug('The action tapped is tv');
-                          }
-                        ],
-                      ),
-                      DashboardIconActionWidget(
-                        length: 3,
-                        icon: [electricitySvg, schoolSvg, moreSvg],
-                        name: const ['Electricity', 'School', 'More'],
-                        todo: [
-                          () {
-                            Log().debug('The action tapped is Electricity');
-                          },
-                          () {
-                            Log().debug('The action tapped is School');
-                          },
-                          () {
-                            Log().debug('The action tapped is more');
-                          },
-                        ],
-                      ),
+                      if (dsProvider.billResponse.isLoading)
+                        const Center(
+                          child: AppLoadingWidget(),
+                        )
+                      else if (dsProvider.billResponse.isSuccess &&
+                          dsProvider.billResponse.data!.isNotEmpty)
+                        Container(
+                          clipBehavior: Clip.hardEdge,
+                          padding: const EdgeInsets.all(Insets.dim_22),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: Insets.dim_22,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: Corners.mdBorder,
+                            color: AppColors.borderColor,
+                          ),
+                          child: Wrap(
+                            runSpacing: 20,
+                            spacing: 20,
+                            children: dsProvider.billResponse.data!
+                                .map(
+                                  (e) => InkWell(
+                                    onTap: () {
+                                      FutureBottomSheet<BillServiceModel>(
+                                        title: 'Select an option',
+                                        height: context.getHeight(0.5),
+                                        future: () async {
+                                          return dsProvider
+                                              .getCategoryId(e.identifier);
+                                        },
+                                        itemBuilder: (context, item) {
+                                          return ListTile(
+                                            title: Text(
+                                              item.name,
+                                            ),
+                                          );
+                                        },
+                                      ).show(context).then((value) {
+                                        if (value != null) {
+                                          FutureBottomSheet<Variations>(
+                                            title: 'Select an option',
+                                            height: context.getHeight(0.5),
+                                            searchWidget: dsProvider
+                                                    .convenienceFee.isNotEmpty
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        'Convenience Fee',
+                                                        style: context.textTheme
+                                                            .bodyMedium!
+                                                            .copyWith(
+                                                          color:
+                                                              AppColors.black,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 14,
+                                                          letterSpacing: 0.30,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        dsProvider
+                                                            .convenienceFee,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : null,
+                                            future: () async {
+                                              return dsProvider.getServiceId(
+                                                (value as BillServiceModel)
+                                                    .serviceId,
+                                              );
+                                            },
+                                            itemBuilder: (context, service) {
+                                              return ListTile(
+                                                title: Text(
+                                                  service.name,
+                                                ),
+                                              );
+                                            },
+                                          ).show(context).then((value) {
+                                            if (value != null) {
+                                              //  TODO(DEV)=> submit request here for bills transaction
+                                            }
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        LocalSvgImage(
+                                          dsProvider.assetIcon(e.identifier),
+                                        ),
+                                        const YBox(Insets.dim_12),
+                                        Text(
+                                          e.name,
+                                          style: context.textTheme.bodyMedium!
+                                              .copyWith(
+                                            color: AppColors.textHeaderColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12,
+                                            letterSpacing: 0.30,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
                       Column(
                         children: [
                           Container(

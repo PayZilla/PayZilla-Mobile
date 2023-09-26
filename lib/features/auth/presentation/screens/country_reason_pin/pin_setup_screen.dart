@@ -23,11 +23,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> with FormMixin {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: const CustomAppBar(
-        leading: Padding(
-          padding: EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(),
-        ),
-        leadingWidth: 80,
+        leading: AppBoxedButton(),
       ),
       body: SingleChildScrollView(
         child: Form(

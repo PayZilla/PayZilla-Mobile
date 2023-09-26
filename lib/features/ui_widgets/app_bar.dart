@@ -12,7 +12,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.centerTitle,
     this.backgroundColor,
     this.appBarTitleColor,
-    this.leadingWidth = 56,
+    this.leadingWidth = 80,
     this.useSmallFont = false,
     this.titleWidget,
     this.leadingColor,
@@ -51,7 +51,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             )
           : titleWidget ?? const SizedBox.shrink(),
-      leading: leading ?? const AppBoxedButton(),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: Insets.dim_20),
+        child: leading ?? const AppBoxedButton(),
+      ),
       leadingWidth: leadingWidth,
       actions: [
         ...?actions,

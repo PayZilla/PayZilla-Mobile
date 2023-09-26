@@ -65,4 +65,8 @@ class AppRoutes {
   static const general = '/tab/profile/general';
   static const password = '/tab/profile/password';
   static const faq = '/tab/profile/faq';
+
+  // funding account details routes
+  static const fundingAccountDetails = '/tab/home/funding-account-details';
+  static const topUpAmountScreen = '/tab/home/top-up-amount';
 }

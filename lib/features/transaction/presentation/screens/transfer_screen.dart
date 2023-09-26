@@ -26,13 +26,9 @@ class _TransferScreenState extends State<TransferScreen> {
       useBodyPadding: false,
       appBar: CustomAppBar(
         centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () => AppNavigator.of(context).pop(),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () => AppNavigator.of(context).pop(),
         ),
-        leadingWidth: 80,
         titleWidget: Text(
           'Transfer',
           style: context.textTheme.bodyMedium!.copyWith(
@@ -58,6 +54,7 @@ class _TransferScreenState extends State<TransferScreen> {
               ),
             ),
             const YBox(Insets.dim_16),
+            /*
             SizedBox(
               height: context.getHeight(0.25),
               child: PageView.builder(
@@ -90,7 +87,7 @@ class _TransferScreenState extends State<TransferScreen> {
                   currentPage: analyticProvider.currentSliderIndex,
                 ),
               ),
-            ),
+            ),*/
             const YBox(Insets.dim_24),
             Text(
               'Choose recipients',

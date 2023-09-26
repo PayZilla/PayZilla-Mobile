@@ -36,13 +36,9 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
       useBodyPadding: false,
       appBar: CustomAppBar(
         centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () => AppNavigator.of(context).pop(),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () => AppNavigator.of(context).pop(),
         ),
-        leadingWidth: 80,
         titleWidget: Text(
           'Send Money',
           style: context.textTheme.bodyMedium!.copyWith(

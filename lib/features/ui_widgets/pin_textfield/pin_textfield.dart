@@ -5,7 +5,7 @@ import 'package:pinput/pinput.dart';
 
 class PinTextField extends StatefulWidget {
   const PinTextField({
-    this.numOfDigits = 5,
+    this.numOfDigits = 4,
     this.keyboardType = TextInputType.number,
     this.size = 60,
     this.obscureText = false,

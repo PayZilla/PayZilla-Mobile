@@ -1,4 +1,5 @@
 // View models
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pay_zilla/features/analytics/analytics.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
@@ -20,7 +21,7 @@ void registerViewModelProviders(GetIt getIt) {
       MyCardsProvider.new,
     )
     ..registerFactory(
-      () => ProfileProvider(getIt(), getIt()),
+      () => ProfileProvider(getIt(), getIt(), getIt()),
     )
     ..registerFactory(
       NotificationProvider.new,
@@ -29,10 +30,17 @@ void registerViewModelProviders(GetIt getIt) {
       AnalyticProvider.new,
     )
     ..registerFactory(
-      DashboardProvider.new,
+      () => DashboardProvider(
+        billRepository: getIt(),
+        cardsRepository: getIt(),
+        accountRepository: getIt(),
+      ),
     )
     ..registerFactory(
-      TransactionProvider.new,
+      () => TransactionProvider(
+        transactionRepository: getIt(),
+        cardsRepository: getIt(),
+      ),
     )
     ..registerFactory(
       () => QrProvider(getIt()),

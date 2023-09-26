@@ -4,6 +4,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReferralScreen extends StatelessWidget {
@@ -11,6 +12,7 @@ class ReferralScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authPV = context.watch<AuthProvider>();
     return AppScaffold(
       body: Column(
         children: [
@@ -53,7 +55,7 @@ class ReferralScreen extends StatelessWidget {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  text: 'Share you referral link and earn ',
+                  text: 'Share your referral link and earn ',
                   style: context.textTheme.bodyMedium!.apply(
                     color: AppColors.textBodyColor,
                     fontSizeDelta: 4,
@@ -101,13 +103,13 @@ class ReferralScreen extends StatelessWidget {
                   size: Insets.dim_24,
                   color: AppColors.textBodyColor,
                 ).onTap(
-                  () => 'paymentUrl'.toClipboard(
+                  () => authPV.user.referralCode.toClipboard(
                     feedbackMsg: 'Payment Link copied to clipboard',
                   ),
                 ),
-                const Text(
-                  'LIK5896O',
-                  style: TextStyle(
+                Text(
+                  authPV.user.referralCode,
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textBodyColor,
@@ -122,7 +124,9 @@ class ReferralScreen extends StatelessWidget {
                   ),
                 ).onTap(
                   () async {
-                    await shareReferralLink();
+                    await shareReferralLink(
+                      authPV.user.referralCode,
+                    );
                   },
                 ),
               ],
@@ -135,6 +139,7 @@ class ReferralScreen extends StatelessWidget {
             endIndent: Insets.dim_24,
           ),
           const Spacer(),
+          /* Note(Dev)=> this was deprecated for subsequent release
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Insets.dim_40),
@@ -177,15 +182,15 @@ class ReferralScreen extends StatelessWidget {
               const XBox(Insets.dim_24),
               socialAuthWidget(appleSvg),
             ],
-          ),
+          ),*/
         ],
       ),
     );
   }
 
-  Future<void> shareReferralLink() async {
+  Future<void> shareReferralLink(String ref) async {
     await Share.share(
-      'Hi there 👋, use my referral code to sign up to PayZilla: *JOSHT* or use my referral link JUST DEY PLAY',
+      'Hi there 👋, use my referral code to sign up to PayZilla: *$ref* or use my referral link JUST DEY PLAY',
     );
   }
 }

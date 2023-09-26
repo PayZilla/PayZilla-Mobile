@@ -32,11 +32,11 @@ class HttpManager {
   late Dio _dio1;
   bool enableLogging;
 
-  Future get(String endpoint) async {
+  Future get(String endpoint, {Map<String, dynamic>? data}) async {
     return _makeRequest(
       RequestType.get,
       endpoint,
-      {},
+      data,
     );
   }
 
@@ -93,7 +93,6 @@ class HttpManager {
       switch (type) {
         case RequestType.get:
           response = await _dio1.get(endpoint);
-
           break;
         case RequestType.post:
           response = await _dio1.post(endpoint, data: data);
@@ -120,6 +119,7 @@ class HttpManager {
         }
         return response.data;
       }
+
       throw AppServerException(_handleException(response.data));
     } catch (e) {
       Log().debug(

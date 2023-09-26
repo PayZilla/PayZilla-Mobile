@@ -25,14 +25,10 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
 
     return AppScaffold(
       appBar: CustomAppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () =>
-                AppNavigator.of(context).push(AppRoutes.onboardingAuth),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () =>
+              AppNavigator.of(context).push(AppRoutes.onboardingAuth),
         ),
-        leadingWidth: 80,
       ),
       body: SingleChildScrollView(
         child: Form(

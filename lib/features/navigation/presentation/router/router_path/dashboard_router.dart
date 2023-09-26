@@ -58,12 +58,25 @@ final dashboardRouter = [
   GoRoute(
     path: 'qr-show-scanner',
     builder: (context, state) {
-      return QrShowScreen(
-        args: argsRegistry<QrShowScreenArgs>(
+      return OtherUserQrScreen(
+        args: argsRegistry<OtherUserQrScreenArgs>(
           'qr-show-scanner',
           state.extra,
         )!,
       );
     },
   ),
+  GoRoute(
+    path: 'funding-account-details',
+    builder: (context, state) => const FundingAccountDetails(),
+  ),
+  GoRoute(
+    path: 'top-up-amount',
+    builder: (context, state) => TopUpWidget(
+      args: argsRegistry<TopUpArgs>(
+        'top-up-amount',
+        state.extra,
+      )!,
+    ),
+  )
 ];

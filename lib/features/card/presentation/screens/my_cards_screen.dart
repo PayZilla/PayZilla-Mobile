@@ -2,17 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
 
-class MyCardScreen extends StatelessWidget {
+// TODO(Taiwo) => check if i was navigated here from topup, paybills or direct
+// this is so that when i click on the card, i can decide on what to do with card
+
+class MyCardScreen extends StatefulWidget {
   const MyCardScreen({super.key});
+
+  @override
+  State<MyCardScreen> createState() => _MyCardScreenState();
+}
+
+class _MyCardScreenState extends State<MyCardScreen> {
+  late TransactionProvider transactionP;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => transactionP
+        ..getCards()
+        ..initializeCard(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final cardProvider = context.read<MyCardsProvider>();
-
+    transactionP = context.watch<TransactionProvider>();
     return AppScaffold(
       useBodyPadding: false,
       appBar: CustomAppBar(
@@ -32,22 +53,32 @@ class MyCardScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
         child: Column(
           children: [
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const YBox(Insets.dim_24),
-                itemCount: cardProvider.screens.length,
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () => AppNavigator.of(context).push(
-                    AppRoutes.editCardFromMyCardScreen,
-                    args: EditCardScreenArgs(
-                      card: cardProvider.screens[index],
-                      cardPrimaryColor: cardProvider.cardColors[index],
-                    ),
+            if (transactionP.cardsServiceResponse.isLoading)
+              const Expanded(
+                child: Center(
+                  child: TempLoadingAtmCard(
+                    color: AppColors.textHeaderColor,
                   ),
-                  child: cardProvider.screens[index],
                 ),
               ),
-            ),
+            if (transactionP.cardsServiceResponse.isSuccess)
+              Expanded(
+                child: ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      const YBox(Insets.dim_24),
+                  itemCount: transactionP.cardsServiceResponse.data!.length,
+                  itemBuilder: (context, index) {
+                    final data = transactionP.cardsServiceResponse.data![index];
+                    return GestureDetector(
+                      onTap: () {},
+                      child: MyCardsWidget(
+                        card: data,
+                        color: cardProvider.cardColor(data.cardType),
+                      ),
+                    );
+                  },
+                ),
+              ),
             InkWell(
               onTap: () =>
                   AppNavigator.of(context).push(AppRoutes.startCreateCard),
@@ -78,7 +109,7 @@ class MyCardScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const YBox(Insets.dim_14),
+            const YBox(Insets.dim_24),
           ],
         ),
       ),

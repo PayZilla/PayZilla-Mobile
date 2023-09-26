@@ -4,15 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class ProfileProvider extends ChangeNotifier {
-  ProfileProvider(this.profileRepository, this.authProvider);
+  ProfileProvider(
+    this.profileRepository,
+    this.authProvider,
+    this.accountRepository,
+  );
 
   final ProfileRepository profileRepository;
   final AuthProvider authProvider;
+  final AccountRepository accountRepository;
 
   bool _profileLoader = false;
   bool get profileLoader => _profileLoader;
@@ -22,6 +28,10 @@ class ProfileProvider extends ChangeNotifier {
   }
 
   ApiResult<User> userProfileUpdate = ApiResult<User>.idle();
+  ApiResult<List<ContactsModel>> contactsResponse =
+      ApiResult<List<ContactsModel>>.idle();
+
+  ApiResult<List<FAQsModel>> faqResponse = ApiResult<List<FAQsModel>>.idle();
 
   // cloud upload file
   Future<void> uploadImage(String imgPath) async {
@@ -82,6 +92,41 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getContacts(List<String> contacts) async {
+    contactsResponse = ApiResult<List<ContactsModel>>.loading('Loading...');
+    notifyListeners();
+    final failureOrCat = await accountRepository.getContacts(contacts);
+    failureOrCat.fold(
+      (failure) {
+        contactsResponse =
+            ApiResult<List<ContactsModel>>.error(failure.message);
+        notifyListeners();
+      },
+      (res) {
+        contactsResponse = ApiResult<List<ContactsModel>>.success(res);
+        notifyListeners();
+      },
+    );
+    notifyListeners();
+  }
+
+  Future<void> getFAQs() async {
+    faqResponse = ApiResult<List<FAQsModel>>.loading('Loading...');
+    notifyListeners();
+    final failureOrCat = await profileRepository.getFAQs();
+    failureOrCat.fold(
+      (failure) {
+        faqResponse = ApiResult<List<FAQsModel>>.error(failure.message);
+        notifyListeners();
+      },
+      (res) {
+        faqResponse = ApiResult<List<FAQsModel>>.success(res);
+        notifyListeners();
+      },
+    );
+    notifyListeners();
+  }
+
   //create the profile widget data
   final profileWidget = [
     ProfileWidgetData(
@@ -103,7 +148,10 @@ class ProfileProvider extends ChangeNotifier {
       title: 'Language',
       asset: languageSvg,
       todo: (context) {
-        Log().debug('Language');
+        showInfoNotification(
+          'Only English is supported for now',
+          durationInMills: 2000,
+        );
       },
     ),
     ProfileWidgetData(
@@ -112,15 +160,8 @@ class ProfileProvider extends ChangeNotifier {
       todo: (context) => AppNavigator.of(context).push(AppRoutes.general),
     ),
     ProfileWidgetData(
-      title: 'Change Password',
-      asset: passwordSvg,
-      todo: (context) {
-        Log().debug('Change Password');
-      },
-    ),
-    ProfileWidgetData(
       title: 'FAQ',
-      asset: passwordSvg,
+      asset: faqSvg,
       todo: (context) => AppNavigator.of(context).push(AppRoutes.faq),
     ),
   ];

@@ -36,13 +36,9 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
           ),
         ),
         centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () => AppNavigator.of(context).pop(),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () => AppNavigator.of(context).pop(),
         ),
-        leadingWidth: 80,
       ),
       body: SingleChildScrollView(
         child: Form(

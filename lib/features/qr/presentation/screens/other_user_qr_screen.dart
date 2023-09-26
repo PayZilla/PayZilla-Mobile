@@ -7,16 +7,16 @@ import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class QrShowScreenArgs {
-  QrShowScreenArgs(this.qrValue);
+class OtherUserQrScreenArgs {
+  OtherUserQrScreenArgs(this.qrValue);
 
   final TransferValidateModel qrValue;
 }
 
-class QrShowScreen extends StatelessWidget {
-  const QrShowScreen({super.key, required this.args});
+class OtherUserQrScreen extends StatelessWidget {
+  const OtherUserQrScreen({super.key, required this.args});
 
-  final QrShowScreenArgs args;
+  final OtherUserQrScreenArgs args;
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +26,8 @@ class QrShowScreen extends StatelessWidget {
         centerTitle: true,
         appBarTitleColor: AppColors.textHeaderColor,
         title: 'Scanned QR Code',
-        leadingWidth: 80,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () => AppNavigator.of(context).pop(),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () => AppNavigator.of(context).pop(),
         ),
       ),
       body: Column(
@@ -60,7 +56,7 @@ class QrShowScreen extends StatelessWidget {
                 ),
                 const YBox(Insets.dim_4),
                 Text(
-                  '**** **** **** 1121',
+                  '**** **** **** ****',
                   style: context.textTheme.bodyMedium!.copyWith(
                     color: AppColors.textHeaderColor,
                     fontWeight: FontWeight.w500,

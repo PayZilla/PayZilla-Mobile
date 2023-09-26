@@ -60,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
           const YBox(Insets.dim_12),
           Center(
             child: Text(
-              '${authUser.user.firstName} ${authUser.user.lastName}',
+              authUser.user.fullName,
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.textHeaderColor,
                 fontWeight: FontWeight.w700,
@@ -117,13 +117,6 @@ class ProfileScreen extends StatelessWidget {
               asset: profile.profileWidget[5].asset,
               title: profile.profileWidget[5].title,
               onTap: () => profile.profileWidget[5].todo!(context),
-            ),
-          ),
-          AppListTileWidget(
-            args: ListTileWidgetArgs(
-              asset: profile.profileWidget[6].asset,
-              title: profile.profileWidget[6].title,
-              onTap: () => profile.profileWidget[6].todo!(context),
             ),
           ),
           const YBox(Insets.dim_18),

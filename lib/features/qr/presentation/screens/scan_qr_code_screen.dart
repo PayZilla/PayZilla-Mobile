@@ -92,7 +92,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
               if (qrProvider.qrResponse.isSuccess) {
                 AppNavigator.of(context).push(
                   AppRoutes.qrShowScan,
-                  args: QrShowScreenArgs(qrProvider.qrResponse.data!),
+                  args: OtherUserQrScreenArgs(qrProvider.qrResponse.data!),
                 );
               }
             });

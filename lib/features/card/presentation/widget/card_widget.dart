@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/ui_widgets/image.dart';
+import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/assets.dart';
 import 'package:pay_zilla/functional_utils/extensions/context_extension.dart';
+import 'package:provider/provider.dart';
 
 class AtmCardWidget extends StatelessWidget {
   const AtmCardWidget({super.key, this.color});
@@ -11,7 +14,7 @@ class AtmCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final money = context.money();
-
+    final dsProvider = context.watch<DashboardProvider>();
     return Container(
       height: context.getHeight(0.2),
       width: context.getWidth(0.9),
@@ -20,71 +23,78 @@ class AtmCardWidget extends StatelessWidget {
         borderRadius: Corners.mdBorder,
         color: color,
       ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          LocalSvgImage(
-            atmLineSvg,
-            width: double.infinity,
-            color: AppColors.appGreen,
-          ),
-          FractionallySizedBox(
-            heightFactor: 0.7,
-            alignment: Alignment.topCenter,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
-              decoration: BoxDecoration(
-                color: AppColors.textHeaderColor.withOpacity(0.5),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const YBox(Insets.dim_4),
-                  Row(
-                    children: [
-                      LocalSvgImage(atmChipSvg),
-                      const XBox(Insets.dim_22),
-                      LocalSvgImage(atmNfcSvg),
-                    ],
-                  ),
-                  const YBox(Insets.dim_4),
-                  Text(
-                    '****   ****   ****   1121',
-                    style: context.textTheme.bodyMedium!.copyWith(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
+      child: ListView.builder(
+        itemCount: dsProvider.getWalletsResponse.data?.length ?? 0,
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final data = dsProvider.getWalletsResponse.data?[index];
+          return SizedBox(
+            height: context.getHeight(0.2),
+            width: context.getWidth(0.9),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                LocalSvgImage(
+                  atmLineSvg,
+                  width: double.infinity,
+                  color: AppColors.appGreen,
+                ),
+                FractionallySizedBox(
+                  heightFactor: 0.7,
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: Insets.dim_22),
+                    decoration: BoxDecoration(
+                      color: AppColors.textHeaderColor.withOpacity(0.5),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const YBox(Insets.dim_4),
+                        Row(
+                          children: [
+                            LocalSvgImage(atmChipSvg),
+                            const XBox(Insets.dim_22),
+                            LocalSvgImage(atmNfcSvg),
+                          ],
+                        ),
+                        const YBox(Insets.dim_4),
+                      ],
                     ),
                   ),
-                  const YBox(Insets.dim_4),
-                ],
-              ),
-            ),
-          ),
-          FractionallySizedBox(
-            heightFactor: 0.3,
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              color: AppColors.appSecondaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
-              child: Row(
-                children: [
-                  Text(
-                    money.formatValue(2000000),
-                    style: context.textTheme.bodyMedium!.copyWith(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                ),
+                FractionallySizedBox(
+                  heightFactor: 0.3,
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    color: AppColors.appSecondaryColor,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: Insets.dim_22),
+                    child: Row(
+                      children: [
+                        Text(
+                          money
+                              .formatValue(double.tryParse(data!.balance) ?? 0),
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const Spacer(),
+                        LocalSvgImage(atmLogoSvg),
+                      ],
                     ),
                   ),
-                  const Spacer(),
-                  LocalSvgImage(atmLogoSvg),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -93,14 +103,15 @@ class AtmCardWidget extends StatelessWidget {
 //  * ATM Card Widget 2
 //  * Use this in the card widget
 
-class AtmCardWidget2 extends StatelessWidget {
-  const AtmCardWidget2({super.key, this.color});
+class MyCardsWidget extends StatelessWidget {
+  const MyCardsWidget({super.key, this.color, required this.card});
   final Color? color;
+  final CardsModel card;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.getHeight(0.21),
+      height: context.getHeight(0.22),
       width: context.getWidth(0.9),
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.only(left: Insets.dim_22),
@@ -118,7 +129,7 @@ class AtmCardWidget2 extends StatelessWidget {
               LocalSvgImage(atmLogoSvg),
               const Spacer(),
               Text(
-                '****   ****   ****   1121',
+                '****   ****   ****   ${card.last4}',
                 style: context.textTheme.bodyMedium!.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeight.w700,
@@ -126,7 +137,7 @@ class AtmCardWidget2 extends StatelessWidget {
                 ),
               ),
               Text(
-                '13/24',
+                '${card.expMonth}/${card.expYear}',
                 style: context.textTheme.bodyMedium!.copyWith(
                   color: AppColors.white.withOpacity(0.6),
                   fontWeight: FontWeight.w400,
@@ -135,7 +146,7 @@ class AtmCardWidget2 extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                'Tommy Jason',
+                card.accountName,
                 style: context.textTheme.bodyMedium!.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeight.w700,
@@ -160,8 +171,8 @@ class AtmCardWidget2 extends StatelessWidget {
 
 //  * ATM Card Widget 3
 
-class AtmCardWidget3 extends StatelessWidget {
-  const AtmCardWidget3({super.key, this.color});
+class TempLoadingAtmCard extends StatelessWidget {
+  const TempLoadingAtmCard({super.key, this.color});
   final Color? color;
 
   @override
@@ -190,12 +201,17 @@ class AtmCardWidget3 extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            '2564   8546   8421   1121',
+            '****   ****   ****   ****',
             style: context.textTheme.bodyMedium!.copyWith(
               color: AppColors.white,
               fontWeight: FontWeight.w700,
               fontSize: 16,
             ),
+          ),
+          const Spacer(),
+          const AppLoadingWidget(
+            size: 16,
+            color: AppColors.white,
           ),
           const Spacer(),
           Row(
@@ -213,7 +229,7 @@ class AtmCardWidget3 extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'John Williams',
+                      'Loading...',
                       style: context.textTheme.bodyMedium!.copyWith(
                         color: AppColors.white,
                         fontWeight: FontWeight.w700,
@@ -238,7 +254,7 @@ class AtmCardWidget3 extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '13/24',
+                      '--/--',
                       style: context.textTheme.bodyMedium!.copyWith(
                         color: AppColors.white,
                         fontWeight: FontWeight.w700,

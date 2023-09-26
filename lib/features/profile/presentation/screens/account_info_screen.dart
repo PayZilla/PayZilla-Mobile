@@ -25,15 +25,11 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
       useBodyPadding: false,
       appBar: CustomAppBar(
         centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () {
-              AppNavigator.of(context).push(AppRoutes.profile);
-            },
-          ),
+        leading: AppBoxedButton(
+          onPressed: () {
+            AppNavigator.of(context).push(AppRoutes.profile);
+          },
         ),
-        leadingWidth: 80,
         titleWidget: Text(
           'Account Info',
           style: context.textTheme.bodyMedium!.copyWith(
@@ -127,8 +123,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                   rowBoxContent(
                     context,
                     'Your name',
-                    subtitle:
-                        '${authProvider.user.firstName} ${authProvider.user.lastName}',
+                    subtitle: authProvider.user.fullName,
                   ),
                   rowBoxContent(
                     context,

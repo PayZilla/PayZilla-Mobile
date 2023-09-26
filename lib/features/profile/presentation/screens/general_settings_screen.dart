@@ -15,15 +15,11 @@ class GeneralSettingsScreen extends StatelessWidget {
       useBodyPadding: false,
       appBar: CustomAppBar(
         centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () {
-              AppNavigator.of(context).push(AppRoutes.profile);
-            },
-          ),
+        leading: AppBoxedButton(
+          onPressed: () {
+            AppNavigator.of(context).push(AppRoutes.profile);
+          },
         ),
-        leadingWidth: 80,
         titleWidget: Text(
           'General Settings',
           style: context.textTheme.bodyMedium!.copyWith(

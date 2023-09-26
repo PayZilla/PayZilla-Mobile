@@ -1,27 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:provider/provider.dart';
 
-class FaqScreen extends StatelessWidget {
+class FaqScreen extends StatefulWidget {
   const FaqScreen({super.key});
 
   @override
+  State<FaqScreen> createState() => _FaqScreenState();
+}
+
+class _FaqScreenState extends State<FaqScreen> {
+  late ProfileProvider provider;
+  List<FAQsModel> _faqs = [];
+  List<FAQsModel> _searchedFaqs = [];
+  @override
+  void initState() {
+    Future.microtask(_fetchFaqs);
+    super.initState();
+  }
+
+  Future _fetchFaqs() async {
+    await provider.getFAQs();
+    setState(() {
+      if (provider.faqResponse.isSuccess) {
+        _faqs = provider.faqResponse.data!;
+        _searchedFaqs = _faqs;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    provider = context.watch<ProfileProvider>();
     return AppScaffold(
       appBar: CustomAppBar(
         centerTitle: true,
         title: 'Frequently Asked',
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () {
-              AppNavigator.of(context).push(AppRoutes.profile);
-            },
-          ),
+        leading: AppBoxedButton(
+          onPressed: () {
+            AppNavigator.of(context).push(AppRoutes.profile);
+          },
         ),
-        leadingWidth: 80,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,56 +59,49 @@ class FaqScreen extends StatelessWidget {
             ),
           ),
           const YBox(Insets.dim_40),
-          const SearchTextInputField(
+          SearchTextInputField(
             showTrailing: false,
+            onChanged: (value) {
+              if (value.isNotEmpty && _faqs.isNotEmpty) {
+                _searchedFaqs = _faqs
+                    .where(
+                      (faq) =>
+                          faq.title.toLowerCase().contains(value.toLowerCase()),
+                    )
+                    .toList();
+              } else {
+                _searchedFaqs = _faqs;
+              }
+              setState(() {});
+            },
           ),
           const YBox(Insets.dim_24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Frequently Asked',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  color: AppColors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                  letterSpacing: 0.30,
-                ),
+          Text(
+            'Frequently Asked',
+            style: context.textTheme.bodyMedium!.copyWith(
+              color: AppColors.black,
+              fontWeight: FontWeight.w700,
+              fontSize: 20,
+              letterSpacing: 0.30,
+            ),
+          ),
+          const YBox(Insets.dim_24),
+          if (provider.faqResponse.isLoading) const AppLoadingWidget(),
+          if (provider.faqResponse.isSuccess)
+            Expanded(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const YBox(Insets.dim_12),
+                itemCount: _searchedFaqs.length,
+                itemBuilder: (context, index) {
+                  final data = _searchedFaqs[index];
+                  return faqColumnWidget(
+                    context,
+                    title: data.title,
+                    subtitle: data.body,
+                  );
+                },
               ),
-              Text(
-                'View All',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  color: AppColors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  letterSpacing: 0.30,
-                ),
-              ).onTap(() {
-                showInfoNotification('Coming soon1!!!');
-              }),
-            ],
-          ),
-          const YBox(Insets.dim_24),
-          faqColumnWidget(context),
-          faqColumnWidget(
-            context,
-            title: 'How to create a card for PayZilla?',
-            subtitle:
-                'You can select the create card menu then select "Add New Card" select the continue button then you ...',
-          ),
-          faqColumnWidget(
-            context,
-            title: 'How to Top Up on PayZilla?',
-            subtitle:
-                'Click the Top Up menu then select the amount of money and the method then click the "top up now" button...',
-          ),
-          const Spacer(),
-          AppButton(
-            textTitle: 'Load more',
-            action: () {},
-            backgroundColor: AppColors.grey,
-            color: AppColors.textHeaderColor,
-          ),
+            ),
         ],
       ),
     );

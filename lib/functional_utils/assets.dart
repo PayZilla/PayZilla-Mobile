@@ -100,6 +100,7 @@ final String passwordSvg = 'password'.profileSvg;
 final String referralSvg = 'referral'.profileSvg;
 final String defaultNotificationSvg = 'default_notification'.profileSvg;
 final String referralCodeSvg = 'referral_screen'.profileSvg;
+final String faqSvg = 'faq'.profileSvg;
 
 // activity
 final String amazonSvg = 'amazon'.activitySvg;
@@ -108,6 +109,7 @@ final String sportsSvg = 'sports'.activitySvg;
 final String cardsPng = 'cards'.png;
 final String successfulTransferSvg = 'success-transfer'.transactionSvg;
 final String allTransactSvg = 'all-transact-bg'.transactionSvg;
+final String bankSvg = 'bank'.transactionSvg;
 
 // extensions
 extension ImageExtension on String {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
@@ -25,15 +26,19 @@ class BottomNavigationContainer extends StatefulWidget {
 class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     with ChangeNotifier {
   late AuthProvider authProvider;
+  late QrProvider qrProvider;
+  late DashboardProvider dashboardProvider;
   ValidateQRDto requestDto = ValidateQRDto.empty();
   WalletChannel walletChannel = WalletChannel.empty();
-  late QrProvider qrProvider;
   @override
   void initState() {
     super.initState();
 
-    Future.microtask(() async {
-      await authProvider.getUser();
+    Future.microtask(() {
+      dashboardProvider
+        ..getWallets()
+        ..getCategories();
+      authProvider.getUser();
 
       setState(() {});
     });
@@ -43,6 +48,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
   Widget build(BuildContext context) {
     authProvider = context.watch<AuthProvider>();
     qrProvider = context.watch<QrProvider>();
+    dashboardProvider = context.watch<DashboardProvider>();
     if (widget.hideNav || authProvider.showNavBar) {
       return Container();
     }
@@ -59,9 +65,9 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           onTabSelected: (tab) {
             if (tab == AppNavTab.none) return;
 
-            if (tab == AppNavTab.profile) {
-              authProvider.getUser();
-            }
+            authProvider.getUser();
+            dashboardProvider.getWallets();
+
             AppNavigator.of(context).push(AppRoutes.tab(tab));
           },
           items: [

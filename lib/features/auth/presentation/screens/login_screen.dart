@@ -26,14 +26,9 @@ class _SignInState extends State<SignIn> with FormMixin {
 
     return AppScaffold(
       appBar: CustomAppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () =>
-                AppNavigator.of(context).push(AppRoutes.onboarding),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () => AppNavigator.of(context).push(AppRoutes.onboarding),
         ),
-        leadingWidth: 80,
       ),
       body: SingleChildScrollView(
         child: Form(

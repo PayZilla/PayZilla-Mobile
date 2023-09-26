@@ -17,7 +17,8 @@ dependencies:
   firebase_core: ^2.3.0
   firebase_crashlytics: ^3.0.6
 
-  # 3rd party analytics
+  # 3rd party payment gateway
+  flutter_paystack: ^1.0.7
 
   # tooling and security
   crypto: ^3.0.1
@@ -25,7 +26,7 @@ dependencies:
   encrypt: ^5.0.1
   flutter_dotenv: ^5.0.0
   equatable: 2.0.5
-  intl: ^0.18.0
+  intl: ^0.17.0
   jwt_decoder: ^2.0.1
   flutter_secure_storage: ^8.0.0
   json_annotation: ^4.6.0
@@ -34,6 +35,7 @@ dependencies:
   uuid: ^3.0.6
   qr_flutter: ^4.1.0
   mobile_scanner: ^3.4.1
+  flutter_contacts: ^1.1.7+1
 
   # network tooling
   connectivity_plus: ^2.3.0

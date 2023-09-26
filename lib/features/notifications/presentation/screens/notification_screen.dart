@@ -20,12 +20,8 @@ class NotificationScreen extends StatelessWidget {
         centerTitle: true,
         appBarTitleColor: AppColors.black,
         title: 'Notification',
-        leadingWidth: 80,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: Insets.dim_24),
-          child: AppBoxedButton(
-            onPressed: () => AppNavigator.of(context).pop(),
-          ),
+        leading: AppBoxedButton(
+          onPressed: () => AppNavigator.of(context).pop(),
         ),
         actions: [
           AppBoxedButton(

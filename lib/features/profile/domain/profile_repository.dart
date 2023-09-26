@@ -25,4 +25,12 @@ class ProfileRepository extends Repository {
       return response;
     });
   }
+
+  Future<Either<Failure, List<FAQsModel>>> getFAQs() async {
+    return runGuard(() async {
+      final response = await remoteDataSource.getFAQs();
+
+      return response;
+    });
+  }
 }

@@ -23,7 +23,7 @@ class MapsServiceImpl implements IMapsRemoteServices {
     try {
       final response = PlacesSuggestionDto.fromJson(
         await http.get(
-          mapsEndpoints.suggestion(query, country, sessionToken),
+          '', // mapsEndpoints.suggestion(query, country, sessionToken),
         ),
       );
 
@@ -48,7 +48,7 @@ class MapsServiceImpl implements IMapsRemoteServices {
     try {
       final response = PlaceDetailedDto.fromJson(
         await http.get(
-          mapsEndpoints.completePlaceId(placeId, sessionToken),
+          '', //mapsEndpoints.completePlaceId(placeId, sessionToken),
         ),
       );
       if (response.isResultOk) {

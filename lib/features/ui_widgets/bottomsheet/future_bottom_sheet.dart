@@ -12,6 +12,7 @@ class FutureBottomSheet<T> extends StatelessWidget with BaseBottomSheetMixin {
     this.desc,
     this.title,
     this.searchWidget,
+    this.bottomWidget,
     this.isDismissible = true,
     Key? key,
   }) : super(key: key);
@@ -20,6 +21,7 @@ class FutureBottomSheet<T> extends StatelessWidget with BaseBottomSheetMixin {
   final Function(T)? onItemSelected;
   final Widget Function(BuildContext context, T item) itemBuilder;
   final Widget? searchWidget;
+  final Widget? bottomWidget;
   final double? height;
   final String? title, desc;
   final bool isDismissible;
@@ -37,7 +39,7 @@ class FutureBottomSheet<T> extends StatelessWidget with BaseBottomSheetMixin {
                 const YBox(Insets.dim_18),
               ],
               ListView.builder(
-                physics: const PageScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
@@ -54,13 +56,18 @@ class FutureBottomSheet<T> extends StatelessWidget with BaseBottomSheetMixin {
                   );
                 },
               ),
+              if (bottomWidget != null) ...[
+                const YBox(Insets.dim_18),
+                bottomWidget!,
+                const YBox(Insets.dim_18),
+              ],
             ],
           );
         }
         if (snapshot.hasError) {
           return const AppErrorWidget();
         }
-        return const AppLoadingWidget();
+        return const Center(child: AppLoadingWidget());
       },
     );
 
