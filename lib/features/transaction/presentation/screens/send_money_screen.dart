@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class SendMoneyScreenArgs {
   const SendMoneyScreenArgs({
-    required this.name,
-    required this.url,
+    required this.contact,
   });
 
-  final String name;
-  final String url;
+  final ContactsModel contact;
 }
 
 class SendMoneyScreen extends StatefulWidget {
@@ -26,8 +24,9 @@ class SendMoneyScreen extends StatefulWidget {
   State<SendMoneyScreen> createState() => _SendMoneyScreenState();
 }
 
-class _SendMoneyScreenState extends State<SendMoneyScreen> {
-  int? currentSelectedIndex;
+class _SendMoneyScreenState extends State<SendMoneyScreen> with FormMixin {
+  final amountController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final money = context.money();
@@ -52,179 +51,98 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
-          child: Column(
-            children: [
-              const YBox(Insets.dim_32),
-              Container(
-                padding: const EdgeInsets.all(Insets.dim_12),
-                height: context.getHeight(0.15),
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.white,
-                  border: Border.all(width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.textBodyColor.withOpacity(0.05),
-                      blurRadius: 10,
-                      spreadRadius: 10,
-                    )
-                  ],
-                ),
-                child: Container(
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                const YBox(Insets.dim_32),
+                Container(
+                  padding: const EdgeInsets.all(Insets.dim_12),
+                  height: context.getHeight(0.15),
                   clipBehavior: Clip.hardEdge,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
+                    color: AppColors.white,
+                    border: Border.all(width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.textBodyColor.withOpacity(0.05),
+                        blurRadius: 10,
+                        spreadRadius: 10,
+                      )
+                    ],
                   ),
-                  child: const LocalImage(
-                    selfie,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
-              const YBox(Insets.dim_12),
-              Center(
-                child: Text(
-                  'to ${widget.args.name}',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.textHeaderColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                    letterSpacing: 0.30,
-                  ),
-                ),
-              ),
-              const YBox(Insets.dim_16),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: Corners.mdBorder,
-                  border: Border.all(
-                    color: const Color(0xffE5E7EB),
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Insets.dim_16,
-                  vertical: Insets.dim_16,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Enter amount:',
-                          style: context.textTheme.bodyMedium!.copyWith(
-                            color: AppColors.textBodyColor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            letterSpacing: 0.30,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          'Max ${money.formatValue(6450000)}',
-                          style: context.textTheme.bodyMedium!.copyWith(
-                            color: AppColors.textHeaderColor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            letterSpacing: 0.1,
-                          ),
-                        ),
-                      ],
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
                     ),
-                    const YBox(Insets.dim_16),
-                    IgnorePointer(
-                      ignoring: false,
-                      child: PhoneNumberTextFormField(
-                        hintText: '00.00',
-                        prefixIcon: SizedBox(
-                          height: 40,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: Insets.dim_16,
-                                  right: Insets.dim_6,
-                                ),
-                                child: Text(
-                                  'NG',
-                                  style: context.textTheme.bodyMedium!.copyWith(
-                                    color: AppColors.textHeaderColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    letterSpacing: 0.1,
+                    child: HostedImage(
+                      widget.args.contact.avatar,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+                const YBox(Insets.dim_12),
+                Center(
+                  child: Text(
+                    'to ${widget.args.contact.name}',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textHeaderColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                      letterSpacing: 0.30,
+                    ),
+                  ),
+                ),
+                const YBox(Insets.dim_16),
+                SpecialAmountTextField(
+                  controller: amountController,
+                  onSaved: (value) => amountController.text = value ?? '',
+                  validator: (input) => Validators.validateAmount()(input),
+                ),
+                YBox(context.getHeight(0.4)),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AppButton(
+                    textTitle: 'Send Money',
+                    action: () {
+                      validate(() {
+                        showDialog(
+                          context: context,
+                          builder: (context) => CustomDialogBox(
+                            descriptions: '',
+                            contact: widget.args.contact,
+                            amount: amountController.text,
+                            img: widget.args.contact.avatar,
+                            text: 'Send ${money.formatValue(
+                              amountController.text.toInt(),
+                            )} to ${widget.args.contact.name}',
+                          ),
+                        ).then(
+                          (value) {
+                            if (value != null) {
+                              Future.delayed(3.seconds).then((value) {
+                                AppNavigator.of(context).push(
+                                  AppRoutes.successfulTransaction,
+                                  args: TransactionSuccessArgs(
+                                    'Transfer Successful',
+                                    money.formatValue(
+                                      amountController.text.toInt(),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const Icon(
-                                PhosphorIcons.caretDown,
-                                size: 18,
-                                color: AppColors.btnPrimaryColor,
-                              ),
-                              const XBox(Insets.dim_26),
-                            ],
-                          ),
-                        ).onTap(() async {
-                          final country = await FutureBottomSheet<CountryData>(
-                            title: 'Select country',
-                            future: () async =>
-                                [phoneNumberCountryList().first],
-                            itemBuilder: (context, item) {
-                              return ListTile(
-                                leading: Padding(
-                                  padding: const EdgeInsets.only(top: 3),
-                                  child: LocalSvgImage(item.flag),
-                                ),
-                                title: Text(
-                                  '(${item.currencyCode}) ${item.countryName}',
-                                ),
-                              );
-                            },
-                          ).show(context);
-                          if (country != null) {
-                            setState(() {});
-                          }
-                        }),
-                        onSaved: (phoneNumber) {},
-                        style: context.textTheme.bodyMedium!.copyWith(
-                          color: AppColors.textHeaderColor,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          letterSpacing: 0.1,
-                        ),
-                      ),
-                    ),
-                  ],
+                                );
+                              });
+                            }
+                          },
+                        );
+                      });
+                    },
+                  ),
                 ),
-              ),
-              YBox(context.getHeight(0.4)),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: AppButton(
-                  textTitle: 'Send Money',
-                  action: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const CustomDialogBox(),
-                    ).then(
-                      (value) {
-                        if (value) {
-                          AppNavigator.of(context).push(
-                            AppRoutes.successfulTransaction,
-                            args: TransactionSuccessArgs(
-                              'Transfer Successful',
-                              money.formatValue(8650000),
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-              const YBox(Insets.dim_32),
-            ],
+                const YBox(Insets.dim_32),
+              ],
+            ),
           ),
         ),
       ),

@@ -4,8 +4,8 @@ import 'package:pay_zilla/features/ui_widgets/image.dart';
 import 'package:pay_zilla/functional_utils/assets.dart';
 import 'package:pay_zilla/functional_utils/extensions/context_extension.dart';
 
-class AtmCardWidget extends StatelessWidget {
-  const AtmCardWidget({super.key, this.color});
+class ActivityWalletWidget extends StatelessWidget {
+  const ActivityWalletWidget({super.key, this.color});
   final Color? color;
 
   @override

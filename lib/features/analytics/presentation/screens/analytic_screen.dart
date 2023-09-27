@@ -58,7 +58,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     controller: analyticProvider.pageController,
                     physics: const BouncingScrollPhysics(),
                     itemCount: analyticProvider.sliders.length,
-                    itemBuilder: (context, index) => AtmCardWidget(
+                    itemBuilder: (context, index) => ActivityWalletWidget(
                       color: analyticProvider.sliders[index],
                     ),
                   ),

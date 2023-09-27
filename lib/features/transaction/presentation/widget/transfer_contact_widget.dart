@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
@@ -8,9 +9,11 @@ class SelectableContactWidget extends StatefulWidget {
     super.key,
     required this.index,
     required this.isSelected,
+    required this.contact,
   });
   final int index;
   final bool isSelected;
+  final Contact contact;
 
   @override
   State<SelectableContactWidget> createState() =>
@@ -40,22 +43,32 @@ class _SelectableContactWidgetState extends State<SelectableContactWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const YBox(Insets.dim_26),
-              const Expanded(
-                child: HostedImage(
-                  'https://picsum.photos/200/300',
-                  height: Insets.dim_100,
-                  width: Insets.dim_100,
-                ),
+              Expanded(
+                child: widget.contact.photoOrThumbnail != null
+                    ? Image.memory(widget.contact.photoOrThumbnail!)
+                    : const Icon(Icons.person_add_alt),
               ),
               const YBox(Insets.dim_16),
               Expanded(
                 child: Text(
-                  widget.index.isEven ? 'John Doe' : 'Harrison McKee Jnr.',
+                  widget.contact.displayName,
                   textAlign: TextAlign.center,
                   style: context.textTheme.bodyMedium!.copyWith(
                     color: AppColors.textHeaderColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
+                    letterSpacing: 0.30,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  widget.contact.phones.first.number,
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    color: AppColors.textBodyColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
                     letterSpacing: 0.30,
                   ),
                 ),

@@ -310,9 +310,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ],
           ),
-          const Align(
-            alignment: Alignment(0, -0.46),
-            child: AtmCardWidget(),
+          Align(
+            alignment: const Alignment(0, -0.46),
+            child: dsProvider.getWalletsResponse.isLoading
+                ? const TempLoadingAtmCard(
+                    color: AppColors.textHeaderColor,
+                  )
+                : const AtmCardWidget(),
           )
         ],
       ),

@@ -95,10 +95,7 @@ class _TopUpWidgetState extends State<TopUpWidget> with FormMixin {
                 ),
               ),
               const YBox(Insets.dim_24),
-              AppTextFormField(
-                hintText: 'Enter Amount',
-                inputType: TextInputType.number,
-                labelText: 'Amount',
+              SpecialAmountTextField(
                 controller: amountController,
                 onSaved: (value) => amountController.text = value ?? '',
                 validator: (input) => Validators.validateAmount()(input),

@@ -402,6 +402,117 @@ class AppDropDownField extends StatelessWidget {
   }
 }
 
+class SpecialAmountTextField extends StatefulWidget {
+  const SpecialAmountTextField({
+    super.key,
+    this.onSaved,
+    required this.controller,
+    required this.validator,
+  });
+  final dynamic Function(String?)? onSaved;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+
+  @override
+  State<SpecialAmountTextField> createState() => _SpecialAmountTextFieldState();
+}
+
+class _SpecialAmountTextFieldState extends State<SpecialAmountTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: Corners.mdBorder,
+        border: Border.all(
+          color: const Color(0xffE5E7EB),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Insets.dim_16,
+        vertical: Insets.dim_16,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Enter amount:',
+            style: context.textTheme.bodyMedium!.copyWith(
+              color: AppColors.textBodyColor,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              letterSpacing: 0.30,
+            ),
+          ),
+          const YBox(Insets.dim_16),
+          IgnorePointer(
+            ignoring: false,
+            child: AppTextFormField(
+              hintText: '00.00',
+              prefixIcon: SizedBox(
+                height: 40,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: Insets.dim_16,
+                        right: Insets.dim_6,
+                      ),
+                      child: Text(
+                        'NG',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.textHeaderColor,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          letterSpacing: 0.1,
+                        ),
+                      ),
+                    ),
+                    const Icon(
+                      PhosphorIcons.caretDown,
+                      size: 18,
+                      color: AppColors.btnPrimaryColor,
+                    ),
+                    const XBox(Insets.dim_26),
+                  ],
+                ),
+              ).onTap(() async {
+                final country = await FutureBottomSheet<CountryData>(
+                  title: 'Select country',
+                  future: () async => [phoneNumberCountryList().first],
+                  itemBuilder: (context, item) {
+                    return ListTile(
+                      leading: Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: LocalSvgImage(item.flag),
+                      ),
+                      title: Text(
+                        '(${item.currencyCode}) ${item.countryName}',
+                      ),
+                    );
+                  },
+                ).show(context);
+                if (country != null) {
+                  setState(() {});
+                }
+              }),
+              validator: widget.validator,
+              onSaved: widget.onSaved,
+              controller: widget.controller,
+              style: context.textTheme.bodyMedium!.copyWith(
+                color: AppColors.textHeaderColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                letterSpacing: 0.1,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 InputDecoration getDropDownButtonDecoration({
   String? labelText,
   String? hintText,

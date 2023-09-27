@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:provider/provider.dart';
 
 class CustomDialogBox extends StatefulWidget {
   const CustomDialogBox({
@@ -10,9 +13,13 @@ class CustomDialogBox extends StatefulWidget {
     this.descriptions,
     this.text,
     this.img,
+    required this.contact,
+    required this.amount,
   });
   final String? title, descriptions, text;
-  final Image? img;
+  final String? img;
+  final String amount;
+  final ContactsModel contact;
 
   @override
   State<CustomDialogBox> createState() => _CustomDialogBoxState();
@@ -31,8 +38,11 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
     );
   }
 
-  Widget contentBox(BuildContext context) {
+  Widget contentBox(
+    BuildContext context,
+  ) {
     final money = Money();
+    final authP = context.watch<AuthProvider>();
     return Stack(
       children: <Widget>[
         Container(
@@ -66,19 +76,26 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 ),
               ),
               const YBox(Insets.dim_12),
-              contentInfoWidget(context),
               contentInfoWidget(
                 context,
-                leftTitle: 'To',
-                leftDescriptions: 'Linda',
+                leftTitle: 'From',
+                leftDescriptions: authP.user.fullName,
                 rightDescriptions: '**** 8456',
                 rightTitle: 'Citibank Online',
               ),
               contentInfoWidget(
                 context,
+                leftTitle: 'To',
+                leftDescriptions: widget.contact.name,
+                rightDescriptions: widget.contact.paymentId,
+                rightTitle: '',
+              ),
+              contentInfoWidget(
+                context,
                 leftTitle: '',
                 leftDescriptions: 'Total',
-                rightDescriptions: money.formatValue(5430994),
+                rightDescriptions:
+                    money.formatValue(widget.amount.toInt() * 100),
                 rightTitle: '',
               ),
               Align(
@@ -118,8 +135,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 shape: BoxShape.circle,
                 color: AppColors.grey,
               ),
-              child: LocalImage(
-                cardsPng,
+              child: HostedImage(
+                widget.img ?? '',
                 fit: BoxFit.contain,
               ),
             ),

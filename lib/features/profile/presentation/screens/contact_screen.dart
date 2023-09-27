@@ -16,37 +16,22 @@ class ContactScreen extends StatefulWidget {
 }
 
 class _ContactScreenState extends State<ContactScreen> {
-  late List<Contact>? _contacts;
-  late List<Contact>? _searchedContacts;
-  bool _permissionDenied = false;
-  bool _loading = false;
+  late ProfileProvider profileProvider;
 
   @override
   void initState() {
     super.initState();
-    _contacts = [];
-    _searchedContacts = [];
-    _fetchContacts();
-  }
-
-  Future _fetchContacts() async {
-    if (!await FlutterContacts.requestPermission(readonly: true)) {
-      setState(() => _permissionDenied = true);
-    } else {
-      setState(() => _loading = true);
-
-      final contacts = await FlutterContacts.getContacts(withProperties: true);
-      setState(() {
-        _contacts = contacts;
-        _searchedContacts = contacts;
-        _loading = false;
-      });
-    }
+    Future.microtask(
+      () => profileProvider
+        ..searchedContacts = []
+        ..fetchedContacts = []
+        ..fetchContacts(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final profileProvider = context.watch<ProfileProvider>();
+    profileProvider = context.watch<ProfileProvider>();
     return AppScaffold(
       useBodyPadding: false,
       appBar: CustomAppBar(
@@ -73,16 +58,19 @@ class _ContactScreenState extends State<ContactScreen> {
             SearchTextInputField(
               showTrailing: false,
               onChanged: (value) {
-                if (value.isNotEmpty && _contacts != null) {
-                  _searchedContacts = _contacts!
-                      .where(
-                        (contact) => contact.displayName
-                            .toLowerCase()
-                            .contains(value.toLowerCase()),
-                      )
-                      .toList();
+                if (value.isNotEmpty &&
+                    profileProvider.fetchedContacts != null) {
+                  profileProvider.searchedContacts =
+                      profileProvider.fetchedContacts!
+                          .where(
+                            (contact) => contact.displayName
+                                .toLowerCase()
+                                .contains(value.toLowerCase()),
+                          )
+                          .toList();
                 } else {
-                  _searchedContacts = _contacts;
+                  profileProvider.searchedContacts =
+                      profileProvider.fetchedContacts;
                 }
                 setState(() {});
               },
@@ -98,23 +86,27 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
             ),
             const YBox(Insets.dim_24),
-            if (_permissionDenied)
+            if (profileProvider.permissionDenied)
               const Center(child: Text('Permission denied')),
-            if (_loading || profileProvider.contactsResponse.isLoading) ...[
+            if (profileProvider.loading ||
+                profileProvider.contactsResponse.isLoading) ...[
               const YBox(Insets.dim_24),
               const AppLoadingWidget(),
             ],
-            if (_searchedContacts != null && _searchedContacts!.isNotEmpty)
+            if (profileProvider.searchedContacts != null &&
+                profileProvider.searchedContacts!.isNotEmpty)
               ...List.generate(
-                _searchedContacts!.length,
+                profileProvider.searchedContacts!.length,
                 (index) => InkWell(
                   onTap: () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (profileProvider.contactsResponse.isLoading) return;
-                    if (_searchedContacts![index].phones.isNotEmpty) {
+                    if (profileProvider
+                        .searchedContacts![index].phones.isNotEmpty) {
                       await profileProvider.getContacts([
                         Validators.harmonizeForContacts(
-                          _searchedContacts![index].phones.first.number,
+                          profileProvider
+                              .searchedContacts![index].phones.first.number,
                         )
                       ]).then((value) async {
                         if (profileProvider.contactsResponse.isSuccess) {
@@ -152,7 +144,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   },
                   child: localContactWidget(
                     context,
-                    _searchedContacts![index],
+                    profileProvider.searchedContacts![index],
                   ),
                 ),
               ).toList(),

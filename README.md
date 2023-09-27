@@ -1,16 +1,34 @@
 # pay_zilla
 
-A new Flutter project.
+This project contains 2 flavors:
 
-## Getting Started
+- dev
+- production
 
-This project is a starting point for a Flutter application.
+To run the desired flavor either use the launch configuration in VSCode/Android Studio or use the following commands:
 
-A few resources to get you started if this is your first Flutter project:
+```sh
+# dev
+$ flutter run --target lib/main_dev.dart
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Production
+$ flutter run --target lib/main_production.dart
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Build App Bundle\
+
+```sh
+$ flutter build appbundle --flavor production --target lib/main_production.dart --release
+```
+
+## Build IPA
+
+```sh
+$ flutter build ipa --target lib/main_production.dart
+```
+
+## Build APK
+
+```sh
+$ flutter build apk --debug --target lib/main_dev.dart --split-per-abi --flavor dev
+```

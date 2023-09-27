@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
@@ -24,6 +25,34 @@ class ProfileProvider extends ChangeNotifier {
   bool get profileLoader => _profileLoader;
   set profileLoader(bool val) {
     _profileLoader = val;
+    notifyListeners();
+  }
+
+  List<Contact>? _fetchedContacts;
+  List<Contact>? get fetchedContacts => _fetchedContacts;
+  set fetchedContacts(List<Contact>? val) {
+    _fetchedContacts = val;
+    notifyListeners();
+  }
+
+  List<Contact>? _searchedContacts;
+  List<Contact>? get searchedContacts => _searchedContacts;
+  set searchedContacts(List<Contact>? val) {
+    _searchedContacts = val;
+    notifyListeners();
+  }
+
+  bool _permissionDenied = false;
+  bool get permissionDenied => _permissionDenied;
+  set permissionDenied(bool val) {
+    _permissionDenied = val;
+    notifyListeners();
+  }
+
+  bool _loading = false;
+  bool get loading => _loading;
+  set loading(bool val) {
+    _loading = val;
     notifyListeners();
   }
 
@@ -125,6 +154,24 @@ class ProfileProvider extends ChangeNotifier {
       },
     );
     notifyListeners();
+  }
+
+  // get contacts
+
+  Future fetchContacts() async {
+    if (!await FlutterContacts.requestPermission(readonly: true)) {
+      permissionDenied = true;
+      notifyListeners();
+    } else {
+      loading = true;
+      notifyListeners();
+
+      final contacts = await FlutterContacts.getContacts(withProperties: true);
+      fetchedContacts = contacts;
+      _searchedContacts = fetchedContacts;
+      loading = false;
+      notifyListeners();
+    }
   }
 
   //create the profile widget data
