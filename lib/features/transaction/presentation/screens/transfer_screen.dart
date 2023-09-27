@@ -124,16 +124,17 @@ class _TransferScreenState extends State<TransferScreen> {
                         return GestureDetector(
                           onTap: () async {
                             FocusManager.instance.primaryFocus?.unfocus();
-                            if (profileProvider.contactsResponse.isLoading)
+                            if (profileProvider.contactsResponse.isLoading) {
                               return;
+                            }
                             setState(() => currentSelectedIndex = index);
                             if (profileProvider
                                 .searchedContacts![index].phones.isNotEmpty) {
                               await profileProvider.getContacts([
-                                Validators.harmonizeForContacts('2348122437265'
-                                    // profileProvider
-                                    //     .searchedContacts![index].phones.first.number,
-                                    )
+                                Validators.harmonizeForContacts(
+                                  profileProvider.searchedContacts![index]
+                                      .phones.first.number,
+                                )
                               ]).then((value) async {
                                 if (profileProvider
                                     .contactsResponse.isSuccess) {
