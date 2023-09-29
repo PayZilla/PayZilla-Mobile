@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 extension StringExtension on String {
@@ -21,29 +20,6 @@ extension StringExtension on String {
 
   String camelToSnakeCase() {
     return split(RegExp('(?=[A-Z])')).join('_').toLowerCase();
-  }
-
-  String toReadableDateString({
-    bool withTime = false,
-    bool relativeToNow = false,
-  }) {
-    try {
-      final date = DateFormat(
-        // isStampDuty ? "yyyy-MM-dd HH:mm:ss" : "EEE MMM dd yyyy HH:mm:ss",
-        'EEE MMM dd yyyy HH:mm:ss',
-      ).parse(this, true).toLocal();
-      if (relativeToNow) {
-        return _dateRelativeToNow(date);
-      }
-      final dateFormat = DateFormat('d, MMM yyyy');
-      if (withTime) {
-        return dateFormat.add_jm().format(date);
-      } else {
-        return dateFormat.format(date);
-      }
-    } catch (_) {
-      return '';
-    }
   }
 
   String getInitials({int defaultLength = 2}) {
@@ -90,40 +66,5 @@ extension StringExtension on String {
     Clipboard.setData(ClipboardData(text: this))
         .then((value) => showSuccessNotification(feedbackMsg))
         .catchError((_) {});
-  }
-
-  String _dateRelativeToNow(DateTime date) {
-    final thisInstant = DateTime.now();
-    final diff = thisInstant.difference(date);
-
-    if ((diff.inDays / 365).floor() >= 2) {
-      return '${(diff.inDays / 365).floor()} years ago';
-    } else if ((diff.inDays / 365).floor() >= 1) {
-      return 'Last year';
-    } else if ((diff.inDays / 30).floor() >= 2) {
-      return '${(diff.inDays / 30).floor()} months ago';
-    } else if ((diff.inDays / 30).floor() >= 1) {
-      return 'Last month';
-    } else if ((diff.inDays / 7).floor() >= 2) {
-      return '${(diff.inDays / 7).floor()} weeks ago';
-    } else if ((diff.inDays / 7).floor() >= 1) {
-      return 'Last week';
-    } else if (diff.inDays >= 2) {
-      return '${diff.inDays} days ago';
-    } else if (diff.inDays >= 1) {
-      return 'Yesterday';
-    } else if (diff.inHours >= 2) {
-      return '${diff.inHours} hours ago';
-    } else if (diff.inHours >= 1) {
-      return '1 hour ago';
-    } else if (diff.inMinutes >= 2) {
-      return '${diff.inMinutes} minutes ago';
-    } else if (diff.inMinutes >= 1) {
-      return '1 minute ago';
-    } else if (diff.inSeconds >= 3) {
-      return '${diff.inSeconds} seconds ago';
-    } else {
-      return 'Just now';
-    }
   }
 }

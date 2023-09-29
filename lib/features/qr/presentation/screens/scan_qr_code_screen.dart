@@ -79,7 +79,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         placeholderBuilder: (p0, p1) {
           if (qrProvider.valBanksOrWalletResponse.isLoading) {
             return const Center(
-              child: AppLoadingWidget(
+              child: AppCircularLoadingWidget(
                 size: Insets.dim_32,
                 color: AppColors.white,
               ),

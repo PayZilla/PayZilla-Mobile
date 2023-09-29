@@ -123,6 +123,7 @@ class TransactionProvider extends ChangeNotifier {
 
   Future<void> getBanks() async {
     banksServiceResponse = ApiResult<List<BanksModel>>.loading('Loading...');
+    valBanksOrWalletResponse = ApiResult<WalletOrBankModel>.idle();
     notifyListeners();
     final failureOrData = await _transferRepository.getBanks();
     failureOrData.fold(
@@ -133,7 +134,12 @@ class TransactionProvider extends ChangeNotifier {
         notifyListeners();
       },
       (res) {
-        banksServiceResponse = ApiResult<List<BanksModel>>.success(res);
+        final sortedList = res;
+        // ignore: cascade_invocations
+        sortedList.sort(
+          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+        );
+        banksServiceResponse = ApiResult<List<BanksModel>>.success(sortedList);
         notifyListeners();
       },
     );
@@ -213,6 +219,7 @@ class TransactionProvider extends ChangeNotifier {
         }
       } else {
         Log().debug('The Paystack error is: $accessCode', value.message);
+        AppNavigator.of(context).push(AppRoutes.myCard);
       }
     });
   }

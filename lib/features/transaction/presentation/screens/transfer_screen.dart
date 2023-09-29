@@ -77,68 +77,7 @@ class _TransferScreenState extends State<TransferScreen> with FormMixin {
                     ),
                   ),
                   const YBox(Insets.dim_16),
-                  SizedBox(
-                    height: context.getHeight(0.05),
-                    child: ListView.builder(
-                      itemCount:
-                          dsProvider.getWalletsResponse.data?.length ?? 0,
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        final data = dsProvider.getWalletsResponse.data?[index];
-                        return Container(
-                          height: context.getHeight(0.05),
-                          width: context.getWidth(0.9),
-                          clipBehavior: Clip.hardEdge,
-                          decoration: const BoxDecoration(
-                            borderRadius: Corners.mdBorder,
-                            color: AppColors.textHeaderColor,
-                          ),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              LocalSvgImage(
-                                atmLineSvg,
-                                width: double.infinity,
-                                color: AppColors.appGreen,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Insets.dim_22,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.textHeaderColor
-                                      .withOpacity(0.5),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      data != null
-                                          ? money.formatValue(
-                                              double.tryParse(data.balance)! *
-                                                  100,
-                                            )
-                                          : money.formatValue(0),
-                                      style: context.textTheme.bodyMedium!
-                                          .copyWith(
-                                        color: AppColors.white,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    LocalSvgImage(atmLogoSvg),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  const TransferWalletCard(),
                   const YBox(Insets.dim_24),
                   PhoneNumberTextFormField(
                     initialValue: requestDto.walletChannel.paymentId,
@@ -257,7 +196,7 @@ class _TransferScreenState extends State<TransferScreen> with FormMixin {
                       ),
                     ),
                   if (profileProvider.loading)
-                    const AppLoadingWidget(color: AppColors.black),
+                    const AppCircularLoadingWidget(color: AppColors.black),
                   const YBox(Insets.dim_32),
                   if (_showButton) ...[
                     AppButton(
@@ -297,7 +236,7 @@ class _TransferScreenState extends State<TransferScreen> with FormMixin {
         if (transProvider.valBanksOrWalletResponse.isLoading)
           Container(
             color: AppColors.black.withOpacity(0.5),
-            child: const AppLoadingWidget(
+            child: const AppCircularLoadingWidget(
               color: AppColors.white,
               size: Insets.dim_30,
             ),

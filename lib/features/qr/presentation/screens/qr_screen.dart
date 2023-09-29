@@ -71,7 +71,7 @@ class QRScanScreen extends StatelessWidget {
               ),
               const Spacer(),
               if (transactionP.valBanksOrWalletResponse.isLoading)
-                const AppLoadingWidget(
+                const AppCircularLoadingWidget(
                   color: AppColors.white,
                   size: Insets.dim_32,
                 )

@@ -270,7 +270,7 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
                   ? const SizedBox(
                       height: 30,
                       width: 30,
-                      child: AppLoadingWidget(),
+                      child: AppCircularLoadingWidget(),
                     )
                   : const Icon(
                       Icons.arrow_forward_ios_rounded,

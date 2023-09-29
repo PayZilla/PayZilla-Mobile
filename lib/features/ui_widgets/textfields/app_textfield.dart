@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/data/core_data.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -131,6 +132,12 @@ class AppTextFormField extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: Insets.dim_16,
                     vertical: maxLines == 1 ? 4.0 : 16.0,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(Insets.dim_8),
+                    borderSide: BorderSide(
+                      color: AppColors.black.withOpacity(0.2),
+                    ),
                   ),
                   focusedErrorBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
@@ -355,9 +362,9 @@ class AppDropDownField extends StatelessWidget {
   final String? initialValue;
   final Widget? textFieldIcon;
   final TextInputType? inputType;
-  final String? Function(String? input)? validator;
-  final Function(String?)? onChanged;
-  final Function(String?)? onSaved;
+  final String? Function(dynamic input)? validator;
+  final Function(dynamic)? onChanged;
+  final Function(dynamic)? onSaved;
   final Function()? onEditingComplete;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLines;
@@ -370,8 +377,8 @@ class AppDropDownField extends StatelessWidget {
   final TextEditingController? controller;
   final bool enabled;
 
-  final List<String> items;
-  final String? value;
+  final List<BanksModel> items;
+  final dynamic value;
 
   @override
   Widget build(BuildContext context) {
@@ -379,10 +386,17 @@ class AppDropDownField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (labelText != null) ...[
-          Text(labelText!, style: const TextStyle(fontSize: 13)),
+          Text(
+            labelText!,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: AppColors.textBodyColor,
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
           const YBox(Insets.dim_4),
         ],
-        DropdownButtonFormField<String>(
+        DropdownButtonFormField<dynamic>(
           isExpanded: true,
           validator: validator,
           onSaved: onSaved,
@@ -392,7 +406,12 @@ class AppDropDownField extends StatelessWidget {
             textFieldIcon: textFieldIcon,
           ),
           items: items
-              .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
+              .map(
+                (e) => DropdownMenuItem<dynamic>(
+                  value: e,
+                  child: Text(e.name),
+                ),
+              )
               .toList(),
           onChanged: onChanged,
           value: value,

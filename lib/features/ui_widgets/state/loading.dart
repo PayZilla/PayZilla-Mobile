@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
-class AppLoadingWidget extends StatelessWidget {
-  const AppLoadingWidget({this.size = 15, this.color, Key? key})
+class AppCircularLoadingWidget extends StatelessWidget {
+  const AppCircularLoadingWidget({this.size = 15, this.color, Key? key})
       : super(key: key);
   final double size;
   final Color? color;
@@ -17,6 +19,47 @@ class AppLoadingWidget extends StatelessWidget {
           color: color ?? Theme.of(context).primaryColor,
         ),
       ),
+    );
+  }
+}
+
+class AppLinearLoadingWidget extends StatefulWidget {
+  const AppLinearLoadingWidget({super.key});
+
+  @override
+  State<AppLinearLoadingWidget> createState() => _AppLinearLoadingWidget();
+}
+
+class _AppLinearLoadingWidget extends State<AppLinearLoadingWidget>
+    with TickerProviderStateMixin {
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: 1.seconds,
+    )..addListener(() {
+        setState(() {});
+      });
+    controller.repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LinearProgressIndicator(
+      value: controller.value,
+      backgroundColor: AppColors.white,
+      valueColor:
+          const AlwaysStoppedAnimation<Color>(AppColors.textHeaderColor),
+      semanticsLabel: 'loading progress indicator',
     );
   }
 }

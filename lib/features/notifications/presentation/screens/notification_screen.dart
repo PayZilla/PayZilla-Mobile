@@ -26,60 +26,67 @@ class NotificationScreen extends StatelessWidget {
         actions: [
           AppBoxedButton(
             width: 60,
-            onPressed: () {},
+            onPressed: notProvider.count > 0
+                ? notProvider.markNotificationsAsRead
+                : () {
+                    showInfoNotification('No unread notifications');
+                  },
             icon: LocalSvgImage(notificationCheckSvg),
           ),
-          const XBox(Insets.dim_16)
+          const XBox(Insets.dim_16),
         ],
+        bottom: notProvider.readNotificationRes.isLoading ||
+                notProvider.notificationRes.isLoading
+            ? const PreferredSize(
+                preferredSize: Size.fromHeight(80),
+                child: AppLinearLoadingWidget(),
+              )
+            : null,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Insets.dim_16),
         child: ListView(
           children: [
-            const YBox(Insets.dim_24),
-            Text(
-              'Today',
-              style: context.textTheme.bodyMedium!.copyWith(
-                color: AppColors.textBodyColor,
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-                letterSpacing: 0.30,
+            if (notProvider.notificationRes.isSuccess)
+              ...List.generate(
+                notProvider.notificationRes.data!.length,
+                (index) {
+                  final data = notProvider.notificationRes.data![index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: Insets.dim_12),
+                    child: AppListTileWidget(
+                      args: ListTileWidgetArgs(
+                        title: data.type.replaceAll('_', ' ').capitalize(),
+                        subtitle: Text(
+                          data.body,
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: data.isRead
+                                ? AppColors.black
+                                : AppColors.textBodyColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            letterSpacing: 0.30,
+                          ),
+                        ),
+                        isRead: data.isRead,
+                        trailing: Text(
+                          DateUtil.covertStringToDate(data.createdAt)
+                              .timeAgo()
+                              .capitalize(),
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: data.isRead
+                                ? AppColors.black.withOpacity(0.5)
+                                : AppColors.textHeaderColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            letterSpacing: 0.30,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            ),
-            const YBox(Insets.dim_6),
-            ...List.generate(
-              2,
-              (index) => AppListTileWidget(
-                args: ListTileWidgetArgs(
-                  asset: notProvider.notificationList[index].asset,
-                  title: notProvider.notificationList[index].title,
-                  subtitle: Text(notProvider.notificationList[index].subtitle),
-                  trailing: Text(notProvider.notificationList[index].time),
-                ),
-              ),
-            ),
-            const YBox(Insets.dim_24),
-            Text(
-              'This Week',
-              style: context.textTheme.bodyMedium!.copyWith(
-                color: AppColors.textBodyColor,
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-                letterSpacing: 0.30,
-              ),
-            ),
-            const YBox(Insets.dim_6),
-            ...List.generate(
-              notProvider.notificationList.length,
-              (index) => AppListTileWidget(
-                args: ListTileWidgetArgs(
-                  asset: notProvider.notificationList[index].asset,
-                  title: notProvider.notificationList[index].title,
-                  subtitle: Text(notProvider.notificationList[index].subtitle),
-                  trailing: Text(notProvider.notificationList[index].time),
-                ),
-              ),
-            ),
           ],
         ),
       ),

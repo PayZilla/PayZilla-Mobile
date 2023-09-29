@@ -31,6 +31,12 @@ final dashboardRouter = [
     ],
   ),
   GoRoute(
+    path: 'transfer-bank',
+    builder: (context, state) {
+      return const BankTransferScreen();
+    },
+  ),
+  GoRoute(
     path: 'all-transactions',
     builder: (context, state) {
       return const AllTransactionsScreen();

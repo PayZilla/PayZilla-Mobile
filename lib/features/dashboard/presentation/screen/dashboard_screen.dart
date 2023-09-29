@@ -4,6 +4,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
@@ -22,6 +23,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final dsProvider = context.watch<DashboardProvider>();
     final authProvider = context.watch<AuthProvider>();
+    final notification = context.watch<NotificationProvider>();
+
+    Log().debug('Notifications count: ${notification.count}');
     return AppScaffold(
       useBodyPadding: false,
       body: Stack(
@@ -76,9 +80,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           borderRadius: Corners.mdBorder,
                         ),
-                        child: const Icon(
-                          PhosphorIcons.bellBold,
-                          color: AppColors.white,
+                        child: Stack(
+                          children: [
+                            const Center(
+                              child: Icon(
+                                PhosphorIcons.bellBold,
+                                color: AppColors.white,
+                                size: Insets.dim_34,
+                              ),
+                            ),
+                            if (notification.count > 0)
+                              const Align(
+                                alignment: Alignment.topRight,
+                                child: CircleAvatar(
+                                  radius: 8,
+                                  backgroundColor: AppColors.borderErrorColor,
+                                ),
+                              )
+                          ],
                         ),
                       ).onTap(
                         () => AppNavigator.of(context)
@@ -109,23 +128,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           'Refer & Earn'
                         ],
                         todo: [
-                          () {
-                            AppNavigator.of(context)
-                                .push(AppRoutes.fundingAccountDetails);
-                          },
-                          () {
-                            dsProvider.goTo(AppRoutes.transfer, context);
-                          },
-                          () {
-                            Log().debug('The action tapped is Withdraw');
-                          },
+                          () => dsProvider.goTo(
+                                AppRoutes.fundingAccountDetails,
+                                context,
+                              ),
+                          () => dsProvider.goTo(AppRoutes.transfer, context),
                           () =>
-                              AppNavigator.of(context).push(AppRoutes.referral)
+                              dsProvider.goTo(AppRoutes.bankTransfer, context),
+                          () => dsProvider.goTo(AppRoutes.referral, context)
                         ],
                       ),
                       if (dsProvider.billResponse.isLoading)
                         const Center(
-                          child: AppLoadingWidget(),
+                          child: AppCircularLoadingWidget(),
                         )
                       else if (dsProvider.billResponse.isSuccess &&
                           dsProvider.billResponse.data!.isNotEmpty)
@@ -145,8 +160,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             children: dsProvider.billResponse.data!
                                 .map(
                                   (e) => InkWell(
-                                    onTap: () {
-                                      FutureBottomSheet<BillServiceModel>(
+                                    onTap: () async {
+                                      authProvider.showNavBar = true;
+                                      await FutureBottomSheet<BillServiceModel>(
                                         title: 'Select an option',
                                         height: context.getHeight(0.5),
                                         future: () async {
@@ -160,9 +176,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             ),
                                           );
                                         },
-                                      ).show(context).then((value) {
+                                      ).show(context).then((value) async {
                                         if (value != null) {
-                                          FutureBottomSheet<Variations>(
+                                          await FutureBottomSheet<Variations>(
                                             title: 'Select an option',
                                             height: context.getHeight(0.5),
                                             searchWidget: dsProvider
@@ -212,6 +228,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           });
                                         }
                                       });
+                                      authProvider.showNavBar = false;
                                     },
                                     child: Column(
                                       mainAxisAlignment:

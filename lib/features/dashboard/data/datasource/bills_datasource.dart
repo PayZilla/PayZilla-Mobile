@@ -21,7 +21,9 @@ class BillRemoteDataSource implements IBillRemoteDataSource {
       if (response.isResultOk) {
         final data = response.data as List;
 
-        return data.map((e) => BillCatModel.fromJson(e)).toList();
+        return data
+            .map((e) => BillCatModel.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
       }
       throw AppServerException(response.message);
     } catch (_) {
@@ -37,7 +39,9 @@ class BillRemoteDataSource implements IBillRemoteDataSource {
       );
       if (response.isResultOk) {
         final data = response.data as List;
-        return data.map((e) => BillServiceModel.fromJson(e)).toList();
+        return data
+            .map((e) => BillServiceModel.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
       }
       throw AppServerException(response.message);
     } catch (_) {

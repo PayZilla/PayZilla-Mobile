@@ -3,6 +3,7 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
@@ -29,6 +30,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
   late AuthProvider authProvider;
   late TransactionProvider qrProvider;
   late DashboardProvider dashboardProvider;
+  late NotificationProvider notificationProvider;
   ValidateBankOrWalletDto requestDto = ValidateBankOrWalletDto.empty();
   WalletChannel walletChannel = WalletChannel.empty();
   @override
@@ -40,7 +42,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
         ..getWallets()
         ..getCategories();
       authProvider.getUser();
-
+      notificationProvider.getNotifications();
       setState(() {});
     });
   }
@@ -50,6 +52,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     authProvider = context.watch<AuthProvider>();
     qrProvider = context.watch<TransactionProvider>();
     dashboardProvider = context.watch<DashboardProvider>();
+    notificationProvider = context.watch<NotificationProvider>();
     if (widget.hideNav || authProvider.showNavBar) {
       return Container();
     }
@@ -68,6 +71,10 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
 
             authProvider.getUser();
             dashboardProvider.getWallets();
+
+            if (tab == AppNavTab.home) {
+              notificationProvider.getNotifications();
+            }
 
             AppNavigator.of(context).push(AppRoutes.tab(tab));
           },

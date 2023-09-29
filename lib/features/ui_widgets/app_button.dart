@@ -103,7 +103,7 @@ class AppButton extends StatelessWidget {
             ),
         onPressed: showLoading == true || deActivate == true ? null : action,
         child: showLoading == true
-            ? AppLoadingWidget(
+            ? AppCircularLoadingWidget(
                 color: backgroundColor != null ? Colors.white : loadingColor,
               )
             : child ??

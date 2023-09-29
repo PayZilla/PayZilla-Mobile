@@ -67,7 +67,7 @@ class FutureBottomSheet<T> extends StatelessWidget with BaseBottomSheetMixin {
         if (snapshot.hasError) {
           return const AppErrorWidget();
         }
-        return const Center(child: AppLoadingWidget());
+        return const Center(child: AppCircularLoadingWidget());
       },
     );
 

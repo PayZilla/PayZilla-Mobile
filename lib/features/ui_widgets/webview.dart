@@ -70,7 +70,7 @@ class _AppWebviewState extends State<AppWebview> {
         title: widget.args.title,
       ),
       body: loadingPercent != 100
-          ? const AppLoadingWidget()
+          ? const AppCircularLoadingWidget()
           : WebViewWidget(controller: _controller),
     );
   }

@@ -222,7 +222,7 @@ class TempLoadingAtmCard extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          const AppLoadingWidget(
+          const AppCircularLoadingWidget(
             size: 16,
             color: AppColors.white,
           ),

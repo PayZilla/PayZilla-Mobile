@@ -5,6 +5,7 @@ import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/dashboard/data/datasource/account_datasource.dart';
+import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
@@ -43,6 +44,11 @@ void registerDataSources(GetIt getIt) {
     )
     ..registerFactory<ITransferRemoteDataSource>(
       () => TransferRemoteDataSource(
+        getIt(),
+      ),
+    )
+    ..registerFactory<INotificationDataSource>(
+      () => NotificationDataSource(
         getIt(),
       ),
     );

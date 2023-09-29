@@ -57,6 +57,13 @@ class _OthersEndpoints {
   final faqs = '/faq';
 }
 
+class _NotificationEndpoints {
+  final getNotifications = '/notifications';
+  String getNotification(String id) => '/notifications/$id';
+  String notificationSeen(String id) => '/notifications/$id/read';
+  final notificationsSeen = '/notifications/read';
+}
+
 // endpoints
 
 final authEndpoints = _AuthEndpoints();
@@ -64,3 +71,4 @@ final userEndpoints = _UserEndpoints();
 final accountEndpoints = _AccountEndpoints();
 final othersEndpoints = _OthersEndpoints();
 final transferEndpoints = _TransferEndpoints();
+final notificationEndpoints = _NotificationEndpoints();

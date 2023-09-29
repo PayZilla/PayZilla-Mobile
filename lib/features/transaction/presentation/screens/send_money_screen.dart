@@ -53,7 +53,6 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> with FormMixin {
 
   @override
   Widget build(BuildContext context) {
-    Log().debug('From Scanner: ${contact.toJson()} ', requestDto.toJson());
     final money = context.money();
     final transferP = context.watch<TransactionProvider>();
     return AppScaffold(

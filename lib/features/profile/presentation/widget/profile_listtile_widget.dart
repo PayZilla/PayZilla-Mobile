@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
-import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class ListTileWidgetArgs {
@@ -12,6 +11,7 @@ class ListTileWidgetArgs {
     this.subtitle,
     this.trailing,
     this.leading,
+    this.isRead = false,
   });
 
   final Function()? onTap;
@@ -21,6 +21,7 @@ class ListTileWidgetArgs {
   final Widget? subtitle;
   final Widget? trailing;
   final Widget? leading;
+  final bool isRead;
 }
 
 class AppListTileWidget extends StatelessWidget {
@@ -38,26 +39,22 @@ class AppListTileWidget extends StatelessWidget {
         horizontal: Insets.dim_24,
         vertical: Insets.dim_8,
       ),
-      onTap: () => args.onTap!(),
-      leading: args.leading == null && args.asset == null
-          ? null
-          : Container(
-              decoration: BoxDecoration(
-                color: AppColors.black.withOpacity(0.05),
-                borderRadius: Corners.xsBorder,
-              ),
-              padding: const EdgeInsets.all(Insets.dim_12),
-              child: LocalSvgImage(
-                args.asset ?? logoSvg,
-                color: args.assetColor,
-              ),
-            ),
+      tileColor:
+          args.isRead ? AppColors.white : AppColors.appGreen.withOpacity(0.1),
+      shape: const RoundedRectangleBorder(
+        borderRadius: Corners.xsBorder,
+        side: BorderSide(
+          color: AppColors.grey,
+          width: 1.5,
+        ),
+      ),
+      onTap: args.onTap == null ? null : () => args.onTap!(),
       title: Text(
         args.title,
         style: context.textTheme.bodyMedium!.copyWith(
           color: AppColors.textHeaderColor,
           fontWeight: FontWeight.w500,
-          fontSize: 14,
+          fontSize: 16,
           letterSpacing: 0.30,
         ),
       ),

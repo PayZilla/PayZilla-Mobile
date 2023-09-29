@@ -57,7 +57,7 @@ class GeneralSettingsScreen extends StatelessWidget {
             args: ListTileWidgetArgs(
               trailing: CupertinoSwitch(
                 onChanged: (value) {},
-                value: true,
+                value: false,
                 activeColor: AppColors.appGreen,
               ),
               title: 'Manage Notifications',
@@ -103,7 +103,7 @@ class GeneralSettingsScreen extends StatelessWidget {
             args: ListTileWidgetArgs(
               trailing: CupertinoSwitch(
                 onChanged: (value) {},
-                value: true,
+                value: false,
                 activeColor: AppColors.appGreen,
               ),
               title: 'Credit Score Calendar',

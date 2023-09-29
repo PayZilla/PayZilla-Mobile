@@ -39,6 +39,7 @@ class AppRoutes {
   static const homeToNotifications = '/tab/home/notifications';
   static const allTransactions = '/tab/home/all-transactions';
   static const transfer = '/tab/home/transfer';
+  static const bankTransfer = '/tab/home/transfer-bank';
   static const sendMoney = '/tab/home/transfer/send-money';
 
   static const successfulTransaction = '/transfer-success';

@@ -86,7 +86,7 @@ class _FaqScreenState extends State<FaqScreen> {
             ),
           ),
           const YBox(Insets.dim_24),
-          if (provider.faqResponse.isLoading) const AppLoadingWidget(),
+          if (provider.faqResponse.isLoading) const AppCircularLoadingWidget(),
           if (provider.faqResponse.isSuccess)
             Expanded(
               child: ListView.separated(

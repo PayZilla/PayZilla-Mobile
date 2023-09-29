@@ -1,7 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/functional_utils/assets.dart';
 
 class NotificationProvider extends ChangeNotifier {
+  NotificationProvider(this.notificationRepository);
+
+  final NotificationRepository notificationRepository;
+
+  ApiResult<List<NotificationModel>> notificationRes =
+      ApiResult<List<NotificationModel>>.idle();
+
+  ApiResult<String> readNotificationRes = ApiResult<String>.idle();
+
+  int _count = 0;
+  int get count => _count;
+  set count(int count) {
+    _count = count;
+    notifyListeners();
+  }
+
+  Future<void> getNotifications() async {
+    notificationRes = ApiResult<List<NotificationModel>>.loading('Loading...');
+    notifyListeners();
+    final failureOrNotification =
+        await notificationRepository.getNotifications();
+    failureOrNotification.fold(
+      (failure) {
+        notificationRes =
+            ApiResult<List<NotificationModel>>.error(failure.message);
+        notifyListeners();
+      },
+      (res) {
+        notificationRes = ApiResult<List<NotificationModel>>.success(res);
+
+        for (final notification in res) {
+          if (!notification.isRead) {
+            count++;
+          }
+        }
+        notifyListeners();
+      },
+    );
+    notifyListeners();
+  }
+
+  Future<void> markNotificationsAsRead() async {
+    readNotificationRes = ApiResult<String>.loading('Loading...');
+    notifyListeners();
+    final failureOrNotification =
+        await notificationRepository.markNotificationsAsRead();
+    await failureOrNotification.fold(
+      (failure) {
+        readNotificationRes = ApiResult<String>.error(failure.message);
+        notifyListeners();
+      },
+      (res) async {
+        await getNotifications();
+        count = 0;
+        readNotificationRes = ApiResult<String>.success(res);
+        notifyListeners();
+      },
+    );
+    notifyListeners();
+  }
+
   final notificationList = [
     NotificationAsset(
       asset: rewardSvg,

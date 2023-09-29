@@ -22,7 +22,7 @@ void registerViewModelProviders(GetIt getIt) {
       () => ProfileProvider(getIt(), getIt(), getIt()),
     )
     ..registerFactory(
-      NotificationProvider.new,
+      () => NotificationProvider(getIt()),
     )
     ..registerFactory(
       AnalyticProvider.new,

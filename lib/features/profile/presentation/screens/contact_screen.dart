@@ -90,7 +90,7 @@ class _ContactScreenState extends State<ContactScreen> {
             if (profileProvider.loading ||
                 profileProvider.contactsResponse.isLoading) ...[
               const YBox(Insets.dim_24),
-              const AppLoadingWidget(),
+              const AppCircularLoadingWidget(),
             ],
             if (profileProvider.searchedContacts != null &&
                 profileProvider.searchedContacts!.isNotEmpty)
