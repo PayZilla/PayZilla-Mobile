@@ -6,7 +6,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/dashboard/data/datasource/account_datasource.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
-import 'package:pay_zilla/features/qr/qr.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 
 void registerDataSources(GetIt getIt) {
   getIt
@@ -26,11 +26,6 @@ void registerDataSources(GetIt getIt) {
         getIt(),
       ),
     )
-    ..registerFactory<IQRRemoteDataSource>(
-      () => QRRemoteDataSource(
-        getIt(),
-      ),
-    )
     ..registerFactory<IBillRemoteDataSource>(
       () => BillRemoteDataSource(
         getIt(),
@@ -43,6 +38,11 @@ void registerDataSources(GetIt getIt) {
     )
     ..registerFactory<IAccountRemoteDataSource>(
       () => AccountRemoteDataSource(
+        getIt(),
+      ),
+    )
+    ..registerFactory<ITransferRemoteDataSource>(
+      () => TransferRemoteDataSource(
         getIt(),
       ),
     );

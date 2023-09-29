@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
-import 'package:pay_zilla/features/qr/qr.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 
 void registerRepositories(GetIt getIt) {
   getIt
@@ -20,11 +20,6 @@ void registerRepositories(GetIt getIt) {
       ),
     )
     ..registerFactory(
-      () => QrRepository(
-        remoteDataSource: getIt(),
-      ),
-    )
-    ..registerFactory(
       () => BillRepository(
         remoteDataSource: getIt(),
       ),
@@ -36,6 +31,11 @@ void registerRepositories(GetIt getIt) {
     )
     ..registerFactory(
       () => AccountRepository(
+        remoteDataSource: getIt(),
+      ),
+    )
+    ..registerFactory(
+      () => TransferRepository(
         remoteDataSource: getIt(),
       ),
     );

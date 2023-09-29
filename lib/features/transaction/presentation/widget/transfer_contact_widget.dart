@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:pay_zilla/config/config.dart';
-import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class SelectableContactWidget extends StatefulWidget {
@@ -32,7 +31,9 @@ class _SelectableContactWidgetState extends State<SelectableContactWidget> {
       decoration: BoxDecoration(
         borderRadius: Corners.mdBorder,
         border: Border.all(
-          color: widget.isSelected ? AppColors.appGreen : AppColors.borderColor,
+          color: widget.isSelected
+              ? AppColors.appGreen
+              : AppColors.black.withOpacity(0.2),
           width: 2,
         ),
       ),
@@ -44,9 +45,16 @@ class _SelectableContactWidgetState extends State<SelectableContactWidget> {
             children: [
               const YBox(Insets.dim_26),
               Expanded(
-                child: widget.contact.photoOrThumbnail != null
-                    ? Image.memory(widget.contact.photoOrThumbnail!)
-                    : const Icon(Icons.person_add_alt),
+                child: CircleAvatar(
+                  backgroundColor: AppColors.btnPrimaryColor,
+                  radius: Insets.dim_116,
+                  child: widget.contact.photoOrThumbnail != null
+                      ? Image.memory(widget.contact.photoOrThumbnail!)
+                      : const Icon(
+                          Icons.person_add_alt,
+                          size: Insets.dim_30,
+                        ),
+                ),
               ),
               const YBox(Insets.dim_16),
               Expanded(
@@ -63,7 +71,9 @@ class _SelectableContactWidgetState extends State<SelectableContactWidget> {
               ),
               Expanded(
                 child: Text(
-                  widget.contact.phones.first.number,
+                  widget.contact.phones.isNotEmpty
+                      ? widget.contact.phones.first.number
+                      : '',
                   textAlign: TextAlign.center,
                   style: context.textTheme.bodyMedium!.copyWith(
                     color: AppColors.textBodyColor,

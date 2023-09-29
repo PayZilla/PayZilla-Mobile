@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +20,7 @@ class QRScanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final qrProvider = context.watch<QrProvider>();
+    final transactionP = context.watch<TransactionProvider>();
 
     return AppScaffold(
       extendedBody: true,
@@ -69,7 +70,7 @@ class QRScanScreen extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              if (qrProvider.qrResponse.isLoading)
+              if (transactionP.valBanksOrWalletResponse.isLoading)
                 const AppLoadingWidget(
                   color: AppColors.white,
                   size: Insets.dim_32,
@@ -126,24 +127,27 @@ class QRScanScreen extends StatelessWidget {
                 ),
               ],
               const Spacer(),
-              InkWell(
-                onTap: () =>
-                    AppNavigator.of(context).push(AppRoutes.scanQrScreen),
-                child: Container(
-                  height: Insets.dim_80,
-                  padding: const EdgeInsets.all(Insets.dim_20),
-                  decoration: BoxDecoration(
-                    color: AppColors.white.withOpacity(0.4),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.white),
+              if (transactionP.valBanksOrWalletResponse.data != null)
+                InkWell(
+                  onTap: () => AppNavigator.of(context).push(
+                    AppRoutes.scanQrScreen,
+                    args: ScanQrScreenArgs(),
                   ),
-                  child: LocalSvgImage(
-                    qrBoltSvg,
-                    fit: BoxFit.contain,
-                    color: AppColors.white,
+                  child: Container(
+                    height: Insets.dim_80,
+                    padding: const EdgeInsets.all(Insets.dim_20),
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withOpacity(0.4),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.white),
+                    ),
+                    child: LocalSvgImage(
+                      qrBoltSvg,
+                      fit: BoxFit.contain,
+                      color: AppColors.white,
+                    ),
                   ),
                 ),
-              ),
               const YBox(Insets.dim_28),
             ],
           ),

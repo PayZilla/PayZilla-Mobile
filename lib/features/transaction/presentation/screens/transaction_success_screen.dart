@@ -27,7 +27,6 @@ class TransactionSuccessScreen extends StatefulWidget {
 class _TransactionSuccessScreenState extends State<TransactionSuccessScreen> {
   @override
   Widget build(BuildContext context) {
-    final money = Money();
     return AppScaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -38,7 +37,7 @@ class _TransactionSuccessScreenState extends State<TransactionSuccessScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Insets.dim_50),
             child: Text(
-              'Transfer Successful',
+              'Transfer to ${widget.args.name} Successful',
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.textHeaderColor,
                 fontWeight: FontWeight.w700,
@@ -72,7 +71,7 @@ class _TransactionSuccessScreenState extends State<TransactionSuccessScreen> {
               vertical: Insets.dim_12,
             ),
             child: Text(
-              money.formatValue(8504888),
+              widget.args.amount,
               textAlign: TextAlign.center,
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.textHeaderColor,

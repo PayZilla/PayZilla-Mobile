@@ -50,7 +50,12 @@ final dashboardRouter = [
       GoRoute(
         path: 'scan-qr-screen',
         builder: (context, state) {
-          return const ScanQrScreen();
+          return ScanQrScreen(
+            args: argsRegistry<ScanQrScreenArgs>(
+              'scan-qr-screen',
+              state.extra,
+            ),
+          );
         },
       ),
     ],

@@ -3,7 +3,7 @@ import 'package:pay_zilla/di/dependency_injection_container.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 
 mixin LogoutMixin {
-  late BuildContext context;
+  BuildContext? context;
   @protected
   void logout() {}
 

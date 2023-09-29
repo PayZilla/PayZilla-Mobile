@@ -1,14 +1,15 @@
-class TransferValidateModel {
-  TransferValidateModel({
+import 'package:equatable/equatable.dart';
+
+class WalletOrBankModel extends Equatable {
+  const WalletOrBankModel({
     required this.name,
     required this.accountNumber,
     required this.bankCode,
     required this.bankName,
     required this.avatarUrl,
   });
-
-  factory TransferValidateModel.fromJson(Map<String, dynamic> json) {
-    return TransferValidateModel(
+  factory WalletOrBankModel.fromJson(Map<String, dynamic> json) {
+    return WalletOrBankModel(
       name: json['name'] ?? '',
       accountNumber: json['accountNumber'] ?? '',
       bankCode: json['bankCode'] ?? '',
@@ -16,6 +17,17 @@ class TransferValidateModel {
       avatarUrl: json['avatarUrl'] ?? '',
     );
   }
+
+  factory WalletOrBankModel.empty() {
+    return const WalletOrBankModel(
+      name: '',
+      accountNumber: '',
+      bankCode: '',
+      bankName: '',
+      avatarUrl: '',
+    );
+  }
+
   final String name;
   final String accountNumber;
   final String bankCode;
@@ -31,4 +43,8 @@ class TransferValidateModel {
     data['avatarUrl'] = avatarUrl;
     return data;
   }
+
+  @override
+  List<Object?> get props =>
+      [name, accountNumber, bankCode, bankName, avatarUrl];
 }

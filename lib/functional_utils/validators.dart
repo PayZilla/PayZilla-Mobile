@@ -212,8 +212,20 @@ class Validators {
   static String harmonize(String? value) =>
       value == null ? '' : value.replaceAll(',', '').trim();
 
-  static String harmonizeForContacts(String? value) =>
-      value == null ? '' : value.replaceAll(RegExp('[^0-9]'), '');
+  static String harmonizeForContacts(String? value) {
+    if (value == null) {
+      return '';
+    } else {
+      final num = value.replaceAll(RegExp('[^0-9]+'), '');
+      final checkIfValid = num.startsWith(RegExp(RegExp.escape('234')));
+      Log().debug('The harmonized value is $num', checkIfValid);
+      if (checkIfValid) {
+        return num.replaceAll(RegExp('[^0-9]+'), '');
+      } else {
+        return '234${num.replaceAll(RegExp('[^0-9]'), '').replaceFirst('0', '')}';
+      }
+    }
+  }
 
   static bool hasSpecialCharacter(String? value) {
     final res = harmonize(value);

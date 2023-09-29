@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
-import 'package:pay_zilla/features/card/card.dart';
+import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
+import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
@@ -16,9 +17,12 @@ class TransferScreen extends StatefulWidget {
   State<TransferScreen> createState() => _TransferScreenState();
 }
 
-class _TransferScreenState extends State<TransferScreen> {
+class _TransferScreenState extends State<TransferScreen> with FormMixin {
   int? currentSelectedIndex;
+  ValidateBankOrWalletDto requestDto = ValidateBankOrWalletDto.empty();
+  WalletChannel walletChannelDto = WalletChannel.empty();
   late ProfileProvider profileProvider;
+  bool _showButton = false;
   @override
   void initState() {
     super.initState();
@@ -34,6 +38,9 @@ class _TransferScreenState extends State<TransferScreen> {
   Widget build(BuildContext context) {
     profileProvider = context.watch<ProfileProvider>();
     final dsProvider = context.watch<DashboardProvider>();
+    final transProvider = context.watch<TransactionProvider>();
+    final money = context.money();
+
     return Stack(
       children: [
         AppScaffold(
@@ -55,148 +62,239 @@ class _TransferScreenState extends State<TransferScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
-            child: ListView(
-              children: [
-                const YBox(Insets.dim_24),
-                Text(
-                  'Choose cards',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.btnPrimaryColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                    letterSpacing: 0.30,
+            child: Form(
+              key: formKey,
+              child: ListView(
+                children: [
+                  const YBox(Insets.dim_24),
+                  Text(
+                    'Wallet balance',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.btnPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                      letterSpacing: 0.30,
+                    ),
                   ),
-                ),
-                const YBox(Insets.dim_16),
-                SizedBox(
-                  height: context.getHeight(0.25),
-                  child: dsProvider.getWalletsResponse.isLoading
-                      ? const TempLoadingAtmCard(
-                          color: AppColors.textHeaderColor,
-                        )
-                      : const AtmCardWidget(
-                          color: AppColors.textHeaderColor,
-                        ),
-                ),
-                const YBox(Insets.dim_24),
-                Text(
-                  'Choose recipients',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.btnPrimaryColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                    letterSpacing: 0.30,
-                  ),
-                ),
-                const YBox(Insets.dim_16),
-                SearchTextInputField(
-                  showTrailing: false,
-                  title: 'Search contacts',
-                  onChanged: (value) {
-                    if (value.isNotEmpty &&
-                        profileProvider.fetchedContacts != null) {
-                      profileProvider.searchedContacts =
-                          profileProvider.fetchedContacts!
-                              .where(
-                                (contact) => contact.displayName
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()),
-                              )
-                              .toList();
-                    } else {
-                      profileProvider.searchedContacts =
-                          profileProvider.fetchedContacts;
-                    }
-                    setState(() {});
-                  },
-                ),
-                const YBox(Insets.dim_24),
-                if (profileProvider.searchedContacts != null &&
-                    profileProvider.searchedContacts!.isNotEmpty)
+                  const YBox(Insets.dim_16),
                   SizedBox(
-                    height: context.getHeight(0.22),
-                    child: ListView.separated(
+                    height: context.getHeight(0.05),
+                    child: ListView.builder(
+                      itemCount:
+                          dsProvider.getWalletsResponse.data?.length ?? 0,
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
-                      separatorBuilder: (context, index) =>
-                          const XBox(Insets.dim_14),
-                      itemCount: profileProvider.searchedContacts!.length,
                       itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            if (profileProvider.contactsResponse.isLoading) {
-                              return;
-                            }
-                            setState(() => currentSelectedIndex = index);
-                            if (profileProvider
-                                .searchedContacts![index].phones.isNotEmpty) {
-                              await profileProvider.getContacts([
-                                Validators.harmonizeForContacts(
-                                  profileProvider.searchedContacts![index]
-                                      .phones.first.number,
-                                )
-                              ]).then((value) async {
-                                if (profileProvider
-                                    .contactsResponse.isSuccess) {
-                                  if (profileProvider
-                                      .contactsResponse.data!.isEmpty) {
-                                    showInfoNotification(
-                                      "This phone number doesn't exist on our record.\nInvite them to join PayZilla",
-                                      durationInMills: 3000,
-                                    );
-                                    return;
-                                  }
-                                  await FutureBottomSheet<ContactsModel>(
-                                    title:
-                                        'Send money to ${profileProvider.contactsResponse.data!.first.name}',
-                                    height: context.getHeight(0.5),
-                                    bottomWidget: AppSolidButton(
-                                      textTitle: 'Send Money',
-                                      showLoading: profileProvider
-                                          .userProfileUpdate.isLoading,
-                                      action: () {
-                                        AppNavigator.of(context).push(
-                                          AppRoutes.sendMoney,
-                                          args: SendMoneyScreenArgs(
-                                            contact: profileProvider
-                                                .contactsResponse.data!.first,
-                                          ),
-                                        );
-                                      },
+                        final data = dsProvider.getWalletsResponse.data?[index];
+                        return Container(
+                          height: context.getHeight(0.05),
+                          width: context.getWidth(0.9),
+                          clipBehavior: Clip.hardEdge,
+                          decoration: const BoxDecoration(
+                            borderRadius: Corners.mdBorder,
+                            color: AppColors.textHeaderColor,
+                          ),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              LocalSvgImage(
+                                atmLineSvg,
+                                width: double.infinity,
+                                color: AppColors.appGreen,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: Insets.dim_22,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.textHeaderColor
+                                      .withOpacity(0.5),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      data != null
+                                          ? money.formatValue(
+                                              double.tryParse(data.balance)! *
+                                                  100,
+                                            )
+                                          : money.formatValue(0),
+                                      style: context.textTheme.bodyMedium!
+                                          .copyWith(
+                                        color: AppColors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                    future: () async => [
-                                      profileProvider
-                                          .contactsResponse.data!.first
-                                    ],
-                                    itemBuilder: remoteContactWidget,
-                                  ).show(context);
-                                } else if (profileProvider
-                                    .contactsResponse.isError) {
-                                  showInfoNotification(
-                                    "This phone number doesn't exist on our record.\nInvite them to join PayZilla",
-                                    durationInMills: 3000,
-                                  );
-                                }
-                              });
-                            } else {
-                              showInfoNotification('No phone number');
-                            }
-                          },
-                          child: SelectableContactWidget(
-                            index: index,
-                            isSelected: currentSelectedIndex == index,
-                            contact: profileProvider.searchedContacts![index],
+                                    LocalSvgImage(atmLogoSvg),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
                     ),
                   ),
-                const YBox(Insets.dim_32),
-              ],
+                  const YBox(Insets.dim_24),
+                  PhoneNumberTextFormField(
+                    initialValue: requestDto.walletChannel.paymentId,
+                    hintText: 'Enter payment ID',
+                    onChanged: (input) {
+                      if (input.isNotEmpty && input.length == 11) {
+                        setState(() => _showButton = true);
+                      } else {
+                        setState(() => _showButton = false);
+                      }
+                    },
+                    onSaved: (value) {
+                      requestDto = requestDto.copyWith(
+                        walletChannel: WalletChannel(
+                          paymentId: '234${value!.substring(1)}',
+                        ),
+                      );
+                    },
+                    textFieldIcon: GestureDetector(
+                      onTap: () => AppNavigator.of(context).push(
+                        AppRoutes.scanQrScreen,
+                        args: ScanQrScreenArgs(isSendMoney: true),
+                      ),
+                      child: const Icon(Icons.qr_code_scanner_rounded),
+                    ),
+                  ),
+                  const YBox(Insets.dim_24),
+                  Text(
+                    'Choose from contact',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.btnPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                      letterSpacing: 0.30,
+                    ),
+                  ),
+                  const YBox(Insets.dim_16),
+                  SearchTextInputField(
+                    showTrailing: false,
+                    title: 'Search contacts',
+                    onChanged: (value) {
+                      if (value.isNotEmpty &&
+                          profileProvider.fetchedContacts != null) {
+                        profileProvider.searchedContacts =
+                            profileProvider.fetchedContacts!
+                                .where(
+                                  (contact) => contact.displayName
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase()),
+                                )
+                                .toList();
+                      } else {
+                        profileProvider.searchedContacts =
+                            profileProvider.fetchedContacts;
+                      }
+                      setState(() {});
+                    },
+                  ),
+                  const YBox(Insets.dim_24),
+                  if (profileProvider.searchedContacts != null &&
+                      profileProvider.searchedContacts!.isNotEmpty)
+                    SizedBox(
+                      height: context.getHeight(0.22),
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        separatorBuilder: (context, index) =>
+                            const XBox(Insets.dim_14),
+                        itemCount: profileProvider.searchedContacts!.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              if (transProvider
+                                  .valBanksOrWalletResponse.isLoading) {
+                                return;
+                              }
+                              setState(() => currentSelectedIndex = index);
+                              if (profileProvider
+                                  .searchedContacts![index].phones.isNotEmpty) {
+                                requestDto = requestDto.copyWith(
+                                  channel: Channel.wallet,
+                                  walletChannel: WalletChannel(
+                                    paymentId: Validators.harmonizeForContacts(
+                                      profileProvider.searchedContacts![index]
+                                          .phones.first.number,
+                                    ),
+                                  ),
+                                );
+
+                                await transProvider
+                                    .validateBanksOrWallet(requestDto);
+                                if (transProvider
+                                    .valBanksOrWalletResponse.isSuccess) {
+                                  // ignore: use_build_context_synchronously
+                                  AppNavigator.of(context).push(
+                                    AppRoutes.sendMoney,
+                                    args: SendMoneyScreenArgs(
+                                      contact: transProvider
+                                          .valBanksOrWalletResponse.data!,
+                                      paymentId:
+                                          requestDto.walletChannel.paymentId,
+                                    ),
+                                  );
+                                }
+                              } else {
+                                showInfoNotification('No phone number');
+                              }
+                            },
+                            child: SelectableContactWidget(
+                              index: index,
+                              isSelected: currentSelectedIndex == index,
+                              contact: profileProvider.searchedContacts![index],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  if (profileProvider.loading)
+                    const AppLoadingWidget(color: AppColors.black),
+                  const YBox(Insets.dim_32),
+                  if (_showButton) ...[
+                    AppButton(
+                      textTitle: 'Send Money',
+                      showLoading:
+                          transProvider.transBanksOrWalletResponse.isLoading,
+                      action: () {
+                        validate(() {
+                          requestDto = requestDto.copyWith(
+                            channel: Channel.wallet,
+                          );
+                          transProvider
+                              .validateBanksOrWallet(requestDto)
+                              .then((value) {
+                            if (transProvider
+                                .valBanksOrWalletResponse.isSuccess) {
+                              AppNavigator.of(context).push(
+                                AppRoutes.sendMoney,
+                                args: SendMoneyScreenArgs(
+                                  contact: transProvider
+                                      .valBanksOrWalletResponse.data!,
+                                  paymentId: requestDto.walletChannel.paymentId,
+                                ),
+                              );
+                            }
+                          });
+                        });
+                      },
+                    ),
+                    const YBox(Insets.dim_32),
+                  ]
+                ],
+              ),
             ),
           ),
         ),
-        if (profileProvider.contactsResponse.isLoading)
+        if (transProvider.valBanksOrWalletResponse.isLoading)
           Container(
             color: AppColors.black.withOpacity(0.5),
             child: const AppLoadingWidget(

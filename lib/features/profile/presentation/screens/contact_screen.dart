@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';

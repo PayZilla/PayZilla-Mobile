@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'package:dio/dio.dart';
-import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:requests_inspector/requests_inspector.dart';
@@ -27,7 +26,6 @@ class HttpManager {
     _dio1.interceptors.add(
       RequestsInspectorInterceptor(),
     );
-    Log().debug('The token cached.. ${cache.get(CacheKeys.token)}');
   }
   late Dio _dio1;
   bool enableLogging;

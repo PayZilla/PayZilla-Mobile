@@ -9,7 +9,7 @@ class WalletsModel extends Equatable {
   factory WalletsModel.fromJson(Map<String, dynamic> json) {
     return WalletsModel(
       currency: json['currency'] ?? '',
-      balance: json['balance'] ?? '',
+      balance: json['balance'] ?? '0',
     );
   }
   final String currency;

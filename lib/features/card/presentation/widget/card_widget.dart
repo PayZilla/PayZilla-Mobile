@@ -76,8 +76,11 @@ class AtmCardWidget extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(
-                          money
-                              .formatValue(double.tryParse(data!.balance) ?? 0),
+                          data != null
+                              ? money.formatValue(
+                                  double.tryParse(data.balance)! * 100,
+                                )
+                              : money.formatValue(0),
                           style: context.textTheme.bodyMedium!.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.w700,
@@ -88,6 +91,17 @@ class AtmCardWidget extends StatelessWidget {
                         LocalSvgImage(atmLogoSvg),
                       ],
                     ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: () async {
+                      await dsProvider.getWallets();
+                    },
+                    icon: const Icon(Icons.refresh_rounded),
+                    color: AppColors.white,
+                    iconSize: Insets.dim_32,
                   ),
                 ),
               ],

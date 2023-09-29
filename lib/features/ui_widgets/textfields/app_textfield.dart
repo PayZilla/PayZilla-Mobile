@@ -448,6 +448,10 @@ class _SpecialAmountTextFieldState extends State<SpecialAmountTextField> {
             ignoring: false,
             child: AppTextFormField(
               hintText: '00.00',
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              inputType: TextInputType.number,
               prefixIcon: SizedBox(
                 height: 40,
                 child: Row(

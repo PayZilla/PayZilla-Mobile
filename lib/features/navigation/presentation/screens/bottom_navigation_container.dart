@@ -4,6 +4,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
@@ -26,9 +27,9 @@ class BottomNavigationContainer extends StatefulWidget {
 class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     with ChangeNotifier {
   late AuthProvider authProvider;
-  late QrProvider qrProvider;
+  late TransactionProvider qrProvider;
   late DashboardProvider dashboardProvider;
-  ValidateQRDto requestDto = ValidateQRDto.empty();
+  ValidateBankOrWalletDto requestDto = ValidateBankOrWalletDto.empty();
   WalletChannel walletChannel = WalletChannel.empty();
   @override
   void initState() {
@@ -47,7 +48,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
   @override
   Widget build(BuildContext context) {
     authProvider = context.watch<AuthProvider>();
-    qrProvider = context.watch<QrProvider>();
+    qrProvider = context.watch<TransactionProvider>();
     dashboardProvider = context.watch<DashboardProvider>();
     if (widget.hideNav || authProvider.showNavBar) {
       return Container();
@@ -137,13 +138,13 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
               );
               requestDto = requestDto.copyWith(
                 walletChannel: walletChannel,
-                walletType: WalletType.wallet,
+                channel: Channel.wallet,
               );
               AppNavigator.of(context).push(
                 AppRoutes.qrScan,
                 args: QRScreenArgs(authProvider.user.phoneNumber),
               );
-              qrProvider.validateQR(requestDto);
+              qrProvider.validateBanksOrWallet(requestDto);
             },
             child: Container(
               height: context.getHeight(0.07),

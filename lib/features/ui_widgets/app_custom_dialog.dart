@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
-import 'package:pay_zilla/features/dashboard/dashboard.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +19,7 @@ class CustomDialogBox extends StatefulWidget {
   final String? title, descriptions, text;
   final String? img;
   final String amount;
-  final ContactsModel contact;
+  final WalletOrBankModel contact;
 
   @override
   State<CustomDialogBox> createState() => _CustomDialogBoxState();
@@ -81,14 +81,14 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 leftTitle: 'From',
                 leftDescriptions: authP.user.fullName,
                 rightDescriptions: '**** 8456',
-                rightTitle: 'Citibank Online',
+                rightTitle: '',
               ),
               contentInfoWidget(
                 context,
                 leftTitle: 'To',
                 leftDescriptions: widget.contact.name,
-                rightDescriptions: widget.contact.paymentId,
-                rightTitle: '',
+                rightDescriptions: widget.contact.accountNumber,
+                rightTitle: widget.contact.bankName,
               ),
               contentInfoWidget(
                 context,

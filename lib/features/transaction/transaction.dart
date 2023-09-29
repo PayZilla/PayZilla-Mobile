@@ -1,4 +1,9 @@
+export 'data/datasource/transfer_datasource.dart';
 export 'data/model/account_details.dart';
+export 'data/model/banks_model.dart';
+export 'data/model/validate_transfer_dto.dart';
+export 'data/model/wallet_or_banks_model.dart';
+export 'domain/transfer_repository.dart';
 export 'presentation/screens/all_transactions_screen.dart';
 export 'presentation/screens/send_money_screen.dart';
 export 'presentation/screens/top_up_screen.dart';

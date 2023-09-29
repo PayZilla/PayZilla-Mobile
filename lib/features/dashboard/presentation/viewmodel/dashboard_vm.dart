@@ -127,4 +127,29 @@ class DashboardProvider extends ChangeNotifier {
         return dataSvg;
     }
   }
+
+  final transferOptions = [
+    TransferOption(
+      img: r3,
+      title: 'PayZilla User',
+      desc: 'Send money to PayZilla User',
+    ),
+    TransferOption(
+      img: moreSvg,
+      title: 'Others',
+      desc: 'Send money to Others using PayZilla',
+    ),
+  ];
+}
+// transfer option
+
+class TransferOption {
+  TransferOption({
+    required this.img,
+    required this.title,
+    required this.desc,
+  });
+  final String title;
+  final String desc;
+  final String img;
 }

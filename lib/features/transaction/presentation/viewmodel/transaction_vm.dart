@@ -9,21 +9,32 @@ import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class TransactionProvider extends ChangeNotifier {
   TransactionProvider({
-    required AccountRepository transactionRepository,
+    required AccountRepository accountTranRepository,
     required CardsRepository cardsRepository,
+    required TransferRepository transferRepository,
   }) {
-    _transactionRepository = transactionRepository;
+    _accountTranRepository = accountTranRepository;
     _cardsRepository = cardsRepository;
+    _transferRepository = transferRepository;
 
     _plugin.initialize(publicKey: dotenv.env['PAY_STACK_PUBLIC_TEST_KEY']!);
   }
 
-  late AccountRepository _transactionRepository;
+  late AccountRepository _accountTranRepository;
   late CardsRepository _cardsRepository;
+  late TransferRepository _transferRepository;
   final _plugin = PaystackPlugin();
 
   ApiResult<List<CardsModel>> cardsServiceResponse =
       ApiResult<List<CardsModel>>.idle();
+
+  ApiResult<List<BanksModel>> banksServiceResponse =
+      ApiResult<List<BanksModel>>.idle();
+
+  ApiResult<WalletOrBankModel> valBanksOrWalletResponse =
+      ApiResult<WalletOrBankModel>.idle();
+
+  ApiResult<String> transBanksOrWalletResponse = ApiResult<String>.idle();
 
   ApiResult<AccountDetailsModel> accountDetailsRES =
       ApiResult<AccountDetailsModel>.idle();
@@ -35,8 +46,8 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> getAccounts() async {
     accountDetailsRES = ApiResult<AccountDetailsModel>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await _transactionRepository.getAccounts();
-    failureOrCat.fold(
+    final failureOrData = await _accountTranRepository.getAccounts();
+    failureOrData.fold(
       (failure) {
         accountDetailsRES =
             ApiResult<AccountDetailsModel>.error(failure.message);
@@ -53,8 +64,8 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> getCards() async {
     cardsServiceResponse = ApiResult<List<CardsModel>>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await _cardsRepository.getCards();
-    failureOrCat.fold(
+    final failureOrData = await _cardsRepository.getCards();
+    failureOrData.fold(
       (failure) {
         cardsServiceResponse =
             ApiResult<List<CardsModel>>.error(failure.message);
@@ -71,8 +82,8 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> initializeCard() async {
     initializeRefRES = ApiResult<CardInitiateModel>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await _cardsRepository.initializeCard();
-    failureOrCat.fold(
+    final failureOrData = await _cardsRepository.initializeCard();
+    failureOrData.fold(
       (failure) {
         initializeRefRES = ApiResult<CardInitiateModel>.error(failure.message);
         notifyListeners();
@@ -88,8 +99,8 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> finalizeAddCard(String refId, BuildContext context) async {
     finalizeAddCardRES = ApiResult<String>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await _cardsRepository.finalizeAddCard(refId);
-    await failureOrCat.fold(
+    final failureOrData = await _cardsRepository.finalizeAddCard(refId);
+    await failureOrData.fold(
       (failure) {
         finalizeAddCardRES = ApiResult<String>.error(failure.message);
         showErrorNotification(failure.message);
@@ -108,6 +119,68 @@ class TransactionProvider extends ChangeNotifier {
       },
     );
     notifyListeners();
+  }
+
+  Future<void> getBanks() async {
+    banksServiceResponse = ApiResult<List<BanksModel>>.loading('Loading...');
+    notifyListeners();
+    final failureOrData = await _transferRepository.getBanks();
+    failureOrData.fold(
+      (failure) {
+        banksServiceResponse =
+            ApiResult<List<BanksModel>>.error(failure.message);
+        showErrorNotification(failure.message);
+        notifyListeners();
+      },
+      (res) {
+        banksServiceResponse = ApiResult<List<BanksModel>>.success(res);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> validateBanksOrWallet(ValidateBankOrWalletDto params) async {
+    valBanksOrWalletResponse =
+        ApiResult<WalletOrBankModel>.loading('Loading...');
+    notifyListeners();
+    Log().debug('What is validated ', params.toJson());
+
+    final failureOrData =
+        await _transferRepository.validateBanksOrWallet(params);
+    failureOrData.fold(
+      (failure) {
+        valBanksOrWalletResponse =
+            ApiResult<WalletOrBankModel>.error(failure.message);
+        showErrorNotification(failure.message, durationInMills: 3500);
+        notifyListeners();
+      },
+      (res) {
+        valBanksOrWalletResponse = ApiResult<WalletOrBankModel>.success(res);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> transferBanksOrWallet(ValidateBankOrWalletDto params) async {
+    transBanksOrWalletResponse = ApiResult<String>.loading('Loading...');
+    notifyListeners();
+    Log().debug('What is sent ', params.toJson());
+    final failureOrData =
+        await _transferRepository.transferBanksOrWallet(params);
+    failureOrData.fold(
+      (failure) {
+        transBanksOrWalletResponse = ApiResult<String>.error(failure.message);
+        showErrorNotification(
+          failure.message.split(':').last.replaceAll(RegExp(r'[^\w\s]+'), ''),
+          durationInMills: 3500,
+        );
+        notifyListeners();
+      },
+      (res) {
+        transBanksOrWalletResponse = ApiResult<String>.success(res);
+        notifyListeners();
+      },
+    );
   }
 
   Future<void> initializePayStack(

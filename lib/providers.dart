@@ -6,7 +6,6 @@ import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/onboarding/onboarding.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
-import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -35,8 +34,5 @@ final List<SingleChildWidget> providers = [
   ),
   ChangeNotifierProvider<TransactionProvider>(
     create: (_) => GetIt.I<TransactionProvider>(),
-  ),
-  ChangeNotifierProvider<QrProvider>(
-    create: (_) => GetIt.I<QrProvider>(),
   ),
 ];

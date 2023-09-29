@@ -402,16 +402,20 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void sessionTimeout(String reason, BuildContext context) {
+  void sessionTimeout(String reason, BuildContext? context) {
     showErrorNotification(reason);
     authRepository.localDataSource.flushLocalStorage();
-    AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+    if (context != null) {
+      AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+    }
     notifyListeners();
   }
 
-  void logout(BuildContext context) {
+  void logout(BuildContext? context) {
     authRepository.localDataSource.flushLocalStorage();
-    AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+    if (context != null) {
+      AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+    }
 
     notifyListeners();
   }

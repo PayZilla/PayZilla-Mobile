@@ -3,11 +3,20 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/state/loading.dart';
 import 'package:provider/provider.dart';
 
+class ScanQrScreenArgs {
+  ScanQrScreenArgs({
+    this.isSendMoney = false,
+  });
+  final bool isSendMoney;
+}
+
 class ScanQrScreen extends StatefulWidget {
-  const ScanQrScreen({super.key});
+  const ScanQrScreen({super.key, required this.args});
+  final ScanQrScreenArgs? args;
 
   @override
   State<ScanQrScreen> createState() => _ScanQrScreenState();
@@ -15,7 +24,7 @@ class ScanQrScreen extends StatefulWidget {
 
 class _ScanQrScreenState extends State<ScanQrScreen> {
   MobileScannerController cameraController = MobileScannerController();
-  ValidateQRDto requestDto = ValidateQRDto.empty();
+  ValidateBankOrWalletDto requestDto = ValidateBankOrWalletDto.empty();
   WalletChannel walletChannel = WalletChannel.empty();
   @override
   void dispose() {
@@ -25,7 +34,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final qrProvider = context.watch<QrProvider>();
+    final qrProvider = context.watch<TransactionProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +77,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       body: MobileScanner(
         controller: cameraController,
         placeholderBuilder: (p0, p1) {
-          if (qrProvider.qrResponse.isLoading) {
+          if (qrProvider.valBanksOrWalletResponse.isLoading) {
             return const Center(
               child: AppLoadingWidget(
                 size: Insets.dim_32,
@@ -86,14 +95,27 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
             );
             requestDto = requestDto.copyWith(
               walletChannel: walletChannel,
-              walletType: WalletType.wallet,
+              channel: Channel.wallet,
             );
-            qrProvider.validateQR(requestDto).then((value) {
-              if (qrProvider.qrResponse.isSuccess) {
-                AppNavigator.of(context).push(
-                  AppRoutes.qrShowScan,
-                  args: OtherUserQrScreenArgs(qrProvider.qrResponse.data!),
-                );
+            qrProvider.validateBanksOrWallet(requestDto).then((value) {
+              if (qrProvider.valBanksOrWalletResponse.isSuccess) {
+                if (widget.args!.isSendMoney) {
+                  AppNavigator.of(context).push(
+                    AppRoutes.sendMoney,
+                    args: SendMoneyScreenArgs(
+                      contact: qrProvider.valBanksOrWalletResponse.data,
+                      paymentId: requestDto.walletChannel.paymentId,
+                    ),
+                  );
+                } else {
+                  AppNavigator.of(context).push(
+                    AppRoutes.qrShowScan,
+                    args: OtherUserQrScreenArgs(
+                      qrProvider.valBanksOrWalletResponse.data!,
+                      walletChannel.paymentId,
+                    ),
+                  );
+                }
               }
             });
           }

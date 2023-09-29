@@ -1,12 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
-
-const unguidedRoutes = [
-  '/auth/forgot-password/initiate',
-  '/auth/forgot-password/verify',
-  '/auth/forgot-password/reset',
-];
+import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class AuthAndRefreshTokenInterceptor extends Interceptor {
   AuthAndRefreshTokenInterceptor({
@@ -22,13 +17,13 @@ class AuthAndRefreshTokenInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final token = await cache.get<String>(CacheKeys.token);
+
     var isExpired = false;
     if (token != null) {
       isExpired = Jwt.isExpired(token);
-      final endpoint = options.uri.path.toString();
-      final isNotAuthRoute = !unguidedRoutes.contains(endpoint);
+      Log().debug('The token cached.. $token', [isExpired]);
 
-      if (isExpired && isNotAuthRoute) {
+      if (isExpired) {
         handler.reject(
           DioError(
             requestOptions: options,

@@ -44,7 +44,7 @@ class _PinTextFieldState extends State<PinTextField> {
         fontWeight: FontWeight.w600,
       ),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.borderColor),
+        border: Border.all(color: AppColors.black.withOpacity(0.5)),
         borderRadius: Corners.smBorder,
         color: AppColors.borderColor,
       ),

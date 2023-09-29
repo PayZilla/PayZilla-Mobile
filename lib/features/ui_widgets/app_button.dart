@@ -11,6 +11,7 @@ class AppSolidButton extends AppButton {
     bool? deActivate,
     bool showLoading = false,
     Key? key,
+    Color? backgroundColor,
   }) : super(
           textTitle: textTitle,
           deActivate: deActivate,
@@ -18,7 +19,7 @@ class AppSolidButton extends AppButton {
           showLoading: showLoading,
           fullWidth: fullWidth,
           color: AppColors.white,
-          backgroundColor: AppColors.btnPrimaryColor,
+          backgroundColor: backgroundColor ?? AppColors.btnPrimaryColor,
           key: key,
         );
 }

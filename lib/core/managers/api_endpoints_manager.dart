@@ -22,7 +22,6 @@ class _AuthEndpoints {
 class _UserEndpoints {
   final getUser = '/profile';
   final avatarUpload = '/profile/avatar';
-  final qrValidate = '/accounts/transfer/validate';
 }
 
 class _AccountEndpoints {
@@ -47,6 +46,12 @@ class _AccountEndpoints {
   final getAccountDetails = '/accounts';
 }
 
+class _TransferEndpoints {
+  final getBanks = '/accounts/transfer/banks';
+  final validateBanksOrWallet = '/accounts/transfer/validate';
+  final transferBanksOrWallet = '/accounts/transfer/perform';
+}
+
 //others
 class _OthersEndpoints {
   final faqs = '/faq';
@@ -58,3 +63,4 @@ final authEndpoints = _AuthEndpoints();
 final userEndpoints = _UserEndpoints();
 final accountEndpoints = _AccountEndpoints();
 final othersEndpoints = _OthersEndpoints();
+final transferEndpoints = _TransferEndpoints();
