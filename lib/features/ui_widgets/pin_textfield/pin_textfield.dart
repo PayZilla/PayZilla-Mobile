@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/functional_utils/extensions/extensions.dart';
 import 'package:pinput/pinput.dart';
 
 class PinTextField extends StatefulWidget {
@@ -14,6 +15,7 @@ class PinTextField extends StatefulWidget {
     this.controller,
     this.validator,
     this.otpError,
+    this.labelText,
     Key? key,
   }) : super(key: key);
   final int numOfDigits;
@@ -23,6 +25,8 @@ class PinTextField extends StatefulWidget {
   final String? Function(String? input)? validator;
   final TextInputType keyboardType;
   final String? otpError;
+  final String? labelText;
+
   final bool? obscureText;
   final PinTheme? inputDecoration;
 
@@ -51,7 +55,19 @@ class _PinTextFieldState extends State<PinTextField> {
     );
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (widget.labelText != null) ...[
+          Text(
+            widget.labelText!,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: AppColors.textBodyColor,
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const YBox(Insets.dim_4),
+        ],
         Pinput(
           obscureText: widget.obscureText!,
           length: widget.numOfDigits,

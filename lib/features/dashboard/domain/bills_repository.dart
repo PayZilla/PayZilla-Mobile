@@ -34,4 +34,30 @@ class BillRepository extends Repository {
       return response;
     });
   }
+
+  Future<Either<Failure, String>> purchaseAirtime(
+    Map<String, dynamic> data,
+  ) async {
+    return runGuard(() async {
+      final response = await remoteDataSource.purchaseAirtime(data);
+
+      return response;
+    });
+  }
+
+  Future<Either<Failure, String>> verifyBill(BillPaymentDto data) async {
+    return runGuard(() async {
+      final response = await remoteDataSource.verifyBill(data);
+
+      return response;
+    });
+  }
+
+  Future<Either<Failure, String>> payBill(BillPaymentDto data) async {
+    return runGuard(() async {
+      final response = await remoteDataSource.payBill(data);
+
+      return response;
+    });
+  }
 }

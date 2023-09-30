@@ -51,5 +51,10 @@ void registerDataSources(GetIt getIt) {
       () => NotificationDataSource(
         getIt(),
       ),
+    )
+    ..registerFactory<ITransactionHistoryRemoteDataSource>(
+      () => TransactionHistoryRemoteDataSource(
+        getIt(),
+      ),
     );
 }

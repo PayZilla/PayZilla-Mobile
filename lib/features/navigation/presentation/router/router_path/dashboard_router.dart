@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
 import 'package:pay_zilla/features/qr/qr.dart';
@@ -86,6 +87,15 @@ final dashboardRouter = [
     builder: (context, state) => TopUpWidget(
       args: argsRegistry<TopUpArgs>(
         'top-up-amount',
+        state.extra,
+      )!,
+    ),
+  ),
+  GoRoute(
+    path: 'bill-payment-verification',
+    builder: (context, state) => BillPaymentVerificationScreen(
+      args: argsRegistry<BillPaymentVerificationScreenArgs>(
+        'bill-payment-verification',
         state.extra,
       )!,
     ),

@@ -15,6 +15,11 @@ class DashboardProvider extends ChangeNotifier {
   final CardsRepository cardsRepository;
   final AccountRepository accountRepository;
 
+  // Airtime bills TEC
+  final amountController = TextEditingController();
+  final phoneController = TextEditingController();
+  final pinController = TextEditingController();
+
   ApiResult<List<WalletsModel>> getWalletsResponse =
       ApiResult<List<WalletsModel>>.idle();
 
@@ -27,13 +32,9 @@ class DashboardProvider extends ChangeNotifier {
   ApiResult<BillVariantModel> billServiceResponse =
       ApiResult<BillVariantModel>.idle();
 
-  String _convenienceFee = '';
-  set convenienceFee(String value) {
-    _convenienceFee = value;
-    notifyListeners();
-  }
-
-  String get convenienceFee => _convenienceFee;
+  ApiResult<String> payBillResponse = ApiResult<String>.idle();
+  ApiResult<String> billPaymentRES = ApiResult<String>.idle();
+  BillVariantModel model = BillVariantModel.empty();
 
   Future<void> getWallets() async {
     getWalletsResponse = ApiResult<List<WalletsModel>>.loading('Loading...');
@@ -104,9 +105,86 @@ class DashboardProvider extends ChangeNotifier {
       },
     );
 
-    convenienceFee = billServiceResponse.data?.convenienceFee ?? '';
+    model = model.copyWith(
+      serviceId: id,
+      serviceName: billServiceResponse.data?.serviceName ?? '',
+      convenienceFee: billServiceResponse.data?.convenienceFee ?? '',
+      variations: billServiceResponse.data?.variations ?? [],
+    );
+
     notifyListeners();
-    return billServiceResponse.data?.variations ?? [];
+    return model.variations;
+  }
+
+  void clearTEC() {
+    amountController.clear();
+    phoneController.clear();
+    pinController.clear();
+    payBillResponse = ApiResult<String>.idle();
+  }
+
+  Future<void> purchaseAirtime() async {
+    var data = BillPaymentDto.empty();
+    data = data.copyWith(
+      phoneNumber: phoneController.text,
+      amount: amountController.text.toInt() *
+          100, //Note: this is because it is received in kobo and we are converting it to Naira
+      pin: pinController.text,
+    );
+    payBillResponse = ApiResult<String>.loading('Loading...');
+    notifyListeners();
+    final failureOrCat = await billRepository.purchaseAirtime(data.toJson());
+    failureOrCat.fold(
+      (failure) {
+        payBillResponse = ApiResult<String>.error(failure.message);
+        showErrorNotification(failure.message);
+        notifyListeners();
+      },
+      (res) {
+        payBillResponse = ApiResult<String>.success(res);
+        showSuccessNotification(res);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> verifyBill(BillPaymentDto data) async {
+    payBillResponse = ApiResult<String>.idle();
+    payBillResponse = ApiResult<String>.loading('Loading...');
+    notifyListeners();
+    final failureOrCat = await billRepository.verifyBill(data);
+    failureOrCat.fold(
+      (failure) {
+        payBillResponse = ApiResult<String>.error(failure.message);
+        showErrorNotification(failure.message);
+        notifyListeners();
+      },
+      (res) {
+        payBillResponse = ApiResult<String>.success(res);
+        showSuccessNotification(res);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> payBill(BillPaymentDto data) async {
+    billPaymentRES = ApiResult<String>.loading('Loading...');
+    notifyListeners();
+    final failureOrCat = await billRepository.payBill(data);
+    failureOrCat.fold(
+      (failure) {
+        billPaymentRES = ApiResult<String>.error(failure.message);
+        showErrorNotification(
+          failure.message,
+          durationInMills: 3500,
+        );
+        notifyListeners();
+      },
+      (res) {
+        billPaymentRES = ApiResult<String>.success(res);
+        notifyListeners();
+      },
+    );
   }
 
   void goTo(String routeName, BuildContext context) {
@@ -120,9 +198,11 @@ class DashboardProvider extends ChangeNotifier {
       case 'tv-subscription':
         return tvSvg;
       case 'data':
-        return dataSvg;
+        return internetSvg;
       case 'education':
         return schoolSvg;
+      case 'airtime':
+        return dataSvg;
       default:
         return dataSvg;
     }

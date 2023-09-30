@@ -44,6 +44,8 @@ class AppRoutes {
 
   static const successfulTransaction = '/transfer-success';
 
+  static const billPaymentVerification = '/tab/home/bill-payment-verification';
+
   /// Scanner routes
   static const qrScan = '/tab/home/qr-scanner';
   static const qrShowScan = '/tab/home/qr-show-scanner';

@@ -68,7 +68,9 @@ class NotificationScreen extends StatelessWidget {
                             letterSpacing: 0.30,
                           ),
                         ),
-                        isRead: data.isRead,
+                        tileColor: data.isRead
+                            ? AppColors.white
+                            : AppColors.appGreen.withOpacity(0.1),
                         trailing: Text(
                           DateUtil.covertStringToDate(data.createdAt)
                               .timeAgo()

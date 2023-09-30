@@ -1,10 +1,14 @@
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
+import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 abstract class IBillRemoteDataSource {
   Future<List<BillCatModel>> getCategories();
   Future<List<BillServiceModel>> getCategoryId(String id);
   Future<BillVariantModel> getServiceId(String id);
+  Future<String> purchaseAirtime(Map<String, dynamic> data);
+  Future<String> verifyBill(BillPaymentDto data);
+  Future<String> payBill(BillPaymentDto data);
 }
 
 class BillRemoteDataSource implements IBillRemoteDataSource {
@@ -57,6 +61,53 @@ class BillRemoteDataSource implements IBillRemoteDataSource {
       );
       if (response.isResultOk) {
         return BillVariantModel.fromJson(response.data);
+      }
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> purchaseAirtime(Map<String, dynamic> data) async {
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(accountEndpoints.payAirtime, data),
+      );
+      if (response.isResultOk) {
+        return response.message;
+      }
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> verifyBill(BillPaymentDto data) async {
+    Log().debug('what is verified', data.toJson());
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(accountEndpoints.verifyBill, data.toJson()),
+      );
+      if (response.isResultOk) {
+        return response.message;
+      }
+      throw AppServerException(response.message);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> payBill(BillPaymentDto data) async {
+    Log().debug('what is paid', data.toJson());
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(accountEndpoints.payBill, data.toJson()),
+      );
+      if (response.isResultOk) {
+        return response.message;
       }
       throw AppServerException(response.message);
     } catch (_) {

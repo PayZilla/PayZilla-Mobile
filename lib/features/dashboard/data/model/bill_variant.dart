@@ -8,6 +8,15 @@ class BillVariantModel extends Equatable {
     required this.variations,
   });
 
+  factory BillVariantModel.empty() {
+    return const BillVariantModel(
+      serviceId: '',
+      serviceName: '',
+      convenienceFee: '',
+      variations: [],
+    );
+  }
+
   factory BillVariantModel.fromJson(Map<String, dynamic> json) {
     return BillVariantModel(
       serviceId: json['serviceId'] ?? '',
@@ -20,6 +29,21 @@ class BillVariantModel extends Equatable {
       ),
     );
   }
+
+  BillVariantModel copyWith({
+    String? serviceId,
+    String? serviceName,
+    String? convenienceFee,
+    List<Variations>? variations,
+  }) {
+    return BillVariantModel(
+      serviceId: serviceId ?? this.serviceId,
+      serviceName: serviceName ?? this.serviceName,
+      convenienceFee: convenienceFee ?? this.convenienceFee,
+      variations: variations ?? this.variations,
+    );
+  }
+
   final String serviceId;
   final String serviceName;
   final String convenienceFee;
@@ -50,7 +74,7 @@ class Variations extends Equatable {
   factory Variations.fromJson(Map<String, dynamic> json) {
     return Variations(
       variationCode: json['variationCode'] ?? '',
-      name: json['name'] ?? '',
+      name: json['billName'] ?? '',
       variationAmount: json['variationAmount'] ?? '',
       fixedPrice: json['fixedPrice'] ?? '',
     );
@@ -63,7 +87,7 @@ class Variations extends Equatable {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['variationCode'] = variationCode;
-    data['name'] = name;
+    data['billName'] = name;
     data['variationAmount'] = variationAmount;
     data['fixedPrice'] = fixedPrice;
     return data;

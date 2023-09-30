@@ -149,3 +149,48 @@ class _TopUpWidgetState extends State<TopUpWidget> with FormMixin {
     );
   }
 }
+
+class CustomWidget extends StatefulWidget {
+  const CustomWidget({
+    super.key,
+    required this.amount,
+    required this.isSelected,
+    required this.onSelect,
+  });
+  final String amount;
+  final bool isSelected;
+  final VoidCallback onSelect;
+
+  @override
+  State<CustomWidget> createState() => _CustomWidgetState();
+}
+
+class _CustomWidgetState extends State<CustomWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onSelect,
+      child: Container(
+        margin: const EdgeInsets.all(5),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Insets.dim_16,
+          vertical: Insets.dim_8,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: Corners.rsBorder,
+          color: widget.isSelected ? AppColors.appGreen : AppColors.borderColor,
+        ),
+        child: Text(
+          widget.amount,
+          style: context.textTheme.bodyMedium!.copyWith(
+            color:
+                widget.isSelected ? AppColors.white : AppColors.textHeaderColor,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            letterSpacing: 0.30,
+          ),
+        ),
+      ),
+    );
+  }
+}

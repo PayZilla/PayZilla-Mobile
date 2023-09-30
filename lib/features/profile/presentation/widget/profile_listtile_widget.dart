@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class ListTileWidgetArgs {
@@ -11,7 +12,7 @@ class ListTileWidgetArgs {
     this.subtitle,
     this.trailing,
     this.leading,
-    this.isRead = false,
+    this.tileColor,
   });
 
   final Function()? onTap;
@@ -21,7 +22,7 @@ class ListTileWidgetArgs {
   final Widget? subtitle;
   final Widget? trailing;
   final Widget? leading;
-  final bool isRead;
+  final Color? tileColor;
 }
 
 class AppListTileWidget extends StatelessWidget {
@@ -39,16 +40,30 @@ class AppListTileWidget extends StatelessWidget {
         horizontal: Insets.dim_24,
         vertical: Insets.dim_8,
       ),
-      tileColor:
-          args.isRead ? AppColors.white : AppColors.appGreen.withOpacity(0.1),
-      shape: const RoundedRectangleBorder(
-        borderRadius: Corners.xsBorder,
-        side: BorderSide(
-          color: AppColors.grey,
-          width: 1.5,
-        ),
-      ),
+      tileColor: args.tileColor,
+      shape: args.tileColor == null
+          ? null
+          : const RoundedRectangleBorder(
+              borderRadius: Corners.xsBorder,
+              side: BorderSide(
+                color: AppColors.grey,
+                width: 1.5,
+              ),
+            ),
       onTap: args.onTap == null ? null : () => args.onTap!(),
+      leading: args.leading == null && args.asset == null
+          ? null
+          : Container(
+              decoration: BoxDecoration(
+                color: AppColors.black.withOpacity(0.05),
+                borderRadius: Corners.xsBorder,
+              ),
+              padding: const EdgeInsets.all(Insets.dim_12),
+              child: LocalSvgImage(
+                args.asset ?? logoSvg,
+                color: args.assetColor,
+              ),
+            ),
       title: Text(
         args.title,
         style: context.textTheme.bodyMedium!.copyWith(

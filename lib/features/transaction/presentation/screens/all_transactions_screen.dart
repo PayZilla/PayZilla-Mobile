@@ -12,7 +12,7 @@ class AllTransactionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tp = context.watch<TransactionProvider>();
+    final tp = context.watch<TransactionHistoryProvider>();
     final money = Money();
     return AppScaffold(
       useBodyPadding: false,

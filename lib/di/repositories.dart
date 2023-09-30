@@ -42,5 +42,8 @@ void registerRepositories(GetIt getIt) {
     )
     ..registerFactory(
       () => NotificationRepository(getIt()),
+    )
+    ..registerFactory(
+      () => TransactionHistoryRepository(remoteDataSource: getIt()),
     );
 }

@@ -76,6 +76,7 @@ final String notificationCheckSvg = 'notification_check'.dashboardSvg;
 final String rewardSvg = 'reward'.dashboardSvg;
 final String paymentSvg = 'payment'.dashboardSvg;
 final String cashbackSvg = 'cashback'.dashboardSvg;
+final String internetSvg = 'internet'.dashboardSvg;
 
 // ATM security
 final String atmLineSvg = 'atm_line'.atmSvg;

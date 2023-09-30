@@ -32,6 +32,9 @@ class _AccountEndpoints {
   String billCategoryId(String id) => '/accounts/bill-payment/categories/$id';
   String billCategoryServiceId(String id) =>
       '/accounts/bill-payment/variances/$id';
+  final payAirtime = '/accounts/bill-payment/airtime';
+  final verifyBill = '/accounts/bill-payment/verify';
+  final payBill = '/accounts/bill-payment/purchase';
 
   // cards
   final getCards = '/accounts/cards';
@@ -64,6 +67,11 @@ class _NotificationEndpoints {
   final notificationsSeen = '/notifications/read';
 }
 
+class _TransactionsEndpoints {
+  final getTransactions = '/accounts/transactions';
+  final getTransactionsOverview = '/accounts/transactions/overview';
+}
+
 // endpoints
 
 final authEndpoints = _AuthEndpoints();
@@ -72,3 +80,4 @@ final accountEndpoints = _AccountEndpoints();
 final othersEndpoints = _OthersEndpoints();
 final transferEndpoints = _TransferEndpoints();
 final notificationEndpoints = _NotificationEndpoints();
+final transactionsEndpoints = _TransactionsEndpoints();

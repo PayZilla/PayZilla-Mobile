@@ -40,5 +40,10 @@ void registerViewModelProviders(GetIt getIt) {
         cardsRepository: getIt(),
         transferRepository: getIt(),
       ),
+    )
+    ..registerFactory(
+      () => TransactionHistoryProvider(
+        historyRepository: getIt(),
+      ),
     );
 }

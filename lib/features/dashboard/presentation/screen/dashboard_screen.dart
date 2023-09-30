@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
@@ -19,13 +20,15 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  BillPaymentDto billPaymentDto = BillPaymentDto.empty();
+
   @override
   Widget build(BuildContext context) {
     final dsProvider = context.watch<DashboardProvider>();
     final authProvider = context.watch<AuthProvider>();
     final notification = context.watch<NotificationProvider>();
+    final historiesProvider = context.watch<TransactionHistoryProvider>();
 
-    Log().debug('Notifications count: ${notification.count}');
     return AppScaffold(
       useBodyPadding: false,
       body: Stack(
@@ -157,102 +160,224 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: Wrap(
                             runSpacing: 20,
                             spacing: 20,
-                            children: dsProvider.billResponse.data!
-                                .map(
-                                  (e) => InkWell(
-                                    onTap: () async {
-                                      authProvider.showNavBar = true;
-                                      await FutureBottomSheet<BillServiceModel>(
-                                        title: 'Select an option',
-                                        height: context.getHeight(0.5),
-                                        future: () async {
-                                          return dsProvider
-                                              .getCategoryId(e.identifier);
-                                        },
-                                        itemBuilder: (context, item) {
-                                          return ListTile(
-                                            title: Text(
-                                              item.name,
-                                            ),
-                                          );
-                                        },
-                                      ).show(context).then((value) async {
-                                        if (value != null) {
-                                          await FutureBottomSheet<Variations>(
-                                            title: 'Select an option',
-                                            height: context.getHeight(0.5),
-                                            searchWidget: dsProvider
-                                                    .convenienceFee.isNotEmpty
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        'Convenience Fee',
-                                                        style: context.textTheme
-                                                            .bodyMedium!
-                                                            .copyWith(
-                                                          color:
-                                                              AppColors.black,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 14,
-                                                          letterSpacing: 0.30,
+                            children: [
+                              ...dsProvider.billResponse.data!
+                                  .map(
+                                    (e) => InkWell(
+                                      onTap: () async {
+                                        authProvider.showNavBar = true;
+                                        dsProvider.clearTEC();
+
+                                        await FutureBottomSheet<
+                                            BillServiceModel>(
+                                          title: 'Select an option',
+                                          height: context.getHeight(0.5),
+                                          future: () async {
+                                            return dsProvider
+                                                .getCategoryId(e.identifier);
+                                          },
+                                          itemBuilder: (context, item) {
+                                            return ListTile(
+                                              title: Text(
+                                                item.name,
+                                              ),
+                                            );
+                                          },
+                                        ).show(context).then((value) async {
+                                          if (value != null) {
+                                            await FutureBottomSheet<Variations>(
+                                              title: 'Select an option',
+                                              height: context.getHeight(0.5),
+                                              searchWidget: dsProvider.model
+                                                      .convenienceFee.isNotEmpty
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          'Convenience Fee',
+                                                          style: context
+                                                              .textTheme
+                                                              .bodyMedium!
+                                                              .copyWith(
+                                                            color:
+                                                                AppColors.black,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontSize: 14,
+                                                            letterSpacing: 0.30,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Text(
-                                                        dsProvider
-                                                            .convenienceFee,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : null,
-                                            future: () async {
-                                              return dsProvider.getServiceId(
-                                                (value as BillServiceModel)
-                                                    .serviceId,
-                                              );
-                                            },
-                                            itemBuilder: (context, service) {
-                                              return ListTile(
-                                                title: Text(
-                                                  service.name,
-                                                ),
-                                              );
-                                            },
-                                          ).show(context).then((value) {
-                                            if (value != null) {
-                                              //  TODO(DEV)=> submit request here for bills transaction
-                                            }
-                                          });
-                                        }
-                                      });
-                                      authProvider.showNavBar = false;
-                                    },
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        LocalSvgImage(
-                                          dsProvider.assetIcon(e.identifier),
-                                        ),
-                                        const YBox(Insets.dim_12),
-                                        Text(
-                                          e.name,
-                                          style: context.textTheme.bodyMedium!
-                                              .copyWith(
-                                            color: AppColors.textHeaderColor,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
-                                            letterSpacing: 0.30,
+                                                        Text(
+                                                          dsProvider.model
+                                                              .convenienceFee,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : null,
+                                              future: () async {
+                                                return dsProvider.getServiceId(
+                                                  (value as BillServiceModel)
+                                                      .serviceId,
+                                                );
+                                              },
+                                              itemBuilder: (context, service) {
+                                                return ListTile(
+                                                  title: Text(
+                                                    service.name,
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                                .show(context)
+                                                .then((serviceValue) {
+                                              if (serviceValue != null) {
+                                                final serviceData =
+                                                    serviceValue as Variations;
+                                                billPaymentDto =
+                                                    billPaymentDto.copyWith(
+                                                  serviceId: dsProvider
+                                                      .model.serviceId,
+                                                  variationCode:
+                                                      serviceData.variationCode,
+                                                  billName: serviceData.name,
+                                                );
+                                                // Navigate to verification screen and then use bottom to pay
+                                                AppNavigator.of(context).push(
+                                                  AppRoutes
+                                                      .billPaymentVerification,
+                                                  args:
+                                                      BillPaymentVerificationScreenArgs(
+                                                    billPaymentDto,
+                                                  ),
+                                                );
+                                              }
+                                            });
+                                          }
+                                        });
+                                        authProvider.showNavBar = false;
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          LocalSvgImage(
+                                            dsProvider.assetIcon(e.identifier),
                                           ),
-                                        ),
-                                      ],
+                                          const YBox(Insets.dim_12),
+                                          Text(
+                                            e.name,
+                                            style: context.textTheme.bodyMedium!
+                                                .copyWith(
+                                              color: AppColors.textHeaderColor,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12,
+                                              letterSpacing: 0.30,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
+                                  )
+                                  .toList(),
+                              InkWell(
+                                onTap: () async {
+                                  authProvider.showNavBar = true;
+                                  dsProvider.clearTEC();
+                                  await FutureBottomSheet<Widget>(
+                                    title: 'Buy Airtime',
+                                    height: context.getHeight(0.5),
+                                    future: () async => [
+                                      const YBox(Insets.dim_24),
+                                      PhoneNumberTextFormField(
+                                        labelText: 'Phone number',
+                                        controller: dsProvider.phoneController,
+                                        enabled: !dsProvider
+                                            .payBillResponse.isLoading,
+                                      ),
+                                      const YBox(Insets.dim_24),
+                                      AppTextFormField(
+                                        hintText: '00.00',
+                                        labelText: 'Amount',
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                        ],
+                                        inputType: TextInputType.number,
+                                        validator: (input) =>
+                                            Validators.validateAmount()(
+                                          input,
+                                        ),
+                                        onSaved: (value) {},
+                                        isLoading: dsProvider
+                                            .payBillResponse.isLoading,
+                                        controller: dsProvider.amountController,
+                                        style: context.textTheme.bodyMedium!
+                                            .copyWith(
+                                          color: AppColors.textHeaderColor,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const YBox(Insets.dim_24),
+                                      PinTextField(
+                                        validator: (input) =>
+                                            Validators.validateString()(
+                                          input,
+                                        ),
+                                        controller: dsProvider.pinController,
+                                        onSaved: (input) {},
+                                      ),
+                                      const YBox(Insets.dim_16),
+                                      AppSolidButton(
+                                        textTitle: 'Confirm',
+                                        showLoading: dsProvider
+                                            .payBillResponse.isLoading,
+                                        action: () {
+                                          if (dsProvider.amountController.text
+                                                  .isEmpty ||
+                                              dsProvider
+                                                  .pinController.text.isEmpty ||
+                                              dsProvider.phoneController.text
+                                                  .isEmpty) {
+                                            return showInfoNotification(
+                                              'Please fill all fields',
+                                            );
+                                          }
+                                          dsProvider.purchaseAirtime();
+                                          AppNavigator.of(context).popDialog();
+                                        },
+                                      )
+                                    ],
+                                    itemBuilder: (context, item) {
+                                      return item;
+                                    },
+                                  ).show(context);
+                                  authProvider.showNavBar = false;
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    LocalSvgImage(
+                                      dsProvider.assetIcon('airtime'),
+                                    ),
+                                    const YBox(Insets.dim_12),
+                                    Text(
+                                      'Airtime',
+                                      style: context.textTheme.bodyMedium!
+                                          .copyWith(
+                                        color: AppColors.textHeaderColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                        letterSpacing: 0.30,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       Column(
@@ -317,7 +442,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           SizedBox(
                             height: context.getHeight(0.3),
-                            child: const TransactionList(),
+                            child: !historiesProvider
+                                    .getTransactionsResponse.isLoading
+                                ? const AppCircularLoadingWidget()
+                                : const TransactionList(),
                           ),
                         ],
                       )
@@ -334,7 +462,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: AppColors.textHeaderColor,
                   )
                 : const AtmCardWidget(),
-          )
+          ),
         ],
       ),
     );

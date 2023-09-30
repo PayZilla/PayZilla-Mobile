@@ -5,6 +5,12 @@ import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
 
+/**!SECTION
+ * 
+ * 1. create a skeletal widget for transaction loading 
+ * 2. handle transaction lists and single view 
+ * 3. paymen of bills and airtime 
+ */
 class TransactionList extends StatelessWidget {
   const TransactionList({
     super.key,
@@ -15,15 +21,16 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tp = context.watch<TransactionProvider>();
+    final transactionsProvider = context.watch<TransactionHistoryProvider>();
     final money = context.money();
     return ListView.separated(
       separatorBuilder: (context, index) => const YBox(Insets.dim_26),
-      itemCount: 12,
+      itemCount: transactionsProvider.getTransactionsResponse.data?.length ?? 0,
       itemBuilder: (context, index) {
+        final data = transactionsProvider.getTransactionsResponse.data![index];
         return GestureDetector(
           onTap: () {
-            tp.onTransactionTapped(index);
+            transactionsProvider.onTransactionTapped(data);
           },
           child: Container(
             height: 50,

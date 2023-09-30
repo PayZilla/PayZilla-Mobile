@@ -35,4 +35,7 @@ final List<SingleChildWidget> providers = [
   ChangeNotifierProvider<TransactionProvider>(
     create: (_) => GetIt.I<TransactionProvider>(),
   ),
+  ChangeNotifierProvider<TransactionHistoryProvider>(
+    create: (_) => GetIt.I<TransactionHistoryProvider>(),
+  ),
 ];

@@ -29,6 +29,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     with ChangeNotifier {
   late AuthProvider authProvider;
   late TransactionProvider qrProvider;
+  late TransactionHistoryProvider historyProvider;
   late DashboardProvider dashboardProvider;
   late NotificationProvider notificationProvider;
   ValidateBankOrWalletDto requestDto = ValidateBankOrWalletDto.empty();
@@ -43,6 +44,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
         ..getCategories();
       authProvider.getUser();
       notificationProvider.getNotifications();
+      historyProvider.getTransactionHistory();
       setState(() {});
     });
   }
@@ -53,6 +55,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     qrProvider = context.watch<TransactionProvider>();
     dashboardProvider = context.watch<DashboardProvider>();
     notificationProvider = context.watch<NotificationProvider>();
+    historyProvider = context.watch<TransactionHistoryProvider>();
     if (widget.hideNav || authProvider.showNavBar) {
       return Container();
     }
@@ -74,6 +77,9 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
 
             if (tab == AppNavTab.home) {
               notificationProvider.getNotifications();
+            }
+            if (tab == AppNavTab.home || tab == AppNavTab.activity) {
+              historyProvider.getTransactionHistory();
             }
 
             AppNavigator.of(context).push(AppRoutes.tab(tab));
