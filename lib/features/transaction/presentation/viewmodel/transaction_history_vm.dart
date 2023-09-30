@@ -15,6 +15,13 @@ class TransactionHistoryProvider extends ChangeNotifier {
   ApiResult<List<TransactionModel>> getTransactionsResponse =
       ApiResult<List<TransactionModel>>.idle();
 
+  TransactionModel _transactionModel = TransactionModel.empty();
+  TransactionModel get transactionModel => _transactionModel;
+  set transactionModel(TransactionModel value) {
+    _transactionModel = value;
+    notifyListeners();
+  }
+
   Future<void> getTransactionHistory() async {
     getTransactionsResponse =
         ApiResult<List<TransactionModel>>.loading('Loading...');
@@ -41,8 +48,9 @@ class TransactionHistoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> onTransactionTapped(TransactionModel index) async {
+  Future<void> onTransactionTapped(TransactionModel data) async {
     isDetailedVisibleMethod(val: true);
+    transactionModel = data;
     notifyListeners();
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
@@ -13,7 +14,8 @@ class AllTransactionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tp = context.watch<TransactionHistoryProvider>();
-    final money = Money();
+    final dsProvider = context.watch<DashboardProvider>();
+    final money = context.money();
     return AppScaffold(
       useBodyPadding: false,
       body: Stack(
@@ -79,43 +81,41 @@ class AllTransactionsScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const YBox(Insets.dim_12),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        tp.isBalanceVisible
-                                            ? '********'
-                                            : money.formatValue(1252500),
-                                        style: context.textTheme.bodyMedium!
-                                            .copyWith(
-                                          color: AppColors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 32,
+                                  if (dsProvider.getWalletsResponse.isSuccess)
+                                    Row(
+                                      children: [
+                                        ...dsProvider.getWalletsResponse.data!
+                                            .map(
+                                          (e) => Text(
+                                            tp.isBalanceVisible
+                                                ? '********'
+                                                : money.formatValue(
+                                                    double.parse(e.balance) *
+                                                        100,
+                                                  ),
+                                            style: context.textTheme.bodyMedium!
+                                                .copyWith(
+                                              color: AppColors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 32,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () => tp.isVisibleMethod(
-                                          val: !tp.isBalanceVisible,
+                                        IconButton(
+                                          onPressed: () => tp.isVisibleMethod(
+                                            val: !tp.isBalanceVisible,
+                                          ),
+                                          icon: Icon(
+                                            tp.isBalanceVisible
+                                                ? Icons.remove_red_eye_outlined
+                                                : Icons.remove_red_eye_rounded,
+                                            color: AppColors.white
+                                                .withOpacity(0.5),
+                                          ),
                                         ),
-                                        icon: Icon(
-                                          tp.isBalanceVisible
-                                              ? Icons.remove_red_eye_outlined
-                                              : Icons.remove_red_eye_rounded,
-                                          color:
-                                              AppColors.white.withOpacity(0.5),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const YBox(Insets.dim_16),
-                                  Text(
-                                    'Bank account : 2564  8546  8421  1121',
-                                    style:
-                                        context.textTheme.bodyMedium!.copyWith(
-                                      color: AppColors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
+                                      ],
                                     ),
-                                  ),
+                                  const YBox(Insets.dim_16),
                                 ],
                               ),
                               const Spacer(),
@@ -130,7 +130,10 @@ class AllTransactionsScreen extends StatelessWidget {
                                   height: Insets.dim_26,
                                 ),
                               ).onTap(() {
-                                Log().debug('To refresh this page');
+                                Future.wait([
+                                  dsProvider.getWallets(),
+                                  tp.getTransactionHistory(),
+                                ]);
                               }),
                             ],
                           ),

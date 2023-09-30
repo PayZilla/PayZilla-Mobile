@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
@@ -8,9 +9,15 @@ import 'package:provider/provider.dart';
 /**!SECTION
  * 
  * 1. create a skeletal widget for transaction loading 
- * 2. handle transaction lists and single view 
- * 3. paymen of bills and airtime 
+ * 2. handle transaction lists and single view  
  */
+
+class TransactionListArgs {
+  TransactionListArgs(this.data);
+
+  final List<TransactionModel> data;
+}
+
 class TransactionList extends StatelessWidget {
   const TransactionList({
     super.key,
@@ -31,6 +38,7 @@ class TransactionList extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             transactionsProvider.onTransactionTapped(data);
+            AppNavigator.of(context).push(AppRoutes.allTransactions);
           },
           child: Container(
             height: 50,
@@ -49,7 +57,7 @@ class TransactionList extends StatelessWidget {
                     color: AppColors.borderColor,
                   ),
                   child: LocalSvgImage(
-                    index.isEven ? sentSvg : depositSvg,
+                    data.type == 'debit' ? sentSvg : depositSvg,
                     fit: BoxFit.scaleDown,
                   ),
                 ),
@@ -58,7 +66,7 @@ class TransactionList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'To Tunde kamoru',
+                      data.category.replaceAll('_', ' ').capitalize(),
                       style: context.textTheme.bodyMedium!.copyWith(
                         color: AppColors.textHeaderColor,
                         fontWeight: FontWeight.w700,
@@ -68,9 +76,11 @@ class TransactionList extends StatelessWidget {
                     ),
                     const YBox(Insets.dim_6),
                     Text(
-                      index.isEven ? 'Sent' : 'Deposit',
+                      data.type.capitalize(),
                       style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textBodyColor,
+                        color: data.type == 'debit'
+                            ? AppColors.borderErrorColor
+                            : AppColors.appGreen,
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
                         letterSpacing: 0.30,
@@ -80,7 +90,7 @@ class TransactionList extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  money.formatValue(2000000),
+                  money.formatValue(data.amount * 100),
                   style: context.textTheme.bodyMedium!.copyWith(
                     color: AppColors.btnPrimaryColor,
                     fontWeight: FontWeight.w700,

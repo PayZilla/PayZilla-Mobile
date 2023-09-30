@@ -73,8 +73,33 @@ class _BillPaymentVerificationScreenState
                   },
                   validator: (input) => Validators.validateString()(input),
                 ),
+                const YBox(Insets.dim_4),
+                if (dsProvider.payBillResponse.isLoading)
+                  Row(
+                    children: const [
+                      Spacer(),
+                      AppCircularLoadingWidget(
+                        color: AppColors.textHeaderColor,
+                      ),
+                    ],
+                  ),
+                if (dsProvider.payBillResponse.isSuccess)
+                  Row(
+                    children: [
+                      const Spacer(),
+                      Text(
+                        dsProvider.payBillResponse.data ?? '',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.textHeaderColor,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          letterSpacing: 0.30,
+                        ),
+                      ),
+                    ],
+                  ),
                 if (dsProvider.payBillResponse.isSuccess) ...[
-                  const YBox(Insets.dim_24),
+                  const YBox(Insets.dim_14),
                   AppTextFormField(
                     hintText: '00.00',
                     labelText: 'Amount',

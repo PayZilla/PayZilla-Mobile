@@ -91,7 +91,7 @@ class BillRemoteDataSource implements IBillRemoteDataSource {
         await http.post(accountEndpoints.verifyBill, data.toJson()),
       );
       if (response.isResultOk) {
-        return response.message;
+        return response.data['customerName'];
       }
       throw AppServerException(response.message);
     } catch (_) {

@@ -243,7 +243,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                       serviceData.variationCode,
                                                   billName: serviceData.name,
                                                 );
-                                                // Navigate to verification screen and then use bottom to pay
                                                 AppNavigator.of(context).push(
                                                   AppRoutes
                                                       .billPaymentVerification,
@@ -287,7 +286,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   dsProvider.clearTEC();
                                   await FutureBottomSheet<Widget>(
                                     title: 'Buy Airtime',
-                                    height: context.getHeight(0.5),
+                                    height: context.getHeight(0.6),
                                     future: () async => [
                                       const YBox(Insets.dim_24),
                                       PhoneNumberTextFormField(
@@ -327,10 +326,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             Validators.validateString()(
                                           input,
                                         ),
+                                        labelText: 'Transaction PIN',
                                         controller: dsProvider.pinController,
                                         onSaved: (input) {},
                                       ),
-                                      const YBox(Insets.dim_16),
+                                      YBox(context.getHeight(0.1)),
                                       AppSolidButton(
                                         textTitle: 'Confirm',
                                         showLoading: dsProvider
@@ -442,7 +442,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           SizedBox(
                             height: context.getHeight(0.3),
-                            child: !historiesProvider
+                            child: historiesProvider
                                     .getTransactionsResponse.isLoading
                                 ? const AppCircularLoadingWidget()
                                 : const TransactionList(),

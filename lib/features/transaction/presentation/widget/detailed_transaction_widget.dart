@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 
 class DetailedTransactionWidget extends StatelessWidget {
   const DetailedTransactionWidget({super.key});
@@ -10,7 +12,7 @@ class DetailedTransactionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final money = Money();
-
+    final data = context.read<TransactionHistoryProvider>();
     return ListView(
       padding: EdgeInsets.zero,
       children: [
@@ -25,7 +27,9 @@ class DetailedTransactionWidget extends StatelessWidget {
         ),
         const YBox(Insets.dim_24),
         Text(
-          'Aug 14th, 16:59',
+          DateUtil.covertStringToDate(data.transactionModel.date)
+              .timeAgo()
+              .capitalize(),
           style: context.textTheme.bodySmall!.copyWith(
             color: AppColors.textBodyColor,
             fontWeight: FontWeight.w700,
@@ -58,23 +62,16 @@ class DetailedTransactionWidget extends StatelessWidget {
                     const YBox(Insets.dim_12),
                     detailsInfoWidget(
                       context,
-                      'Transfer to bank',
-                      money.formatValue(500000),
+                      'Amount transferred',
+                      money.formatValue(data.transactionModel.amount),
                     ),
                     const YBox(Insets.dim_14),
-                    detailsInfoWidget(
-                      context,
-                      'Oder amount',
-                      money.formatValue(500000),
-                      rightColor: const Color(0xffA2B1CD),
-                    ),
-                    const YBox(Insets.dim_6),
                     const Divider(),
                     const YBox(Insets.dim_6),
                     detailsInfoWidget(
                       context,
                       'Fee charged',
-                      money.formatValue(00),
+                      money.formatValue(0),
                       rightColor: const Color(0xffA2B1CD),
                     ),
                   ],
@@ -109,13 +106,13 @@ class DetailedTransactionWidget extends StatelessWidget {
                     detailsInfoWidget(
                       context,
                       'Status',
-                      'Success',
+                      data.transactionModel.status,
                     ),
                     const YBox(Insets.dim_14),
                     detailsInfoWidget(
                       context,
                       'Bank Name',
-                      'PalmPay',
+                      '',
                       rightColor: const Color(0xffA2B1CD),
                     ),
                     const YBox(Insets.dim_6),
@@ -123,14 +120,14 @@ class DetailedTransactionWidget extends StatelessWidget {
                     detailsInfoWidget(
                       context,
                       'Account number',
-                      '890000836',
+                      '',
                       rightColor: const Color(0xffA2B1CD),
                     ),
                     const YBox(Insets.dim_6),
                     detailsInfoWidget(
                       context,
                       'Account name',
-                      'Emmanuel Akinjole',
+                      '',
                       rightColor: const Color(0xffA2B1CD),
                     ),
                   ],
@@ -164,8 +161,8 @@ class DetailedTransactionWidget extends StatelessWidget {
                     const YBox(Insets.dim_12),
                     detailsInfoWidget(
                       context,
-                      'Transaction number',
-                      '67567789999',
+                      'Transaction reference',
+                      data.transactionModel.reference,
                     ),
                   ],
                 ),

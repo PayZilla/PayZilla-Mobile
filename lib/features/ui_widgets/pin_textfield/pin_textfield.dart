@@ -66,7 +66,7 @@ class _PinTextFieldState extends State<PinTextField> {
               fontSize: 16,
             ),
           ),
-          const YBox(Insets.dim_4),
+          const YBox(Insets.dim_8),
         ],
         Pinput(
           obscureText: widget.obscureText!,

@@ -21,6 +21,19 @@ class TransactionModel extends Equatable {
       date: json['date'] ?? '',
     );
   }
+
+  factory TransactionModel.empty() {
+    return const TransactionModel(
+      reference: '',
+      category: '',
+      type: '',
+      status: '',
+      amount: 0,
+      description: '',
+      date: '',
+    );
+  }
+
   final String reference;
   final String category;
   final String type;
