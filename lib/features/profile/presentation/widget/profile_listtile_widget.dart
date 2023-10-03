@@ -53,17 +53,18 @@ class AppListTileWidget extends StatelessWidget {
       onTap: args.onTap == null ? null : () => args.onTap!(),
       leading: args.leading == null && args.asset == null
           ? null
-          : Container(
-              decoration: BoxDecoration(
-                color: AppColors.black.withOpacity(0.05),
-                borderRadius: Corners.xsBorder,
+          : args.leading ??
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.black.withOpacity(0.05),
+                  borderRadius: Corners.xsBorder,
+                ),
+                padding: const EdgeInsets.all(Insets.dim_12),
+                child: LocalSvgImage(
+                  args.asset ?? logoSvg,
+                  color: args.assetColor,
+                ),
               ),
-              padding: const EdgeInsets.all(Insets.dim_12),
-              child: LocalSvgImage(
-                args.asset ?? logoSvg,
-                color: args.assetColor,
-              ),
-            ),
       title: Text(
         args.title,
         style: context.textTheme.bodyMedium!.copyWith(

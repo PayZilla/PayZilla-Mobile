@@ -20,6 +20,13 @@ class DashboardProvider extends ChangeNotifier {
   final phoneController = TextEditingController();
   final pinController = TextEditingController();
 
+  bool _showBalance = true;
+  bool get showBalance => _showBalance;
+  set showBalance(bool value) {
+    _showBalance = value;
+    notifyListeners();
+  }
+
   ApiResult<List<WalletsModel>> getWalletsResponse =
       ApiResult<List<WalletsModel>>.idle();
 
@@ -48,6 +55,8 @@ class DashboardProvider extends ChangeNotifier {
       },
       (res) {
         getWalletsResponse = ApiResult<List<WalletsModel>>.success(res);
+        Log().debug(
+            'getWalletsResponse: ${getWalletsResponse.data?.first.toJson()}');
         notifyListeners();
       },
     );

@@ -68,8 +68,10 @@ class _NotificationEndpoints {
 }
 
 class _TransactionsEndpoints {
-  final getTransactions = '/accounts/transactions';
+  String getTransactions(int pageNum) => '/accounts/transactions?page=$pageNum';
   final getTransactionsOverview = '/accounts/transactions/overview';
+  String getTransaction(String reference) =>
+      '/accounts/transactions/$reference';
 }
 
 // endpoints

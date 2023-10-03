@@ -141,6 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           () => dsProvider.goTo(AppRoutes.referral, context)
                         ],
                       ),
+                      const YBox(Insets.dim_2),
                       if (dsProvider.billResponse.isLoading)
                         const Center(
                           child: AppCircularLoadingWidget(),
@@ -157,229 +158,249 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             borderRadius: Corners.mdBorder,
                             color: AppColors.borderColor,
                           ),
-                          child: Wrap(
-                            runSpacing: 20,
-                            spacing: 20,
-                            children: [
-                              ...dsProvider.billResponse.data!
-                                  .map(
-                                    (e) => InkWell(
-                                      onTap: () async {
-                                        authProvider.showNavBar = true;
-                                        dsProvider.clearTEC();
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => GridView.builder(
+                              itemCount: dsProvider.billResponse.data!.length,
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                crossAxisSpacing: Insets.dim_22,
+                                childAspectRatio: 0.9,
+                              ),
+                              itemBuilder: (context, index) {
+                                final e = dsProvider.billResponse.data![index];
+                                return InkWell(
+                                  onTap: () async {
+                                    authProvider.showNavBar = true;
+                                    dsProvider.clearTEC();
 
-                                        await FutureBottomSheet<
-                                            BillServiceModel>(
+                                    await FutureBottomSheet<BillServiceModel>(
+                                      title: 'Select an option',
+                                      height: context.getHeight(0.5),
+                                      future: () async {
+                                        return dsProvider
+                                            .getCategoryId(e.identifier);
+                                      },
+                                      itemBuilder: (context, item) {
+                                        return ListTile(
+                                          title: Text(
+                                            item.name,
+                                          ),
+                                        );
+                                      },
+                                    ).show(context).then((value) async {
+                                      if (value != null) {
+                                        await FutureBottomSheet<Variations>(
                                           title: 'Select an option',
                                           height: context.getHeight(0.5),
+                                          searchWidget: dsProvider.model
+                                                  .convenienceFee.isNotEmpty
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      'Convenience Fee',
+                                                      style: context
+                                                          .textTheme.bodyMedium!
+                                                          .copyWith(
+                                                        color: AppColors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 14,
+                                                        letterSpacing: 0.30,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      dsProvider
+                                                          .model.convenienceFee,
+                                                    ),
+                                                  ],
+                                                )
+                                              : null,
                                           future: () async {
-                                            return dsProvider
-                                                .getCategoryId(e.identifier);
+                                            return dsProvider.getServiceId(
+                                              (value as BillServiceModel)
+                                                  .serviceId,
+                                            );
                                           },
-                                          itemBuilder: (context, item) {
+                                          itemBuilder: (context, service) {
                                             return ListTile(
                                               title: Text(
-                                                item.name,
+                                                service.name,
                                               ),
                                             );
                                           },
-                                        ).show(context).then((value) async {
-                                          if (value != null) {
-                                            await FutureBottomSheet<Variations>(
-                                              title: 'Select an option',
-                                              height: context.getHeight(0.5),
-                                              searchWidget: dsProvider.model
-                                                      .convenienceFee.isNotEmpty
-                                                  ? Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          'Convenience Fee',
-                                                          style: context
-                                                              .textTheme
-                                                              .bodyMedium!
-                                                              .copyWith(
-                                                            color:
-                                                                AppColors.black,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 14,
-                                                            letterSpacing: 0.30,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          dsProvider.model
-                                                              .convenienceFee,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  : null,
-                                              future: () async {
-                                                return dsProvider.getServiceId(
-                                                  (value as BillServiceModel)
-                                                      .serviceId,
-                                                );
-                                              },
-                                              itemBuilder: (context, service) {
-                                                return ListTile(
-                                                  title: Text(
-                                                    service.name,
-                                                  ),
-                                                );
-                                              },
-                                            )
-                                                .show(context)
-                                                .then((serviceValue) {
-                                              if (serviceValue != null) {
-                                                final serviceData =
-                                                    serviceValue as Variations;
-                                                billPaymentDto =
-                                                    billPaymentDto.copyWith(
-                                                  serviceId: dsProvider
-                                                      .model.serviceId,
-                                                  variationCode:
-                                                      serviceData.variationCode,
-                                                  billName: serviceData.name,
-                                                );
-                                                AppNavigator.of(context).push(
-                                                  AppRoutes
-                                                      .billPaymentVerification,
-                                                  args:
-                                                      BillPaymentVerificationScreenArgs(
-                                                    billPaymentDto,
-                                                  ),
-                                                );
-                                              }
-                                            });
+                                        ).show(context).then((serviceValue) {
+                                          if (serviceValue != null) {
+                                            final serviceData =
+                                                serviceValue as Variations;
+                                            billPaymentDto =
+                                                billPaymentDto.copyWith(
+                                              serviceId:
+                                                  dsProvider.model.serviceId,
+                                              variationCode:
+                                                  serviceData.variationCode,
+                                              billName: serviceData.name,
+                                            );
+                                            AppNavigator.of(context).push(
+                                              AppRoutes.billPaymentVerification,
+                                              args:
+                                                  BillPaymentVerificationScreenArgs(
+                                                billPaymentDto,
+                                              ),
+                                            );
                                           }
                                         });
-                                        authProvider.showNavBar = false;
-                                      },
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          LocalSvgImage(
-                                            dsProvider.assetIcon(e.identifier),
-                                          ),
-                                          const YBox(Insets.dim_12),
-                                          Text(
-                                            e.name,
-                                            style: context.textTheme.bodyMedium!
-                                                .copyWith(
-                                              color: AppColors.textHeaderColor,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 12,
-                                              letterSpacing: 0.30,
-                                            ),
-                                          ),
-                                        ],
+                                      }
+                                    });
+                                    authProvider.showNavBar = false;
+                                  },
+                                  child: Column(
+                                    children: [
+                                      LocalSvgImage(
+                                        dsProvider.assetIcon(e.identifier),
                                       ),
-                                    ),
-                                  )
-                                  .toList(),
-                              InkWell(
-                                onTap: () async {
-                                  authProvider.showNavBar = true;
-                                  dsProvider.clearTEC();
-                                  await FutureBottomSheet<Widget>(
-                                    title: 'Buy Airtime',
-                                    height: context.getHeight(0.6),
-                                    future: () async => [
-                                      const YBox(Insets.dim_24),
-                                      PhoneNumberTextFormField(
-                                        labelText: 'Phone number',
-                                        controller: dsProvider.phoneController,
-                                        enabled: !dsProvider
-                                            .payBillResponse.isLoading,
-                                      ),
-                                      const YBox(Insets.dim_24),
-                                      AppTextFormField(
-                                        hintText: '00.00',
-                                        labelText: 'Amount',
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                        ],
-                                        inputType: TextInputType.number,
-                                        validator: (input) =>
-                                            Validators.validateAmount()(
-                                          input,
-                                        ),
-                                        onSaved: (value) {},
-                                        isLoading: dsProvider
-                                            .payBillResponse.isLoading,
-                                        controller: dsProvider.amountController,
+                                      const YBox(Insets.dim_12),
+                                      Text(
+                                        e.name,
+                                        textAlign: TextAlign.center,
                                         style: context.textTheme.bodyMedium!
                                             .copyWith(
                                           color: AppColors.textHeaderColor,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16,
-                                          letterSpacing: 0.1,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                          letterSpacing: 0.30,
                                         ),
                                       ),
-                                      const YBox(Insets.dim_24),
-                                      PinTextField(
-                                        validator: (input) =>
-                                            Validators.validateString()(
-                                          input,
-                                        ),
-                                        labelText: 'Transaction PIN',
-                                        controller: dsProvider.pinController,
-                                        onSaved: (input) {},
-                                      ),
-                                      YBox(context.getHeight(0.1)),
-                                      AppSolidButton(
-                                        textTitle: 'Confirm',
-                                        showLoading: dsProvider
-                                            .payBillResponse.isLoading,
-                                        action: () {
-                                          if (dsProvider.amountController.text
-                                                  .isEmpty ||
-                                              dsProvider
-                                                  .pinController.text.isEmpty ||
-                                              dsProvider.phoneController.text
-                                                  .isEmpty) {
-                                            return showInfoNotification(
-                                              'Please fill all fields',
-                                            );
-                                          }
-                                          dsProvider.purchaseAirtime();
-                                          AppNavigator.of(context).popDialog();
-                                        },
-                                      )
                                     ],
-                                    itemBuilder: (context, item) {
-                                      return item;
-                                    },
-                                  ).show(context);
-                                  authProvider.showNavBar = false;
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    LocalSvgImage(
-                                      dsProvider.assetIcon('airtime'),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      const YBox(Insets.dim_2),
+                      Row(
+                        children: [
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            padding: const EdgeInsets.only(
+                              left: Insets.dim_32,
+                              top: Insets.dim_22,
+                              bottom: Insets.dim_22,
+                              right: Insets.dim_22,
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: Insets.dim_22,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: Corners.mdBorder,
+                              color: AppColors.borderColor,
+                            ),
+                            child: InkWell(
+                              onTap: () async {
+                                authProvider.showNavBar = true;
+                                dsProvider.clearTEC();
+                                await FutureBottomSheet<Widget>(
+                                  title: 'Buy Airtime',
+                                  height: context.getHeight(0.6),
+                                  future: () async => [
+                                    const YBox(Insets.dim_24),
+                                    PhoneNumberTextFormField(
+                                      labelText: 'Phone number',
+                                      controller: dsProvider.phoneController,
+                                      enabled:
+                                          !dsProvider.payBillResponse.isLoading,
                                     ),
-                                    const YBox(Insets.dim_12),
-                                    Text(
-                                      'Airtime',
+                                    const YBox(Insets.dim_24),
+                                    AppTextFormField(
+                                      hintText: '00.00',
+                                      labelText: 'Amount',
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
+                                      inputType: TextInputType.number,
+                                      validator: (input) =>
+                                          Validators.validateAmount()(
+                                        input,
+                                      ),
+                                      onSaved: (value) {},
+                                      isLoading:
+                                          dsProvider.payBillResponse.isLoading,
+                                      controller: dsProvider.amountController,
                                       style: context.textTheme.bodyMedium!
                                           .copyWith(
                                         color: AppColors.textHeaderColor,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                        letterSpacing: 0.30,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16,
+                                        letterSpacing: 0.1,
                                       ),
                                     ),
+                                    const YBox(Insets.dim_24),
+                                    PinTextField(
+                                      validator: (input) =>
+                                          Validators.validateString()(
+                                        input,
+                                      ),
+                                      labelText: 'Transaction PIN',
+                                      controller: dsProvider.pinController,
+                                      onSaved: (input) {},
+                                    ),
+                                    YBox(context.getHeight(0.1)),
+                                    AppSolidButton(
+                                      textTitle: 'Confirm',
+                                      showLoading:
+                                          dsProvider.payBillResponse.isLoading,
+                                      action: () {
+                                        if (dsProvider.amountController.text
+                                                .isEmpty ||
+                                            dsProvider
+                                                .pinController.text.isEmpty ||
+                                            dsProvider
+                                                .phoneController.text.isEmpty) {
+                                          return showInfoNotification(
+                                            'Please fill all fields',
+                                          );
+                                        }
+                                        dsProvider.purchaseAirtime();
+                                        AppNavigator.of(context).popDialog();
+                                      },
+                                    )
                                   ],
-                                ),
+                                  itemBuilder: (context, item) {
+                                    return item;
+                                  },
+                                ).show(context);
+                                authProvider.showNavBar = false;
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  LocalSvgImage(
+                                    dsProvider.assetIcon('airtime'),
+                                  ),
+                                  const YBox(Insets.dim_12),
+                                  Text(
+                                    'Airtime',
+                                    style:
+                                        context.textTheme.bodyMedium!.copyWith(
+                                      color: AppColors.textHeaderColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      letterSpacing: 0.30,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          const Spacer()
+                        ],
+                      ),
                       Column(
                         children: [
                           Container(
@@ -389,7 +410,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Row(
                               children: [
                                 Text(
-                                  'Today, Mar 20',
+                                  'Today, ${DateFormatUtil.formatDate(
+                                    dateMonthFormat,
+                                    DateTime.now().toIso8601String(),
+                                  )}',
                                   style: context.textTheme.bodyMedium!.copyWith(
                                     color: AppColors.textBodyColor,
                                     fontWeight: FontWeight.w700,
@@ -445,7 +469,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: historiesProvider
                                     .getTransactionsResponse.isLoading
                                 ? const AppCircularLoadingWidget()
-                                : const TransactionList(),
+                                : const TransactionList(useRefresh: false),
                           ),
                         ],
                       )

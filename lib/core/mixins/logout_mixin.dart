@@ -5,7 +5,9 @@ import 'package:pay_zilla/features/auth/auth.dart';
 mixin LogoutMixin {
   BuildContext? context;
   @protected
-  void logout() {}
+  void logout() {
+    sl<AuthProvider>().logout(context);
+  }
 
   @protected
   void sessionTimeout({

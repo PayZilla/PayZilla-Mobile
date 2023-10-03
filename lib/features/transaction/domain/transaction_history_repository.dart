@@ -9,10 +9,11 @@ class TransactionHistoryRepository extends Repository {
 
   final ITransactionHistoryRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, List<TransactionModel>>>
-      getTransactionHistory() async {
+  Future<Either<Failure, TransactionData>> getTransactionHistory(
+    int pageNum,
+  ) async {
     return runGuard(() async {
-      final response = await remoteDataSource.getTransactionHistory();
+      final response = await remoteDataSource.getTransactionHistory(pageNum);
 
       return response;
     });
@@ -21,6 +22,15 @@ class TransactionHistoryRepository extends Repository {
   Future<Either<Failure, dynamic>> getTransactionOverview() async {
     return runGuard(() async {
       final response = await remoteDataSource.getTransactionOverview();
+
+      return response;
+    });
+  }
+
+  Future<Either<Failure, SingleTransactionModel>> getTransaction(
+      String ref) async {
+    return runGuard(() async {
+      final response = await remoteDataSource.getTransaction(ref);
 
       return response;
     });

@@ -12,97 +12,108 @@ import 'package:provider/provider.dart';
  * 2. handle transaction lists and single view  
  */
 
-class TransactionListArgs {
-  TransactionListArgs(this.data);
-
-  final List<TransactionModel> data;
-}
-
-class TransactionList extends StatelessWidget {
+class TransactionList extends StatefulWidget {
   const TransactionList({
     super.key,
     this.edgeInsets,
+    required this.useRefresh,
   });
 
   final EdgeInsets? edgeInsets;
+  final bool useRefresh;
 
+  @override
+  State<TransactionList> createState() => _TransactionListState();
+}
+
+class _TransactionListState extends State<TransactionList> {
   @override
   Widget build(BuildContext context) {
     final transactionsProvider = context.watch<TransactionHistoryProvider>();
     final money = context.money();
-    return ListView.separated(
-      separatorBuilder: (context, index) => const YBox(Insets.dim_26),
-      itemCount: transactionsProvider.getTransactionsResponse.data?.length ?? 0,
-      itemBuilder: (context, index) {
-        final data = transactionsProvider.getTransactionsResponse.data![index];
-        return GestureDetector(
-          onTap: () {
-            transactionsProvider.onTransactionTapped(data);
-            AppNavigator.of(context).push(AppRoutes.allTransactions);
-          },
-          child: Container(
-            height: 50,
-            margin: edgeInsets ??
-                const EdgeInsets.symmetric(
-                  horizontal: Insets.dim_22,
-                ),
-            color: AppColors.white,
-            child: Row(
-              children: [
-                Container(
-                  height: Insets.dim_100,
-                  width: Insets.dim_54,
-                  decoration: BoxDecoration(
-                    borderRadius: Corners.mdBorder,
-                    color: AppColors.borderColor,
-                  ),
-                  child: LocalSvgImage(
-                    data.type == 'debit' ? sentSvg : depositSvg,
-                    fit: BoxFit.scaleDown,
-                  ),
-                ),
-                const XBox(Insets.dim_24),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.category.replaceAll('_', ' ').capitalize(),
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textHeaderColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        letterSpacing: 0.30,
-                      ),
-                    ),
-                    const YBox(Insets.dim_6),
-                    Text(
-                      data.type.capitalize(),
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: data.type == 'debit'
-                            ? AppColors.borderErrorColor
-                            : AppColors.appGreen,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        letterSpacing: 0.30,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                Text(
-                  money.formatValue(data.amount * 100),
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.btnPrimaryColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                    letterSpacing: 0.30,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+    return RefreshIndicator(
+      backgroundColor: AppColors.textHeaderColor,
+      onRefresh: () async {
+        if (widget.useRefresh) {
+          transactionsProvider.fetchMore(transactionsProvider.pageNumCount);
+        }
       },
+      child: ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        controller: transactionsProvider.controller,
+        separatorBuilder: (context, index) => const YBox(Insets.dim_26),
+        itemCount: transactionsProvider.transactionsFetched.length,
+        itemBuilder: (context, index) {
+          final data = transactionsProvider.transactionsFetched[index];
+          return GestureDetector(
+            onTap: () {
+              transactionsProvider.onTransactionTapped(data);
+              AppNavigator.of(context).push(AppRoutes.allTransactions);
+            },
+            child: Container(
+              height: 50,
+              margin: widget.edgeInsets ??
+                  const EdgeInsets.symmetric(
+                    horizontal: Insets.dim_22,
+                  ),
+              color: AppColors.white,
+              child: Row(
+                children: [
+                  Container(
+                    height: Insets.dim_100,
+                    width: Insets.dim_54,
+                    decoration: BoxDecoration(
+                      borderRadius: Corners.mdBorder,
+                      color: AppColors.borderColor,
+                    ),
+                    child: LocalSvgImage(
+                      data.type == 'debit' ? sentSvg : depositSvg,
+                      fit: BoxFit.scaleDown,
+                    ),
+                  ),
+                  const XBox(Insets.dim_24),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.category.replaceAll('_', ' ').capitalize(),
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.textHeaderColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          letterSpacing: 0.30,
+                        ),
+                      ),
+                      const YBox(Insets.dim_6),
+                      Text(
+                        data.type.capitalize(),
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: data.type == 'debit'
+                              ? AppColors.borderErrorColor
+                              : AppColors.appGreen,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          letterSpacing: 0.30,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Text(
+                    money.formatValue(data.amount * 100),
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.btnPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      letterSpacing: 0.30,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

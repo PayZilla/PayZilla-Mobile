@@ -28,10 +28,6 @@ class AllTransactionsScreen extends StatelessWidget {
               clipBehavior: Clip.hardEdge,
               decoration: const BoxDecoration(
                 color: AppColors.textHeaderColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Corners.mdRadius,
-                  topRight: Corners.mdRadius,
-                ),
               ),
               child: Stack(
                 children: [
@@ -132,7 +128,7 @@ class AllTransactionsScreen extends StatelessWidget {
                               ).onTap(() {
                                 Future.wait([
                                   dsProvider.getWallets(),
-                                  tp.getTransactionHistory(),
+                                  tp.getTransactionHistories(),
                                 ]);
                               }),
                             ],
@@ -140,7 +136,16 @@ class AllTransactionsScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  )
+                  ),
+                  if (tp.getTransactionsResponse.isLoading ||
+                      tp.getTransactionResponse.isLoading)
+                    const Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        height: Insets.dim_4,
+                        child: AppLinearLoadingWidget(),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -153,11 +158,12 @@ class AllTransactionsScreen extends StatelessWidget {
                 left: Insets.dim_24,
                 right: Insets.dim_24,
               ),
-              child: tp.isDetailedVisible
+              child: tp.isDetailedVisible && tp.getTransactionResponse.isSuccess
                   ? const DetailedTransactionWidget()
-                  : Column(
+                  : ListView(
+                      padding: EdgeInsets.zero,
                       children: [
-                        const YBox(Insets.dim_24),
+                        const YBox(Insets.dim_14),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -207,9 +213,11 @@ class AllTransactionsScreen extends StatelessWidget {
                             )
                           ],
                         ),
-                        const Expanded(
-                          child: TransactionList(
+                        SizedBox(
+                          height: context.getHeight(0.5),
+                          child: const TransactionList(
                             edgeInsets: EdgeInsets.zero,
+                            useRefresh: true,
                           ),
                         ),
                       ],

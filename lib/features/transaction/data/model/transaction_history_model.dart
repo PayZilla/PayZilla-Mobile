@@ -1,5 +1,37 @@
 import 'package:equatable/equatable.dart';
 
+class TransactionData extends Equatable {
+  const TransactionData({
+    required this.perPage,
+    required this.totalCount,
+    required this.transactions,
+  });
+
+  factory TransactionData.fromJson(Map<String, dynamic> json) {
+    return TransactionData(
+      perPage: json['perPage'] ?? 0,
+      totalCount: json['totalCount'] ?? 0,
+      transactions: (json['transactions'] as List)
+          .map((e) => TransactionModel.fromJson(Map<String, dynamic>.from(e)))
+          .toList(),
+    );
+  }
+  final int perPage;
+  final int totalCount;
+  final List<TransactionModel> transactions;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['perPage'] = perPage;
+    data['totalCount'] = totalCount;
+    data['transactions'] = transactions.map((v) => v.toJson()).toList();
+    return data;
+  }
+
+  @override
+  List<Object?> get props => [perPage, totalCount, transactions];
+}
+
 class TransactionModel extends Equatable {
   const TransactionModel({
     required this.reference,

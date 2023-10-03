@@ -24,7 +24,8 @@ class AppCircularLoadingWidget extends StatelessWidget {
 }
 
 class AppLinearLoadingWidget extends StatefulWidget {
-  const AppLinearLoadingWidget({super.key});
+  const AppLinearLoadingWidget({super.key, this.color});
+  final Color? color;
 
   @override
   State<AppLinearLoadingWidget> createState() => _AppLinearLoadingWidget();
@@ -57,8 +58,9 @@ class _AppLinearLoadingWidget extends State<AppLinearLoadingWidget>
     return LinearProgressIndicator(
       value: controller.value,
       backgroundColor: AppColors.white,
-      valueColor:
-          const AlwaysStoppedAnimation<Color>(AppColors.textHeaderColor),
+      valueColor: AlwaysStoppedAnimation<Color>(
+        widget.color ?? AppColors.textHeaderColor,
+      ),
       semanticsLabel: 'loading progress indicator',
     );
   }

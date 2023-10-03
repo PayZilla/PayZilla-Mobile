@@ -2,6 +2,7 @@ export 'data/datasource/transaction_history_datasource.dart';
 export 'data/datasource/transfer_datasource.dart';
 export 'data/model/account_details.dart';
 export 'data/model/banks_model.dart';
+export 'data/model/single_transaction_model.dart';
 export 'data/model/transaction_history_model.dart';
 export 'data/model/validate_transfer_dto.dart';
 export 'data/model/wallet_or_banks_model.dart';

@@ -53,7 +53,7 @@ class DetailedTransactionWidget extends StatelessWidget {
                   color: AppColors.borderColor,
                   borderRadius: Corners.xsBorder,
                 ),
-                child: const Icon(PhosphorIcons.bank),
+                child: Icon(data.iconPicker(data.transactionModel.category)),
               ),
               const XBox(Insets.dim_22),
               Expanded(
@@ -63,7 +63,7 @@ class DetailedTransactionWidget extends StatelessWidget {
                     detailsInfoWidget(
                       context,
                       'Amount transferred',
-                      money.formatValue(data.transactionModel.amount),
+                      money.formatValue(data.transactionModel.amount * 100),
                     ),
                     const YBox(Insets.dim_14),
                     const Divider(),
@@ -83,7 +83,7 @@ class DetailedTransactionWidget extends StatelessWidget {
         const Divider(),
         const YBox(Insets.dim_12),
         SizedBox(
-          height: 130,
+          height: context.getHeight(0.25),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,35 +101,33 @@ class DetailedTransactionWidget extends StatelessWidget {
               const XBox(Insets.dim_22),
               Expanded(
                 child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const YBox(Insets.dim_12),
                     detailsInfoWidget(
                       context,
                       'Status',
-                      data.transactionModel.status,
+                      data.transactionModel.status.capitalize(),
                     ),
-                    const YBox(Insets.dim_14),
-                    detailsInfoWidget(
-                      context,
-                      'Bank Name',
-                      '',
-                      rightColor: const Color(0xffA2B1CD),
-                    ),
-                    const YBox(Insets.dim_6),
+                    const YBox(Insets.dim_4),
                     const Divider(),
-                    detailsInfoWidget(
-                      context,
-                      'Account number',
-                      '',
-                      rightColor: const Color(0xffA2B1CD),
-                    ),
-                    const YBox(Insets.dim_6),
-                    detailsInfoWidget(
-                      context,
-                      'Account name',
-                      '',
-                      rightColor: const Color(0xffA2B1CD),
-                    ),
+                    const YBox(Insets.dim_8),
+                    if (data.transactionModel.meta.isNotEmpty) ...[
+                      ...data.transactionModel.meta.map(
+                        (e) => detailsInfoWidget(
+                          context,
+                          e.key,
+                          e.val,
+                          padding: const EdgeInsets.only(bottom: Insets.dim_6),
+                        ),
+                      ),
+                      const YBox(Insets.dim_8),
+                      detailsInfoWidget(
+                        context,
+                        'Description',
+                        data.transactionModel.description,
+                      ),
+                    ]
                   ],
                 ),
               ),
@@ -139,7 +137,7 @@ class DetailedTransactionWidget extends StatelessWidget {
         const Divider(),
         const YBox(Insets.dim_12),
         SizedBox(
-          height: 130,
+          height: 50,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +156,7 @@ class DetailedTransactionWidget extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    const YBox(Insets.dim_12),
+                    const YBox(Insets.dim_8),
                     detailsInfoWidget(
                       context,
                       'Transaction reference',
@@ -173,7 +171,9 @@ class DetailedTransactionWidget extends StatelessWidget {
         const Divider(),
         AppButton(
           textTitle: 'Share Receipt',
-          action: () {},
+          action: () {
+            showInfoNotification('COMING SOON');
+          },
         ),
         const YBox(Insets.dim_32),
       ],
@@ -186,29 +186,39 @@ class DetailedTransactionWidget extends StatelessWidget {
     String leftText, {
     Color? rightColor = AppColors.textBodyColor,
     Color? leftColor = AppColors.textBodyColor,
+    EdgeInsets? padding,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          rightText,
-          style: context.textTheme.bodySmall!.copyWith(
-            color: leftColor ?? AppColors.textBodyColor,
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
-            letterSpacing: 0.30,
-          ),
+    return Expanded(
+      child: Padding(
+        padding: padding ?? EdgeInsets.zero,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              rightText,
+              style: context.textTheme.bodySmall!.copyWith(
+                color: leftColor ?? AppColors.textBodyColor,
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                letterSpacing: 0.30,
+              ),
+            ),
+            Flexible(
+              child: Text(
+                leftText,
+                textAlign: TextAlign.end,
+                style: context.textTheme.bodySmall!.copyWith(
+                  color: rightColor ?? AppColors.textBodyColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  letterSpacing: 0.30,
+                ),
+              ),
+            ),
+          ],
         ),
-        Text(
-          leftText,
-          style: context.textTheme.bodySmall!.copyWith(
-            color: rightColor ?? AppColors.textBodyColor,
-            fontWeight: FontWeight.w700,
-            fontSize: 14,
-            letterSpacing: 0.30,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

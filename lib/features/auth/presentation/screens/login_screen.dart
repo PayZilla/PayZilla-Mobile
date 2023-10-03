@@ -112,26 +112,10 @@ class _SignInState extends State<SignIn> with FormMixin {
               AppSolidButton(
                 textTitle: 'Sign In',
                 showLoading: provider.genericAuthResp.isLoading,
-                action: () async {
-                  if (kDebugMode) {
-                    final formState = formKey.currentState;
-                    formState?.save();
-                    await provider.login(
-                      requestDto.copyWith(
-                        email: requestDto.email.isEmpty
-                            ? 'josh3@yopmail.com'
-                            : requestDto.email,
-                        password: requestDto.password.isEmpty
-                            ? 'P@ssw0rd'
-                            : requestDto.password,
-                      ),
-                      context,
-                    );
-                  } else {
-                    validate(() async {
-                      await provider.login(requestDto, context);
-                    });
-                  }
+                action: () {
+                  validate(() async {
+                    await provider.login(requestDto, context);
+                  });
                 },
               ),
               const YBox(Insets.dim_26),

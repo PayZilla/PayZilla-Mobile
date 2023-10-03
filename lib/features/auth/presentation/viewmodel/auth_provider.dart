@@ -407,6 +407,8 @@ class AuthProvider extends ChangeNotifier {
     authRepository.localDataSource.flushLocalStorage();
     if (context != null) {
       AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+    } else {
+      AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
     }
     notifyListeners();
   }
@@ -415,6 +417,8 @@ class AuthProvider extends ChangeNotifier {
     authRepository.localDataSource.flushLocalStorage();
     if (context != null) {
       AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+    } else {
+      AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
     }
 
     notifyListeners();

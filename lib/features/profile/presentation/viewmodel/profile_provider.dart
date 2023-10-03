@@ -8,6 +8,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
+import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class ProfileProvider extends ChangeNotifier {
@@ -212,6 +213,80 @@ class ProfileProvider extends ChangeNotifier {
       todo: (context) => AppNavigator.of(context).push(AppRoutes.faq),
     ),
   ];
+
+  Future<void> logOut(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Insets.dim_16),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        child: SizedBox(
+          height: context.getHeight(0.2),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Insets.dim_32,
+              vertical: Insets.dim_32,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Are you sure ?',
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    color: AppColors.textHeaderColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    letterSpacing: 0.30,
+                  ),
+                ),
+                const YBox(Insets.dim_26),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'No',
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: AppColors.textHeaderColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                            letterSpacing: 0.30,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const XBox(Insets.dim_32),
+                    Expanded(
+                      child: AppSolidButton(
+                        textTitle: 'Continue',
+                        showLoading: loading,
+                        backgroundColor: AppColors.borderErrorColor,
+                        action: () {
+                          Navigator.pop(context, true);
+                        },
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    ).then((value) async {
+      if (value != null && value) {
+        authProvider.logout(context);
+      }
+    });
+  }
 }
 
 class ProfileWidgetData {

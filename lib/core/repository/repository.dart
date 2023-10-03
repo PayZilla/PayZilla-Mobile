@@ -37,6 +37,9 @@ abstract class Repository with LogoutMixin {
           return Left(ServerFailure(e.message));
         }
         if (e is AppException) {
+          Log().debug(
+            'the _makeRequest exception caught ${AppConfig.baseUrl}/api exception',
+          );
           return Left(ServerFailure(e.message));
         }
         if (e is InvalidArgOrDataException) {

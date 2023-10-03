@@ -10,8 +10,8 @@ class OnboardingScreen1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        gradient: const LinearGradient(
+      decoration: const ShapeDecoration(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
@@ -21,10 +21,8 @@ class OnboardingScreen1 extends StatelessWidget {
             Color(0x00068394)
           ],
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(40),
-        ),
-        shadows: const [
+        shape: Border(),
+        shadows: [
           BoxShadow(
             color: Color(0x3F000000),
             blurRadius: 4,

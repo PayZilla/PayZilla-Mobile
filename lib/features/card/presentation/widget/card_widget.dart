@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
@@ -75,20 +76,38 @@ class AtmCardWidget extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: Insets.dim_22),
                     child: Row(
                       children: [
-                        Text(
-                          data != null
-                              ? money.formatValue(
-                                  double.tryParse(data.balance)! * 100,
-                                )
-                              : money.formatValue(0),
-                          style: context.textTheme.bodyMedium!.copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
+                        if (dsProvider.showBalance)
+                          Text(
+                            data != null
+                                ? money.formatValue(
+                                    double.parse(data.balance) * 100,
+                                  )
+                                : money.formatValue(0),
+                            style: context.textTheme.bodyMedium!.copyWith(
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
+                          )
+                        else
+                          Text(
+                            'NGN ********',
+                            style: context.textTheme.bodyMedium!.copyWith(
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
                         const Spacer(),
-                        LocalSvgImage(atmLogoSvg),
+                        CupertinoSwitch(
+                          onChanged: (value) {
+                            dsProvider.showBalance = value;
+                          },
+                          value: dsProvider.showBalance,
+                          activeColor: AppColors.white,
+                          trackColor: color,
+                          thumbColor: color,
+                        )
                       ],
                     ),
                   ),

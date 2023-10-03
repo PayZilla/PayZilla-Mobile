@@ -38,15 +38,23 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
   void initState() {
     super.initState();
 
+    context.read<TransactionHistoryProvider>().init();
     Future.microtask(() {
       dashboardProvider
         ..getWallets()
         ..getCategories();
       authProvider.getUser();
       notificationProvider.getNotifications();
-      historyProvider.getTransactionHistory();
+      historyProvider.getTransactionHistories();
+
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    dispose();
   }
 
   @override
@@ -79,7 +87,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
               notificationProvider.getNotifications();
             }
             if (tab == AppNavTab.home || tab == AppNavTab.activity) {
-              historyProvider.getTransactionHistory();
+              historyProvider.getTransactionHistories();
             }
 
             AppNavigator.of(context).push(AppRoutes.tab(tab));
