@@ -120,8 +120,15 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<User> getUser() async {
+  Future<User> getUser({bool useNetworkCall = true}) async {
     _user = User.empty();
+    final userLocal = await authRepository.localDataSource.getAuthUserPref();
+    if (userLocal != null) {
+      _user = userLocal as User;
+      notifyListeners();
+    }
+    if (!useNetworkCall) return _user;
+
     final failureOrUser = await authRepository.getUser();
     failureOrUser.fold(
       (failure) {
@@ -404,22 +411,15 @@ class AuthProvider extends ChangeNotifier {
 
   void sessionTimeout(String reason, BuildContext? context) {
     showErrorNotification(reason);
-    authRepository.localDataSource.flushLocalStorage();
-    if (context != null) {
-      AppNavigator.of(context).push(AppRoutes.onboardingAuth);
-    } else {
-      AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
-    }
+
+    AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
     notifyListeners();
   }
 
   void logout(BuildContext? context) {
     authRepository.localDataSource.flushLocalStorage();
-    if (context != null) {
-      AppNavigator.of(context).push(AppRoutes.onboardingAuth);
-    } else {
-      AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
-    }
+
+    AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
 
     notifyListeners();
   }

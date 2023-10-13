@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
+import 'package:pay_zilla/features/ui_widgets/image.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class TransactionProvider extends ChangeNotifier {
@@ -17,7 +19,7 @@ class TransactionProvider extends ChangeNotifier {
     _cardsRepository = cardsRepository;
     _transferRepository = transferRepository;
 
-    _plugin.initialize(publicKey: dotenv.env['PAY_STACK_PUBLIC_TEST_KEY']!);
+    _plugin.initialize(publicKey: dotenv.env['PAY_STACK_PUBLIC_LIVE_KEY']!);
   }
 
   late AccountRepository _accountTranRepository;
@@ -25,8 +27,8 @@ class TransactionProvider extends ChangeNotifier {
   late TransferRepository _transferRepository;
   final _plugin = PaystackPlugin();
 
-  ApiResult<List<CardsModel>> cardsServiceResponse =
-      ApiResult<List<CardsModel>>.idle();
+  ApiResult<List<MultiSelectItem<CardsModel>>> cardsServiceResponse =
+      ApiResult<List<MultiSelectItem<CardsModel>>>.idle();
 
   ApiResult<List<BanksModel>> banksServiceResponse =
       ApiResult<List<BanksModel>>.idle();
@@ -41,7 +43,9 @@ class TransactionProvider extends ChangeNotifier {
 
   ApiResult<CardInitiateModel> initializeRefRES =
       ApiResult<CardInitiateModel>.idle();
-  ApiResult<String> finalizeAddCardRES = ApiResult<String>.idle();
+  ApiResult<bool> finalizeAddCardRES = ApiResult<bool>.idle();
+  ApiResult<bool> deleteCardRES = ApiResult<bool>.idle();
+  ApiResult<bool> chargeCardRES = ApiResult<bool>.idle();
 
   Future<void> getAccounts() async {
     accountDetailsRES = ApiResult<AccountDetailsModel>.loading('Loading...');
@@ -62,18 +66,38 @@ class TransactionProvider extends ChangeNotifier {
   }
 
   Future<void> getCards() async {
-    cardsServiceResponse = ApiResult<List<CardsModel>>.loading('Loading...');
+    cardsServiceResponse =
+        ApiResult<List<MultiSelectItem<CardsModel>>>.loading('Loading...');
     notifyListeners();
     final failureOrData = await _cardsRepository.getCards();
     failureOrData.fold(
       (failure) {
         cardsServiceResponse =
-            ApiResult<List<CardsModel>>.error(failure.message);
+            ApiResult<List<MultiSelectItem<CardsModel>>>.error(failure.message);
         showErrorNotification(failure.message);
         notifyListeners();
       },
       (res) {
-        cardsServiceResponse = ApiResult<List<CardsModel>>.success(res);
+        cardsServiceResponse =
+            ApiResult<List<MultiSelectItem<CardsModel>>>.success(res);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> deleteCard(int cardId) async {
+    deleteCardRES = ApiResult<bool>.loading('Loading...');
+    notifyListeners();
+    final failureOrData = await _cardsRepository.deleteCard(cardId);
+    await failureOrData.fold(
+      (failure) {
+        deleteCardRES = ApiResult<bool>.error(failure.message);
+        showErrorNotification(failure.message);
+        notifyListeners();
+      },
+      (res) async {
+        deleteCardRES = ApiResult<bool>.success(res);
+        await getCards();
         notifyListeners();
       },
     );
@@ -96,19 +120,45 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> chargeCard(int amount, int cardId) async {
+    chargeCardRES = ApiResult<bool>.loading('Loading...');
+    notifyListeners();
+    final failureOrData = await _cardsRepository.chargeCard(amount, cardId);
+    await failureOrData.fold(
+      (failure) {
+        chargeCardRES = ApiResult<bool>.error(failure.message);
+        showErrorNotification(
+          failure.message.removeSpecialCharactersOnError(),
+          durationInMills: 3500,
+        );
+        notifyListeners();
+      },
+      (res) async {
+        showSuccessNotification(
+          'Card charge successfully',
+          durationInMills: 3000,
+        );
+        await _accountTranRepository.getWallets();
+        chargeCardRES = ApiResult<bool>.success(res);
+        notifyListeners();
+      },
+    );
+    notifyListeners();
+  }
+
   Future<void> finalizeAddCard(String refId, BuildContext context) async {
-    finalizeAddCardRES = ApiResult<String>.loading('Loading...');
+    finalizeAddCardRES = ApiResult<bool>.loading('Loading...');
     notifyListeners();
     final failureOrData = await _cardsRepository.finalizeAddCard(refId);
     await failureOrData.fold(
       (failure) {
-        finalizeAddCardRES = ApiResult<String>.error(failure.message);
+        finalizeAddCardRES = ApiResult<bool>.error(failure.message);
         showErrorNotification(failure.message);
         notifyListeners();
       },
       (res) async {
         await getCards().then((value) {
-          finalizeAddCardRES = ApiResult<String>.success(res);
+          finalizeAddCardRES = ApiResult<bool>.success(res);
           showSuccessNotification(
             'Card added successfully',
             durationInMills: 3000,
@@ -170,14 +220,13 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> transferBanksOrWallet(ValidateBankOrWalletDto params) async {
     transBanksOrWalletResponse = ApiResult<String>.loading('Loading...');
     notifyListeners();
-    Log().debug('What is sent ', params.toJson());
     final failureOrData =
         await _transferRepository.transferBanksOrWallet(params);
     failureOrData.fold(
       (failure) {
         transBanksOrWalletResponse = ApiResult<String>.error(failure.message);
         showErrorNotification(
-          failure.message.split(':').last.replaceAll(RegExp(r'[^\w\s]+'), ''),
+          failure.message.removeSpecialCharactersOnError(),
           durationInMills: 3500,
         );
         notifyListeners();
@@ -190,35 +239,31 @@ class TransactionProvider extends ChangeNotifier {
   }
 
   Future<void> initializePayStack(
+    String referenceId,
     String accessCode,
     String email,
     BuildContext context, {
     bool topUp = false,
-    int amount = 1000,
+    int amount = 0,
   }) async {
     final price = amount * 100;
     final charge = Charge()
       ..amount = price
-      ..reference = accessCode
+      ..accessCode = accessCode
       ..email = email
       ..currency = 'NGN';
 
     await _plugin
-        .checkout(
-      context,
-      method: CheckoutMethod.card,
-      charge: charge,
-    )
+        .checkout(context, method: CheckoutMethod.card, charge: charge)
         .then((value) async {
       if (value.status == true) {
         if (topUp) {
           // send transaction to PayZilla and handle success navigation
         } // if false
         {
-          await finalizeAddCard(accessCode, context);
+          await finalizeAddCard(referenceId, context);
         }
       } else {
-        Log().debug('The Paystack error is: $accessCode', value.message);
         AppNavigator.of(context).push(AppRoutes.myCard);
       }
     });
@@ -231,4 +276,16 @@ class TransactionProvider extends ChangeNotifier {
     '4000',
     '5000',
   ];
+
+  Widget buildLogo(String logo) {
+    if (logo.toLowerCase().contains('mastercard')) {
+      return LocalImage(masterCardPng, width: 30, height: 30);
+    } else if (logo.toLowerCase().contains('visa')) {
+      return LocalImage(visaCardPng, width: 30, height: 30);
+    } else if (logo.toLowerCase().contains('verve')) {
+      return LocalSvgImage(verveCardSvg, width: 30, height: 30);
+    } else {
+      return LocalSvgImage(atmLogoSvg, width: 30, height: 30);
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/card/card.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
@@ -18,22 +19,13 @@ class MyCardScreen extends StatefulWidget {
 }
 
 class _MyCardScreenState extends State<MyCardScreen> {
-  late TransactionProvider transactionP;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(
-      () => transactionP
-        ..getCards()
-        ..initializeCard(),
-    );
-  }
+  List<CardsModel> selectedCard = [];
 
   @override
   Widget build(BuildContext context) {
     final cardProvider = context.read<MyCardsProvider>();
-    transactionP = context.watch<TransactionProvider>();
+    final transactionP = context.watch<TransactionProvider>();
+
     return AppScaffold(
       useBodyPadding: false,
       appBar: CustomAppBar(
@@ -70,45 +62,73 @@ class _MyCardScreenState extends State<MyCardScreen> {
                   itemBuilder: (context, index) {
                     final data = transactionP.cardsServiceResponse.data![index];
                     return GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          data.selected = !data.selected;
+                          if (data.selected) {
+                            selectedCard.add(data.value);
+                          } else {
+                            selectedCard.remove(data.value);
+                          }
+                        });
+                      },
                       child: MyCardsWidget(
-                        card: data,
-                        color: cardProvider.cardColor(data.cardType),
+                        card: data.value,
+                        cardLogo: transactionP.buildLogo(data.value.cardType),
+                        color: data.selected
+                            ? AppColors.borderErrorColor
+                            : cardProvider.cardColor(data.value.cardType),
                       ),
                     );
                   },
                 ),
               ),
-            InkWell(
-              onTap: () =>
-                  AppNavigator.of(context).push(AppRoutes.startCreateCard),
-              child: Container(
-                height: context.getHeight(0.07),
-                decoration: BoxDecoration(
-                  color: AppColors.borderColor,
-                  borderRadius: Corners.mdBorder,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.add,
-                      color: AppColors.textHeaderColor,
-                    ),
-                    const XBox(Insets.dim_12),
-                    Text(
-                      'Add new card',
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textHeaderColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                        letterSpacing: 0.30,
+            if (transactionP.deleteCardRES.isLoading)
+              const AppCircularLoadingWidget()
+            else
+              InkWell(
+                onTap: () async {
+                  if (selectedCard.isEmpty) {
+                    AppNavigator.of(context).push(AppRoutes.startCreateCard);
+                  } else {
+                    for (final card in selectedCard) {
+                      await transactionP.deleteCard(card.id);
+                      selectedCard = [];
+                    }
+                  }
+                },
+                child: Container(
+                  height: context.getHeight(0.07),
+                  decoration: BoxDecoration(
+                    color: AppColors.borderColor,
+                    borderRadius: Corners.mdBorder,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        selectedCard.isEmpty ? Icons.add : Icons.delete_forever,
+                        color: selectedCard.isEmpty
+                            ? AppColors.textHeaderColor
+                            : AppColors.borderErrorColor,
+                        size: Insets.dim_40,
                       ),
-                    )
-                  ],
+                      const XBox(Insets.dim_12),
+                      Text(
+                        selectedCard.isEmpty ? 'Add new card' : 'Delete card',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: selectedCard.isEmpty
+                              ? AppColors.textHeaderColor
+                              : AppColors.borderErrorColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          letterSpacing: 0.30,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
             const YBox(Insets.dim_24),
           ],
         ),

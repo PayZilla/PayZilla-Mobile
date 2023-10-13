@@ -59,8 +59,10 @@ class _StartCreateCardScreenState extends State<StartCreateCardScreen> {
                 transactionP.finalizeAddCardRES.isLoading,
             action: () {
               transactionP.initializePayStack(
+                transactionP.initializeRefRES.data!.referenceId,
                 transactionP.initializeRefRES.data!.accessCode,
                 authProvider.user.email,
+                amount: 50,
                 context,
               );
             },

@@ -55,9 +55,7 @@ class AppRoutes {
   static const startCreateCard = '/tab/card/start-create-card';
   static const chooseCardStyle =
       '/tab/card/start-create-card/choose-card-style';
-  static const editCardScreen =
-      '/tab/card/start-create-card/choose-card-style/edit-card';
-  static const editCardFromMyCardScreen = '/tab/card/edit-card';
+  static const cardDetailScreen = '/tab/card/card-details';
 
   // profile routes
   static const referral = '/tab/profile/referral';

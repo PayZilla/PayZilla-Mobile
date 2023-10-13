@@ -82,6 +82,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
 
             authProvider.getUser();
             dashboardProvider.getWallets();
+            qrProvider.getCards();
 
             if (tab == AppNavTab.home) {
               notificationProvider.getNotifications();

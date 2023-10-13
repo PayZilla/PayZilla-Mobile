@@ -86,6 +86,9 @@ final String atmGoldChipSvg = 'atm_gold_chip'.atmSvg;
 final String atmNfcSvg = 'nfc'.atmSvg;
 final String atmPatternSvg = 'atm_pattern'.atmSvg;
 final String atmMultiCardPng = 'atm_multi_card'.png;
+final String masterCardPng = 'master_card'.png;
+final String visaCardPng = 'visa'.png;
+final String verveCardSvg = 'verve'.atmSvg;
 
 // QR code
 final String qrBgPng = 'qr_bg'.png;

@@ -55,8 +55,6 @@ class DashboardProvider extends ChangeNotifier {
       },
       (res) {
         getWalletsResponse = ApiResult<List<WalletsModel>>.success(res);
-        Log().debug(
-            'getWalletsResponse: ${getWalletsResponse.data?.first.toJson()}');
         notifyListeners();
       },
     );

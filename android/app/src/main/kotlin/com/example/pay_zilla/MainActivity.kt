@@ -1,4 +1,4 @@
-package com.example.pay_zilla
+package com.PayZilla.pay_zilla
 
 import io.flutter.embedding.android.FlutterActivity
 

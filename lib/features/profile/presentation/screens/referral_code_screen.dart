@@ -190,7 +190,7 @@ class ReferralScreen extends StatelessWidget {
 
   Future<void> shareReferralLink(String ref) async {
     await Share.share(
-      'Hi there 👋, use my referral code to sign up to PayZilla: *$ref* or use my referral link JUST DEY PLAY',
+      'Hi there 👋, use my referral code to sign up to PayZilla: *$ref*',
     );
   }
 }

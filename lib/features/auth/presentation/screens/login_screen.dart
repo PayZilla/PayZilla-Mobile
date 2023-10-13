@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
@@ -19,6 +18,22 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> with FormMixin {
   AuthParams requestDto = AuthParams.empty();
   bool obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () async {
+        final user =
+            await context.read<AuthProvider>().getUser(useNetworkCall: false);
+        if (!user.isEmpty) {
+          requestDto = requestDto.copyWith(email: user.email);
+        }
+      },
+    ).then((value) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +74,7 @@ class _SignInState extends State<SignIn> with FormMixin {
               ),
               const YBox(Insets.dim_40),
               AppTextFormField(
+                key: ValueKey(requestDto.email),
                 initialValue: requestDto.email,
                 hintText: 'Email',
                 isLoading: provider.genericAuthResp.isLoading,

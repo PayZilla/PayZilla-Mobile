@@ -130,14 +130,12 @@ class _TopUpWidgetState extends State<TopUpWidget> with FormMixin {
               const YBox(Insets.dim_60),
               AppSolidButton(
                 textTitle: 'Continue',
+                showLoading: transactionP.chargeCardRES.isLoading,
                 action: () {
                   validate(() {
-                    transactionP.initializePayStack(
+                    transactionP.chargeCard(
+                      int.parse(amountController.text),
                       widget.args.cardsModel.id,
-                      authP.user.email,
-                      context,
-                      amount: amountController.text.toInt(),
-                      topUp: true,
                     );
                   });
                 },

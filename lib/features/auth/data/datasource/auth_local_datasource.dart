@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 
@@ -118,7 +119,7 @@ class AuthLocalDataSource implements IAuthLocalDataSource {
     dynamic defaultPref;
     final pref = await _localCache.get<String>(CacheKeys.user);
     if (pref != null) {
-      return pref;
+      return User.fromMap(jsonDecode(pref));
     }
     return defaultPref;
   }

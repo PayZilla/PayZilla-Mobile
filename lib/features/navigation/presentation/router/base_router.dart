@@ -99,8 +99,7 @@ GoRouter getBaseRouter() {
         routes: [
           //Note (Dev)=> create sub routes for nav tabs
           ...dashboardRouter,
-          myCardRouter(),
-
+          ...myCardRouter,
           ...profileRouter,
         ],
       )

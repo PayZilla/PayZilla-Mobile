@@ -46,6 +46,10 @@ extension StringExtension on String {
     return replaceAll('/', '-').split('-').reversed.toList().join('-');
   }
 
+  String removeSpecialCharactersOnError() {
+    return split(':').last.replaceAll(RegExp(r'[^\w\s]+'), '');
+  }
+
   String toTitleCase() {
     if (length < 2) return this;
     return toLowerCase().split(' ').map((word) {

@@ -136,9 +136,15 @@ class AtmCardWidget extends StatelessWidget {
 //  * Use this in the card widget
 
 class MyCardsWidget extends StatelessWidget {
-  const MyCardsWidget({super.key, this.color, required this.card});
+  const MyCardsWidget({
+    super.key,
+    this.color,
+    required this.card,
+    this.cardLogo,
+  });
   final Color? color;
   final CardsModel card;
+  final Widget? cardLogo;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +164,7 @@ class MyCardsWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const YBox(Insets.dim_24),
-              LocalSvgImage(atmLogoSvg),
+              cardLogo ?? LocalSvgImage(atmLogoSvg),
               const Spacer(),
               Text(
                 '****   ****   ****   ${card.last4}',

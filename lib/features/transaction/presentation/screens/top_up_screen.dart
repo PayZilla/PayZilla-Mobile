@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
@@ -220,7 +221,7 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
               onTap: () async {
                 if (transactionP.cardsServiceResponse.data != null &&
                     transactionP.cardsServiceResponse.data!.isNotEmpty) {
-                  await FutureBottomSheet<CardsModel>(
+                  await FutureBottomSheet<MultiSelectItem<CardsModel>>(
                     title: 'Select an option',
                     height: context.getHeight(0.56),
                     future: () async => transactionP.cardsServiceResponse.data!,
@@ -230,8 +231,8 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
                           vertical: Insets.dim_20,
                         ),
                         child: MyCardsWidget(
-                          card: card,
-                          color: cardsProvider.cardColor(card.cardType),
+                          card: card.value,
+                          color: cardsProvider.cardColor(card.value.cardType),
                         ),
                       );
                     },
@@ -239,7 +240,9 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
                     if (value != null) {
                       AppNavigator.of(context).push(
                         AppRoutes.topUpAmountScreen,
-                        args: TopUpArgs(value as CardsModel),
+                        args: TopUpArgs(
+                          (value as MultiSelectItem<CardsModel>).value,
+                        ),
                       );
                     }
                   });

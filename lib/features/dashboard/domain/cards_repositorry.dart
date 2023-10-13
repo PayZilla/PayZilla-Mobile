@@ -9,7 +9,7 @@ class CardsRepository extends Repository {
 
   final ICardsRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, List<CardsModel>>> getCards() async {
+  Future<Either<Failure, List<MultiSelectItem<CardsModel>>>> getCards() async {
     return runGuard(() async {
       final response = await remoteDataSource.getCards();
 
@@ -25,9 +25,25 @@ class CardsRepository extends Repository {
     });
   }
 
-  Future<Either<Failure, String>> finalizeAddCard(String refId) async {
+  Future<Either<Failure, bool>> finalizeAddCard(String refId) async {
     return runGuard(() async {
       final response = await remoteDataSource.finalizeAddCard(refId);
+
+      return response;
+    });
+  }
+
+  Future<Either<Failure, bool>> deleteCard(int cardId) async {
+    return runGuard(() async {
+      final response = await remoteDataSource.deleteCard(cardId);
+
+      return response;
+    });
+  }
+
+  Future<Either<Failure, bool>> chargeCard(int amount, int cardId) async {
+    return runGuard(() async {
+      final response = await remoteDataSource.chargeCard(amount, cardId);
 
       return response;
     });

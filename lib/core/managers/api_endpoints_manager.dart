@@ -40,6 +40,8 @@ class _AccountEndpoints {
   final getCards = '/accounts/cards';
   final initiateCard = '/accounts/cards/add/initiate';
   final finalizeCard = '/accounts/cards/add/finalize';
+  String deleteCard(int cardId) => '/accounts/cards/$cardId';
+  String chargeCard(int cardId) => '/accounts/cards/$cardId/charge';
 
   // wallets
   final getWallets = '/accounts/wallets';
