@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
-import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
@@ -28,7 +27,6 @@ class _TopUpWidgetState extends State<TopUpWidget> with FormMixin {
   Widget build(BuildContext context) {
     final money = context.money();
     final transactionP = context.watch<TransactionProvider>();
-    final authP = context.watch<AuthProvider>();
     return AppScaffold(
       useBodyPadding: false,
       appBar: CustomAppBar(
@@ -134,7 +132,7 @@ class _TopUpWidgetState extends State<TopUpWidget> with FormMixin {
                 action: () {
                   validate(() {
                     transactionP.chargeCard(
-                      int.parse(amountController.text),
+                      int.parse(amountController.text) * 100,
                       widget.args.cardsModel.id,
                     );
                   });

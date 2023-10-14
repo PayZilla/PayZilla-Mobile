@@ -136,7 +136,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 color: AppColors.grey,
               ),
               child: HostedImage(
-                widget.img ?? '',
+                authP.user.profileImage,
                 fit: BoxFit.contain,
               ),
             ),
@@ -159,53 +159,56 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  leftTitle ?? 'From',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.textBodyColor,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    letterSpacing: 0.30,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    leftTitle ?? 'From',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textBodyColor,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      letterSpacing: 0.30,
+                    ),
                   ),
-                ),
-                Text(
-                  leftDescriptions ?? 'John',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.textHeaderColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                    letterSpacing: 0.30,
+                  Text(
+                    leftDescriptions ?? '',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textHeaderColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      letterSpacing: 0.30,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const Spacer(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  rightTitle ?? 'Bank of America',
-                  textAlign: TextAlign.end,
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.textBodyColor,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    letterSpacing: 0.30,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    rightTitle ?? '',
+                    textAlign: TextAlign.end,
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textBodyColor,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      letterSpacing: 0.30,
+                    ),
                   ),
-                ),
-                Text(
-                  rightDescriptions ?? '**** 1121',
-                  textAlign: TextAlign.end,
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.textHeaderColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
+                  Text(
+                    rightDescriptions ?? '****',
+                    textAlign: TextAlign.end,
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textHeaderColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
