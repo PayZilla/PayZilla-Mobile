@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 
 const kAmpInstanceName = 'PayZilla';
-const androidId = 'com.payzilla.PayZilla';
-const iOSId = 'com.payzilla.PayZilla';
+const androidId = 'com.PayZilla.pay_zilla';
+const iOSId = 'com.PayZilla.pay_zilla';
 const kFontFamily = 'Roboto';
 const kAnimationDuration = Duration(milliseconds: 200);
 const String kLanguage = 'en';
