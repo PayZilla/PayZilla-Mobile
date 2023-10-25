@@ -77,7 +77,7 @@ class _Constants {
     baseUrl: throwIfUndefined('APP_PROD_URL'),
     appName: 'PayZilla',
     flavor: Flavor.production.name,
-    clientUrl: throwIfUndefined('CLIENT_PROD'),
+    clientUrl: throwIfUndefined('APP_PROD_URL'),
   };
 }
 

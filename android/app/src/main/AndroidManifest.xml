@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.PayZilla.pay_zilla">
+    package="com.PayZilla.PayZilla">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -7,7 +7,7 @@
 
     
    <application
-        android:label="pay_zilla"
+        android:label="PayZilla"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

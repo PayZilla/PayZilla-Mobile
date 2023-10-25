@@ -5,6 +5,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
 class PinSetupScreen extends StatefulWidget {
   const PinSetupScreen({
@@ -21,6 +22,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> with FormMixin {
 
   @override
   Widget build(BuildContext context) {
+    final authVm = context.read<AuthProvider>();
     return AppScaffold(
       appBar: const CustomAppBar(
         leading: AppBoxedButton(),
@@ -54,7 +56,9 @@ class _PinSetupScreenState extends State<PinSetupScreen> with FormMixin {
               ),
               const YBox(Insets.dim_40),
               PinTextField(
-                onSaved: (input) {},
+                onSaved: (input) {
+                  requestDto = requestDto.copyWith(pin: input);
+                },
                 inputDecoration: const PinTheme(
                   height: 60,
                   width: 60,
@@ -75,7 +79,10 @@ class _PinSetupScreenState extends State<PinSetupScreen> with FormMixin {
               YBox(context.getHeight(0.12)),
               AppSolidButton(
                 textTitle: 'Create PIN',
-                action: () {},
+                showLoading: authVm.onboardingResp.isLoading,
+                action: () => validate(
+                  () => authVm.pinSetup(requestDto.pin, context),
+                ),
               ),
             ],
           ),

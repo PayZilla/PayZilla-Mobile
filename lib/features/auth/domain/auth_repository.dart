@@ -161,4 +161,11 @@ class AuthRepository extends Repository {
       return response;
     });
   }
+
+  Future<Either<Failure, bool>> pinSetup(String pin) async {
+    return runGuard(() async {
+      final response = await remoteDataSource.setPin(pin);
+      return response;
+    });
+  }
 }

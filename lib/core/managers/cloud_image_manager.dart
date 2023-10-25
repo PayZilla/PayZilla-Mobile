@@ -9,9 +9,9 @@ class CloudImageManager {
   CloudImageManager({Cloudinary? cloudinary}) {
     _cloudinary = cloudinary ??
         Cloudinary(
-          '995159486526392',
-          'MNLKDci0S560CQ7JXZuGt0ArvSI',
-          'didbuzmxi',
+          '699889213185692',
+          'nWjjBB2Qg-1QYypYIeF17ndP-Qk',
+          'dzpe8dv0d',
         );
   }
   late Cloudinary _cloudinary;

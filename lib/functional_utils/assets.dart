@@ -8,6 +8,7 @@ const String selfie = 'assets/pngs/selfie.jpg';
 final String logoSvg = 'logo'.svg;
 final String logoWithNamePng = 'logo_and_name'.png;
 final String logoPng = 'logo'.png;
+const String logoJpeg = 'assets/pngs/logo-pay-zilla.jpeg';
 
 // Onboarding screen assets
 final String onb1 = 'on1'.png;

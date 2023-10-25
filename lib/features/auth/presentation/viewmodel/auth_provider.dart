@@ -62,9 +62,9 @@ class AuthProvider extends ChangeNotifier {
           AppNavigator.of(context).push(
             AppRoutes.pin,
             args: GenericTokenVerificationArgs(
-              res.user.email,
-              AppRoutes.country,
-              authEndpoints.emailVerificationVerify,
+              email: res.user.email,
+              path: AppRoutes.country,
+              endpointPath: authEndpoints.emailVerificationVerify,
             ),
           );
           return;
@@ -169,13 +169,32 @@ class AuthProvider extends ChangeNotifier {
         AppNavigator.of(context).push(
           AppRoutes.pin,
           args: GenericTokenVerificationArgs(
-            res.user.email,
-            AppRoutes.country,
-            authEndpoints.emailVerificationVerify,
+            email: res.user.email,
+            path: AppRoutes.country,
+            endpointPath: authEndpoints.emailVerificationVerify,
           ),
         );
         genericAuthResp = ApiResult<UserAuthModel>.success(res);
 
+        notifyListeners();
+      },
+    );
+  }
+
+  // pinSetup
+  Future<void> pinSetup(String pin, BuildContext context) async {
+    onboardingResp = ApiResult<String>.loading('Loading...');
+    notifyListeners();
+    final failureOrLogin = await authRepository.pinSetup(pin);
+    failureOrLogin.fold(
+      (failure) {
+        onboardingResp = ApiResult<String>.error(failure.message);
+        notifyListeners();
+        showErrorNotification(failure.message, durationInMills: 2000);
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success('PIN created successfully.');
+        AppNavigator.of(context).push(AppRoutes.home);
         notifyListeners();
       },
     );

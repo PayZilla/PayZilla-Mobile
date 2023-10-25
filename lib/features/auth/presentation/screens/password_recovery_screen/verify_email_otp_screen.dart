@@ -8,7 +8,11 @@ import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:provider/provider.dart';
 
 class GenericTokenVerificationArgs {
-  GenericTokenVerificationArgs(this.email, this.path, this.endpointPath);
+  GenericTokenVerificationArgs({
+    required this.email,
+    required this.path,
+    required this.endpointPath,
+  });
 
   final String email;
   final String path;
@@ -96,7 +100,7 @@ class _GenericTokenVerificationState extends State<GenericTokenVerification>
                 child: InkWell(
                   onTap: () {
                     if (isTimerExpired && !provider.onboardingResp.isLoading) {
-                      startTimer();
+                      resetTimer();
                       provider.emailVerificationInitiate();
                     }
                   },

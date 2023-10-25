@@ -34,8 +34,7 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
       body: Form(
         key: formKey,
         autovalidateMode: autoValidateMode,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             Text(
               'Verification',
@@ -171,7 +170,7 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
                 ],
               ),
             ),
-            const Spacer(),
+            YBox(context.getHeight(0.3)),
             AppSolidButton(
               textTitle: 'Verify Identity',
               showLoading: provider.onboardingResp.isLoading,
@@ -183,9 +182,9 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
                         AppNavigator.of(context).push(
                           AppRoutes.pin,
                           args: GenericTokenVerificationArgs(
-                            'your BVN data',
-                            AppRoutes.bvnToReasons,
-                            authEndpoints.bvnVerification,
+                            email: 'your BVN data',
+                            path: AppRoutes.bvnToReasons,
+                            endpointPath: authEndpoints.bvnVerification,
                           ),
                         );
                       }

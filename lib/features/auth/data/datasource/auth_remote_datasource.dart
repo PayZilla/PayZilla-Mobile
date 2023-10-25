@@ -1,5 +1,6 @@
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/functional_utils/log_util.dart';
 
 abstract class IAuthRemoteDataSource {
   Future<UserAuthModel> login(AuthParams params);
@@ -14,7 +15,7 @@ abstract class IAuthRemoteDataSource {
   Future<bool> initializeBvn(AuthParams params);
   Future<bool> updateBvn(AuthParams params);
   Future<User> purpose(List<String> purpose);
-  Future<User> setPin(String pin);
+  Future<bool> setPin(String pin);
 }
 
 class AuthRemoteDataSource implements IAuthRemoteDataSource {
@@ -204,7 +205,7 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   }
 
   @override
-  Future<User> setPin(String pin) async {
+  Future<bool> setPin(String pin) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -212,8 +213,9 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           {'pin': pin},
         ),
       );
+      Log().debug('The message returned', response.data);
       if (response.isResultOk) {
-        return User.fromMap(response.data);
+        return response.status;
       }
 
       throw AppServerException(response.message);

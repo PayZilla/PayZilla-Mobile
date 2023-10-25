@@ -76,9 +76,9 @@ class _EmailRecoveryState extends State<EmailRecovery> with FormMixin {
                         AppNavigator.of(context).push(
                           AppRoutes.recoveryToVerify,
                           args: GenericTokenVerificationArgs(
-                            requestDto.email,
-                            AppRoutes.verifyToPassword,
-                            authEndpoints.forgotPasswordVerify,
+                            email: requestDto.email,
+                            path: AppRoutes.verifyToPassword,
+                            endpointPath: authEndpoints.forgotPasswordVerify,
                           ),
                         );
                       }
