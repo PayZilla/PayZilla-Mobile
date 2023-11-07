@@ -44,6 +44,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
         ..getWallets()
         ..getCategories();
       authProvider.getUser();
+      qrProvider.getAccounts(context);
       notificationProvider.getNotifications();
       historyProvider.getTransactionHistories();
 
@@ -82,7 +83,9 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
 
             authProvider.getUser();
             dashboardProvider.getWallets();
-            qrProvider.getCards();
+            qrProvider
+              ..getCards()
+              ..getAccounts(context);
 
             if (tab == AppNavTab.home) {
               notificationProvider.getNotifications();

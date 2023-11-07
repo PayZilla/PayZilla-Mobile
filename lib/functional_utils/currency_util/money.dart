@@ -26,7 +26,30 @@ class Money {
   /// use this to to get the integral value of a monetary input
   /// Eg usd $1.24 becomes 124 cents and vice versa for Naira to Kobo
   int getValue(num input) => (input * scaleFactor).round();
-  String formatValue(num input) => _formatter.format(input / scaleFactor);
+  String formatValue(dynamic input) {
+    num temp;
+    if (input == null) return _formatter.format(0 / scaleFactor);
+    if (input.toString().contains('-')) {
+      temp = double.parse(
+        input
+            .toString()
+            .substring(1)
+            .replaceAll(RegExp('[A-Za-b]+'), '')
+            .replaceAll(',', '')
+            .trim(),
+      );
+    } else {
+      temp = double.parse(
+        input
+            .toString()
+            .replaceAll(RegExp('[A-Za-b]+'), '')
+            .replaceAll(',', '')
+            .trim(),
+      );
+    }
+
+    return _formatter.format(temp / scaleFactor);
+  }
 
   int sanitizeAmount(String? value) {
     if (value == null) return 0;

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
@@ -6,6 +7,12 @@ import 'package:pay_zilla/features/qr/qr.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
 final dashboardRouter = [
+  GoRoute(
+    path: 'pin',
+    builder: (context, state) {
+      return const PinSetupScreen();
+    },
+  ),
   GoRoute(
     path: 'notifications',
     builder: (context, state) {

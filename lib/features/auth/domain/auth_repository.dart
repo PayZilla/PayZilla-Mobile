@@ -93,7 +93,6 @@ class AuthRepository extends Repository {
       localDataSource
         ..saveUserEmail(response.user.email)
         ..saveToken(response.accessToken);
-      await getUser();
 
       return response;
     });

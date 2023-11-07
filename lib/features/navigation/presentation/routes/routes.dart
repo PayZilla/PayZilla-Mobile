@@ -69,5 +69,6 @@ class AppRoutes {
 
   // funding account details routes
   static const fundingAccountDetails = '/tab/home/funding-account-details';
+  static const fromHomeToPin = '/tab/home/pin';
   static const topUpAmountScreen = '/tab/home/top-up-amount';
 }

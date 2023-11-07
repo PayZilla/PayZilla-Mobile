@@ -88,6 +88,7 @@ class DashboardProvider extends ChangeNotifier {
         billCategoriesResponse =
             ApiResult<List<BillServiceModel>>.error(failure.message);
         showErrorNotification(failure.message);
+        notifyListeners();
       },
       (res) {
         billCategoriesResponse = ApiResult<List<BillServiceModel>>.success(res);
@@ -106,6 +107,7 @@ class DashboardProvider extends ChangeNotifier {
         billServiceResponse =
             ApiResult<BillVariantModel>.error(failure.message);
         showErrorNotification(failure.message);
+        notifyListeners();
       },
       (res) {
         billServiceResponse = ApiResult<BillVariantModel>.success(res);

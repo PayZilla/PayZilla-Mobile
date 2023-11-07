@@ -72,6 +72,7 @@ class ProfileProvider extends ChangeNotifier {
     await failureOrImageUrl.fold(
       (failure) {
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) async {
         await payUploadImage(res);
@@ -89,6 +90,7 @@ class ProfileProvider extends ChangeNotifier {
     await failureOrImageUrl.fold(
       (failure) {
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) async {
         if (res) {

@@ -2,7 +2,7 @@ name: pay_zilla
 description: A new Flutter project.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.19.6 <3.0.0"
@@ -60,7 +60,7 @@ dependencies:
   http: any
   image_picker: ^0.8.0+3
   local_auth: ^2.1.6
-  overlay_support: ^1.2.1
+  overlay_support: ^2.1.0
   phosphor_flutter: ^1.4.0
   pinput: ^2.2.31
   share_plus: ^5.0.0

@@ -47,7 +47,7 @@ class TransactionProvider extends ChangeNotifier {
   ApiResult<bool> deleteCardRES = ApiResult<bool>.idle();
   ApiResult<bool> chargeCardRES = ApiResult<bool>.idle();
 
-  Future<void> getAccounts() async {
+  Future<void> getAccounts(BuildContext context) async {
     accountDetailsRES = ApiResult<AccountDetailsModel>.loading('Loading...');
     notifyListeners();
     final failureOrData = await _accountTranRepository.getAccounts();
@@ -59,6 +59,10 @@ class TransactionProvider extends ChangeNotifier {
       },
       (res) {
         accountDetailsRES = ApiResult<AccountDetailsModel>.success(res);
+        if (!res.hasSetPin) {
+          showInfoNotification('Set account transaction pin');
+          AppNavigator.of(context).push(AppRoutes.fromHomeToPin);
+        }
         notifyListeners();
       },
     );

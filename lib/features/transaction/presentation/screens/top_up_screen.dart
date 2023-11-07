@@ -28,7 +28,7 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
     super.initState();
     Future.microtask(
       () => transactionP
-        ..getAccounts()
+        ..getAccounts(context)
         ..getCards(),
     );
   }

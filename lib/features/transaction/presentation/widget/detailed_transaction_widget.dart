@@ -3,7 +3,6 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 class DetailedTransactionWidget extends StatelessWidget {
@@ -13,6 +12,7 @@ class DetailedTransactionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final money = Money();
     final data = context.read<TransactionHistoryProvider>();
+    Log().debug(data.transactionModel.toString());
     return ListView(
       padding: EdgeInsets.zero,
       children: [

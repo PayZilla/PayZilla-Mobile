@@ -37,7 +37,7 @@ class ResponseDto extends Equatable {
   final dynamic errors;
 
   bool get isResultOk =>
-      status &&
+      status ||
       statusCode <=
           204; //NOTE: this validates that all response from server is OK
 

@@ -85,10 +85,7 @@ class AllTransactionsScreen extends StatelessWidget {
                                           (e) => Text(
                                             tp.isBalanceVisible
                                                 ? '********'
-                                                : money.formatValue(
-                                                    double.parse(e.balance) *
-                                                        100,
-                                                  ),
+                                                : money.formatValue(e.balance),
                                             style: context.textTheme.bodyMedium!
                                                 .copyWith(
                                               color: AppColors.white,

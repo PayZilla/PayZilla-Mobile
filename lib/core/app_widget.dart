@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         child: MultiProvider(
           providers: providers,
           child: MaterialApp(
-            title: 'Pay Zilla',
+            title: 'PayZilla',
             theme: AppTheme.defaultTheme(context),
             debugShowCheckedModeBanner: false,
             home: Builder(

@@ -78,11 +78,7 @@ class AtmCardWidget extends StatelessWidget {
                       children: [
                         if (dsProvider.showBalance)
                           Text(
-                            data != null
-                                ? money.formatValue(
-                                    double.parse(data.balance) * 100,
-                                  )
-                                : money.formatValue(0),
+                            money.formatValue(data?.balance ?? 0),
                             style: context.textTheme.bodyMedium!.copyWith(
                               color: AppColors.white,
                               fontWeight: FontWeight.w700,

@@ -31,6 +31,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   ApiResult<UserAuthModel> genericAuthResp = ApiResult<UserAuthModel>.idle();
+  ApiResult<UserAuthModel> signUpAuthResp = ApiResult<UserAuthModel>.idle();
 
   ApiResult<List<ReasonsModel>> reasonsResp =
       ApiResult<List<ReasonsModel>>.idle();
@@ -50,6 +51,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) async {
         //1. Handle all conditions on login response first
@@ -133,6 +135,7 @@ class AuthProvider extends ChangeNotifier {
     failureOrUser.fold(
       (failure) {
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         _user = res;
@@ -154,16 +157,16 @@ class AuthProvider extends ChangeNotifier {
 
 // Sign up
   Future<void> signUp(AuthParams requestDto, BuildContext context) async {
-    genericAuthResp = ApiResult<UserAuthModel>.loading('Signing up....');
+    signUpAuthResp = ApiResult<UserAuthModel>.loading('Signing up....');
     notifyListeners();
 
     final failureOrLogin = await authRepository.signUp(requestDto);
     failureOrLogin.fold(
       (failure) {
-        genericAuthResp = ApiResult<UserAuthModel>.error(failure.message);
+        signUpAuthResp = ApiResult<UserAuthModel>.error(failure.message);
         notifyListeners();
-
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         AppNavigator.of(context).push(
@@ -174,7 +177,7 @@ class AuthProvider extends ChangeNotifier {
             endpointPath: authEndpoints.emailVerificationVerify,
           ),
         );
-        genericAuthResp = ApiResult<UserAuthModel>.success(res);
+        signUpAuthResp = ApiResult<UserAuthModel>.success(res);
 
         notifyListeners();
       },
@@ -191,6 +194,7 @@ class AuthProvider extends ChangeNotifier {
         onboardingResp = ApiResult<String>.error(failure.message);
         notifyListeners();
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success('PIN created successfully.');
@@ -214,6 +218,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         reasonsResp = ApiResult<List<ReasonsModel>>.success(res);
@@ -236,6 +241,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success(res);
@@ -274,6 +280,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success(res);
@@ -342,6 +349,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success(res.toString());
@@ -365,6 +373,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success(jsonEncode(res));
@@ -389,6 +398,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success(jsonEncode(res));
@@ -412,6 +422,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         showErrorNotification(failure.message, durationInMills: 2000);
+        notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success(jsonEncode(res));

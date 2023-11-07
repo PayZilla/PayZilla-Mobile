@@ -49,11 +49,7 @@ class TransferWalletCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        data != null
-                            ? money.formatValue(
-                                double.tryParse(data.balance)! * 100,
-                              )
-                            : money.formatValue(0),
+                        money.formatValue(data?.balance ?? 0),
                         style: context.textTheme.bodyMedium!.copyWith(
                           color: AppColors.white,
                           fontWeight: FontWeight.w700,

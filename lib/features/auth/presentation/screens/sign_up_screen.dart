@@ -70,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
               AppTextFormField(
                 initialValue: requestDto.fullName,
                 hintText: 'Full name',
-                isLoading: provider.genericAuthResp.isLoading,
+                isLoading: provider.signUpAuthResp.isLoading,
                 inputType: TextInputType.text,
                 onSaved: (value) {
                   requestDto = requestDto.copyWith(fullName: value);
@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
               AppTextFormField(
                 initialValue: requestDto.email,
                 hintText: 'Email',
-                isLoading: provider.genericAuthResp.isLoading,
+                isLoading: provider.signUpAuthResp.isLoading,
                 inputType: TextInputType.emailAddress,
                 onSaved: (value) {
                   requestDto = requestDto.copyWith(email: value);
@@ -105,7 +105,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
               AppTextFormField(
                 initialValue: requestDto.password,
                 hintText: 'Password',
-                isLoading: provider.genericAuthResp.isLoading,
+                isLoading: provider.signUpAuthResp.isLoading,
                 inputType: TextInputType.text,
                 suffixIcon: IconButton(
                   onPressed: () {
@@ -127,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
               const YBox(Insets.dim_60),
               AppSolidButton(
                 textTitle: 'Sign Up',
-                showLoading: provider.genericAuthResp.isLoading,
+                showLoading: provider.signUpAuthResp.isLoading,
                 action: () {
                   validate(() => provider.signUp(requestDto, context));
                 },

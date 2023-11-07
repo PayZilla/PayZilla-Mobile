@@ -97,7 +97,7 @@ void _showNotification(
     background: _getNotificationItemFromType(type).itemColor,
     slideDismissDirection: DismissDirection.up,
     elevation: 5,
-    duration: Duration(milliseconds: durationInMills ?? 700),
+    duration: Duration(milliseconds: durationInMills ?? 3000),
     autoDismiss: autoDismiss,
   );
 }
