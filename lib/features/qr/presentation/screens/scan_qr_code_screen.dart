@@ -97,7 +97,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
               walletChannel: walletChannel,
               channel: Channel.wallet,
             );
-            qrProvider.validateBanksOrWallet(requestDto).then((value) {
+            qrProvider.validateBanksOrWallet(requestDto, context).then((value) {
               if (qrProvider.valBanksOrWalletResponse.isSuccess) {
                 if (widget.args!.isSendMoney) {
                   AppNavigator.of(context).push(

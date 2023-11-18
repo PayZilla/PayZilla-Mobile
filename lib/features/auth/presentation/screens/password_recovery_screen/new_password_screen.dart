@@ -124,7 +124,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> with FormMixin {
                         token: widget.args.params.token,
                       );
                       await provider
-                          .forgotPasswordReset(requestDto)
+                          .forgotPasswordReset(requestDto, context)
                           .then((value) {
                         if (provider.onboardingResp.isSuccess) {
                           AppNavigator.of(context)
@@ -133,6 +133,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> with FormMixin {
                       });
                     } else {
                       showInfoNotification(
+                        context,
                         'Password does not match',
                         durationInMills: 2500,
                       );

@@ -3,11 +3,11 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
-Expanded socialAuthWidget(String asset) {
+Expanded socialAuthWidget(String asset, BuildContext context) {
   return Expanded(
     child: GestureDetector(
       onTap: () {
-        showInfoNotification('COMING SOON', durationInMills: 3500);
+        showInfoNotification(context, 'COMING SOON', durationInMills: 3500);
       },
       child: Container(
         height: 50,

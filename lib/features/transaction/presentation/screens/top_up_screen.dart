@@ -29,7 +29,7 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
     Future.microtask(
       () => transactionP
         ..getAccounts(context)
-        ..getCards(),
+        ..getCards(context),
     );
   }
 
@@ -141,6 +141,7 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
                                     color: AppColors.textBodyColor,
                                   ).onTap(
                                     () => data.toJson().toString().toClipboard(
+                                          context: context,
                                           feedbackMsg:
                                               '${data.bankName} details copied to clipboard',
                                         ),
@@ -310,6 +311,16 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
                 Icons.arrow_forward_ios_rounded,
               ),
             ),
+            if (transactionP.accountDetailsRES.isError) ...[
+              const Spacer(),
+              AppSolidButton(
+                textTitle: 'Update KYC',
+                action: () {
+                  AppNavigator.of(context).push(AppRoutes.country);
+                },
+              ),
+              const YBox(Insets.dim_40),
+            ],
           ],
         ),
       ),

@@ -41,7 +41,7 @@ class _GenericTokenVerificationState extends State<GenericTokenVerification>
       // only use this when coming from sign-up screen
       if (widget.args.email.contains('@') &&
           widget.args.endpointPath.contains('email-verification')) {
-        await context.read<AuthProvider>().emailVerificationInitiate();
+        await context.read<AuthProvider>().emailVerificationInitiate(context);
       } else if (widget.args.email.contains('@') &&
           widget.args.endpointPath.contains('forgot-password')) {
         requestDto = requestDto.copyWith(email: widget.args.email);
@@ -101,7 +101,7 @@ class _GenericTokenVerificationState extends State<GenericTokenVerification>
                   onTap: () {
                     if (isTimerExpired && !provider.onboardingResp.isLoading) {
                       resetTimer();
-                      provider.emailVerificationInitiate();
+                      provider.emailVerificationInitiate(context);
                     }
                   },
                   child: Text(

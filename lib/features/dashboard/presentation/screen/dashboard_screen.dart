@@ -179,8 +179,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       title: 'Select an option',
                                       height: context.getHeight(0.5),
                                       future: () async {
-                                        return dsProvider
-                                            .getCategoryId(e.identifier);
+                                        return dsProvider.getCategoryId(
+                                            e.identifier, context);
                                       },
                                       itemBuilder: (context, item) {
                                         return ListTile(
@@ -224,6 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             return dsProvider.getServiceId(
                                               (value as BillServiceModel)
                                                   .serviceId,
+                                              context,
                                             );
                                           },
                                           itemBuilder: (context, service) {
@@ -362,10 +363,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             dsProvider
                                                 .phoneController.text.isEmpty) {
                                           return showInfoNotification(
+                                            context,
                                             'Please fill all fields',
                                           );
                                         }
-                                        dsProvider.purchaseAirtime();
+                                        dsProvider.purchaseAirtime(context);
                                         AppNavigator.of(context).popDialog();
                                       },
                                     )
@@ -484,6 +486,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: dsProvider.getWalletsResponse.isLoading
                 ? const TempLoadingAtmCard(
                     color: AppColors.textHeaderColor,
+                    height: .14,
                   )
                 : const AtmCardWidget(),
           ),

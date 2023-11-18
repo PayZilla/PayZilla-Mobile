@@ -60,10 +60,7 @@ Future<void> _registerOthers(Flavor flavor, bool enableLogging) async {
       ),
     )
     ..registerSingleton(NetworkManager(sl()))
-    ..registerSingleton(CloudImageManager())
-    ..registerLazySingleton<IMapsRemoteServices>(
-      () => MapsServiceImpl(sl(), sessionToken),
-    );
+    ..registerSingleton(CloudImageManager());
 }
 
 void _registerStorage() {

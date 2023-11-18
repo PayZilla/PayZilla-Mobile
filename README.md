@@ -19,6 +19,7 @@ $ flutter run --target lib/main_production.dart
 
 ```sh
 $ flutter build appbundle --flavor production --target lib/main_production.dart --release
+flutter build appbundle --release
 ```
 
 ## Build IPA
@@ -31,4 +32,5 @@ $ flutter build ipa --target lib/main_production.dart
 
 ```sh
 $ flutter build apk --debug --target lib/main_dev.dart --split-per-abi --flavor dev
+$ flutter build apk --release --split-per-abi
 ```

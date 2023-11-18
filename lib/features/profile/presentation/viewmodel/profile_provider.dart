@@ -64,18 +64,18 @@ class ProfileProvider extends ChangeNotifier {
   ApiResult<List<FAQsModel>> faqResponse = ApiResult<List<FAQsModel>>.idle();
 
   // cloud upload file
-  Future<void> uploadImage(String imgPath) async {
+  Future<void> uploadImage(String imgPath, BuildContext context) async {
     _profileLoader = true;
     notifyListeners();
     final failureOrImageUrl =
         await CloudImageManager.instance.uploadFile(File(imgPath));
     await failureOrImageUrl.fold(
       (failure) {
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) async {
-        await payUploadImage(res);
+        await payUploadImage(res, context);
         notifyListeners();
       },
     );
@@ -85,16 +85,16 @@ class ProfileProvider extends ChangeNotifier {
   }
 
   // pay zilla upload
-  Future<void> payUploadImage(String imgPath) async {
+  Future<void> payUploadImage(String imgPath, BuildContext context) async {
     final failureOrImageUrl = await profileRepository.uploadImage(imgPath);
     await failureOrImageUrl.fold(
       (failure) {
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) async {
         if (res) {
-          await authProvider.getUser();
+          await authProvider.getUser(context: context);
           notifyListeners();
         }
       },
@@ -103,20 +103,26 @@ class ProfileProvider extends ChangeNotifier {
   }
 
   // pay zilla profile update
-  Future<void> profileUpdate(AuthParams params) async {
+  Future<void> profileUpdate(AuthParams params, BuildContext context) async {
     userProfileUpdate = ApiResult<User>.idle();
     userProfileUpdate = ApiResult<User>.loading('Loading...');
     notifyListeners();
     final failureOrProfile = await profileRepository.updateProfile(params);
     await failureOrProfile.fold(
       (failure) {
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         userProfileUpdate = ApiResult<User>.error(failure.message);
         notifyListeners();
       },
       (res) async {
-        await authProvider.getUser();
-        showSuccessNotification('Profile updated successfully');
+        await authProvider.getUser(context: context).then(
+              (value) => {
+                showSuccessNotification(
+                  context,
+                  'Profile updated successfully',
+                ),
+              },
+            );
         userProfileUpdate = ApiResult<User>.success(res);
         notifyListeners();
       },
@@ -199,6 +205,7 @@ class ProfileProvider extends ChangeNotifier {
       asset: languageSvg,
       todo: (context) {
         showInfoNotification(
+          context,
           'Only English is supported for now',
           durationInMills: 2000,
         );

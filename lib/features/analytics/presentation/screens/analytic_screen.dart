@@ -45,7 +45,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           backgroundColor: AppColors.textHeaderColor,
           triggerMode: RefreshIndicatorTriggerMode.anywhere,
           onRefresh: () async {
-            transactionsProvider.fetchMore(transactionsProvider.pageNumCount);
+            transactionsProvider.fetchMore(
+                transactionsProvider.pageNumCount, context);
           },
           child: ListView(
             controller: transactionsProvider.controller,

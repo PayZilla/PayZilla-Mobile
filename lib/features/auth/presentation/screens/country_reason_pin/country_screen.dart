@@ -74,7 +74,22 @@ class _CountryScreenState extends State<CountryScreen> with FormMixin {
                 () => AppNavigator.of(context).push(AppRoutes.countryToBvn),
               ),
             ),
-            const YBox(Insets.dim_26),
+            const YBox(Insets.dim_20),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  AppNavigator.of(context).push(AppRoutes.home);
+                },
+                child: Text(
+                  'SKIP',
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    color: AppColors.textHeaderColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: Insets.dim_18,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

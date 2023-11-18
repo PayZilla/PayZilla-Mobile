@@ -85,6 +85,13 @@ class _MyCardScreenState extends State<MyCardScreen> {
               ),
             if (transactionP.deleteCardRES.isLoading)
               const AppCircularLoadingWidget()
+            else if (transactionP.accountDetailsRES.isError)
+              AppSolidButton(
+                textTitle: 'Update KYC',
+                action: () {
+                  AppNavigator.of(context).push(AppRoutes.country);
+                },
+              )
             else
               InkWell(
                 onTap: () async {
@@ -92,7 +99,7 @@ class _MyCardScreenState extends State<MyCardScreen> {
                     AppNavigator.of(context).push(AppRoutes.startCreateCard);
                   } else {
                     for (final card in selectedCard) {
-                      await transactionP.deleteCard(card.id);
+                      await transactionP.deleteCard(card.id, context);
                       selectedCard = [];
                     }
                   }

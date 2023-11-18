@@ -45,7 +45,7 @@ class CopyBlock extends StatelessWidget {
         trailing: GestureDetector(
           onTap: () {
             Clipboard.setData(ClipboardData(text: subTitle)).then((_) {
-              showInfoNotification('$title copied to clipboard');
+              showInfoNotification(context, '$title copied to clipboard');
             });
           },
           child: Container(

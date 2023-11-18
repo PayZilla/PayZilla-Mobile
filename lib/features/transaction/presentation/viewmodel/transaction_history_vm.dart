@@ -34,16 +34,17 @@ class TransactionHistoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void init() {
+  void init(BuildContext context) {
     controller = ScrollController();
     if (controller!.hasClients) {
       controller!.addListener(() {
-        fetchMore(pageNumCount);
+        fetchMore(pageNumCount, context);
       });
     }
   }
 
-  Future<void> getTransactionHistories({int pageNum = 1}) async {
+  Future<void> getTransactionHistories(
+      {int pageNum = 1, required BuildContext context}) async {
     getTransactionsResponse =
         ApiResult<List<TransactionModel>>.loading('Loading...');
     notifyListeners();
@@ -53,7 +54,7 @@ class TransactionHistoryProvider extends ChangeNotifier {
       (failure) {
         getTransactionsResponse =
             ApiResult<List<TransactionModel>>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
@@ -71,10 +72,10 @@ class TransactionHistoryProvider extends ChangeNotifier {
     );
   }
 
-  void fetchMore(int pageNum) {
+  void fetchMore(int pageNum, BuildContext context) {
     if (totalHisCount > transactionsFetched.length) {
       deBouncer.run(() async {
-        await getTransactionHistories(pageNum: pageNum);
+        await getTransactionHistories(pageNum: pageNum, context: context);
         pageNumCount++;
         notifyListeners();
       });
@@ -87,7 +88,8 @@ class TransactionHistoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getTransactionHistory(String reference) async {
+  Future<void> getTransactionHistory(
+      String reference, BuildContext context) async {
     getTransactionResponse =
         ApiResult<SingleTransactionModel>.loading('Loading...');
     notifyListeners();
@@ -96,7 +98,7 @@ class TransactionHistoryProvider extends ChangeNotifier {
       (failure) {
         getTransactionResponse =
             ApiResult<SingleTransactionModel>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
@@ -107,10 +109,11 @@ class TransactionHistoryProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> onTransactionTapped(TransactionModel data) async {
+  Future<void> onTransactionTapped(
+      TransactionModel data, BuildContext context) async {
     transactionModel = SingleTransactionModel.empty();
     isDetailedVisibleMethod(val: true);
-    await getTransactionHistory(data.reference);
+    await getTransactionHistory(data.reference, context);
     notifyListeners();
   }
 

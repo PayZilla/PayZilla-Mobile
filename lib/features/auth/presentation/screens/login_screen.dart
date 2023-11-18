@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
@@ -24,8 +25,9 @@ class _SignInState extends State<SignIn> with FormMixin {
     super.initState();
     Future.microtask(
       () async {
-        final user =
-            await context.read<AuthProvider>().getUser(useNetworkCall: false);
+        final user = await context
+            .read<AuthProvider>()
+            .getUser(useNetworkCall: false, context: context);
         if (!user.isEmpty) {
           requestDto = requestDto.copyWith(email: user.email);
         }
@@ -107,7 +109,6 @@ class _SignInState extends State<SignIn> with FormMixin {
                 onSaved: (value) {
                   requestDto = requestDto.copyWith(password: value);
                 },
-                validator: (input) => Validators.validatePassword()(input),
               ),
               const YBox(Insets.dim_26),
               InkWell(
@@ -129,11 +130,18 @@ class _SignInState extends State<SignIn> with FormMixin {
                 textTitle: 'Sign In',
                 showLoading: provider.genericAuthResp.isLoading,
                 action: () {
+                  if (kDebugMode) {
+                    requestDto = requestDto.copyWith(
+                      email: 'josh01@yopmail.com',
+                      password: 'P@ssw0rd',
+                    );
+                  }
                   validate(() async {
                     await provider.login(requestDto, context);
                   });
                 },
               ),
+              /*
               const YBox(Insets.dim_26),
               Row(
                 children: const [
@@ -155,11 +163,11 @@ class _SignInState extends State<SignIn> with FormMixin {
               const YBox(Insets.dim_26),
               Row(
                 children: [
-                  socialAuthWidget(googleSvg),
+                  socialAuthWidget(googleSvg, context),
                   const XBox(Insets.dim_24),
-                  socialAuthWidget(appleSvg),
+                  socialAuthWidget(appleSvg, context),
                 ],
-              ),
+              ),*/
               YBox(context.getHeight(0.17)),
               Center(
                 child: RichText(

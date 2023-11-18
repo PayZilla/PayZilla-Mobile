@@ -78,7 +78,8 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<BillServiceModel>> getCategoryId(String id) async {
+  Future<List<BillServiceModel>> getCategoryId(
+      String id, BuildContext context) async {
     billCategoriesResponse =
         ApiResult<List<BillServiceModel>>.loading('Loading...');
 
@@ -87,7 +88,7 @@ class DashboardProvider extends ChangeNotifier {
       (failure) {
         billCategoriesResponse =
             ApiResult<List<BillServiceModel>>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
@@ -98,7 +99,7 @@ class DashboardProvider extends ChangeNotifier {
     return billCategoriesResponse.data ?? [];
   }
 
-  Future<List<Variations>> getServiceId(String id) async {
+  Future<List<Variations>> getServiceId(String id, BuildContext context) async {
     billServiceResponse = ApiResult<BillVariantModel>.loading('Loading...');
 
     final failureOrCat = await billRepository.getServiceId(id);
@@ -106,7 +107,7 @@ class DashboardProvider extends ChangeNotifier {
       (failure) {
         billServiceResponse =
             ApiResult<BillVariantModel>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
@@ -132,7 +133,7 @@ class DashboardProvider extends ChangeNotifier {
     payBillResponse = ApiResult<String>.idle();
   }
 
-  Future<void> purchaseAirtime() async {
+  Future<void> purchaseAirtime(BuildContext context) async {
     var data = BillPaymentDto.empty();
     data = data.copyWith(
       phoneNumber: phoneController.text,
@@ -146,18 +147,18 @@ class DashboardProvider extends ChangeNotifier {
     failureOrCat.fold(
       (failure) {
         payBillResponse = ApiResult<String>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
         payBillResponse = ApiResult<String>.success(res);
-        showSuccessNotification(res);
+        showSuccessNotification(context, res);
         notifyListeners();
       },
     );
   }
 
-  Future<void> verifyBill(BillPaymentDto data) async {
+  Future<void> verifyBill(BillPaymentDto data, BuildContext context) async {
     payBillResponse = ApiResult<String>.idle();
     payBillResponse = ApiResult<String>.loading('Loading...');
     notifyListeners();
@@ -165,18 +166,18 @@ class DashboardProvider extends ChangeNotifier {
     failureOrCat.fold(
       (failure) {
         payBillResponse = ApiResult<String>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
         payBillResponse = ApiResult<String>.success(res);
-        showSuccessNotification(res);
+        showSuccessNotification(context, res);
         notifyListeners();
       },
     );
   }
 
-  Future<void> payBill(BillPaymentDto data) async {
+  Future<void> payBill(BillPaymentDto data, BuildContext context) async {
     billPaymentRES = ApiResult<String>.loading('Loading...');
     notifyListeners();
     final failureOrCat = await billRepository.payBill(data);
@@ -184,6 +185,7 @@ class DashboardProvider extends ChangeNotifier {
       (failure) {
         billPaymentRES = ApiResult<String>.error(failure.message);
         showErrorNotification(
+          context,
           failure.message,
           durationInMills: 3500,
         );

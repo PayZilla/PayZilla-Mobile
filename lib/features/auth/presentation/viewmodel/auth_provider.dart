@@ -50,7 +50,11 @@ class AuthProvider extends ChangeNotifier {
         genericAuthResp = ApiResult<UserAuthModel>.error(failure.message);
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(
+          context,
+          failure.message,
+          durationInMills: 2000,
+        );
         notifyListeners();
       },
       (res) async {
@@ -58,7 +62,7 @@ class AuthProvider extends ChangeNotifier {
         if (!res.user.hasVerifiedEmail) {
           final verificationMsg =
               'You have not verified either phone number (${res.user.phoneNumber}) or email (${res.user.email})';
-          showInfoNotification(verificationMsg, durationInMills: 3500);
+          showInfoNotification(context, verificationMsg, durationInMills: 3500);
           genericAuthResp = ApiResult<UserAuthModel>.error(verificationMsg);
           notifyListeners();
           AppNavigator.of(context).push(
@@ -75,7 +79,8 @@ class AuthProvider extends ChangeNotifier {
           genericAuthResp = ApiResult<UserAuthModel>.error(
             'You have not verified phone number (${res.user.phoneNumber})',
           );
-          showInfoNotification(genericAuthResp.message, durationInMills: 3500);
+          showInfoNotification(context, genericAuthResp.message,
+              durationInMills: 3500);
           notifyListeners();
           // ignore: use_build_context_synchronously
           AppNavigator.of(context).push(AppRoutes.country);
@@ -122,7 +127,8 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<User> getUser({bool useNetworkCall = true}) async {
+  Future<User> getUser(
+      {bool useNetworkCall = true, required BuildContext context}) async {
     _user = User.empty();
     final userLocal = await authRepository.localDataSource.getAuthUserPref();
     if (userLocal != null) {
@@ -134,7 +140,7 @@ class AuthProvider extends ChangeNotifier {
     final failureOrUser = await authRepository.getUser();
     failureOrUser.fold(
       (failure) {
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -165,7 +171,7 @@ class AuthProvider extends ChangeNotifier {
       (failure) {
         signUpAuthResp = ApiResult<UserAuthModel>.error(failure.message);
         notifyListeners();
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -193,7 +199,7 @@ class AuthProvider extends ChangeNotifier {
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
         notifyListeners();
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -205,7 +211,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
 // Get reasons
-  Future<void> fetchReasons() async {
+  Future<void> fetchReasons(BuildContext context) async {
     reasonsResp = ApiResult<List<ReasonsModel>>.loading('Loading up....');
 
     notifyListeners();
@@ -217,7 +223,7 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -228,7 +234,7 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> emailVerificationInitiate() async {
+  Future<void> emailVerificationInitiate(BuildContext context) async {
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
     notifyListeners();
@@ -240,7 +246,7 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -248,6 +254,7 @@ class AuthProvider extends ChangeNotifier {
         // Just so that the message from login can show and nothing spoils if this still comes from registration also :)
         Future.delayed(3500.milliseconds).then((value) {
           showSuccessNotification(
+            context,
             onboardingResp.data ?? '',
             durationInMills: 2500,
           );
@@ -279,7 +286,7 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -310,7 +317,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
 
         if (failure.message == 'Bvn name not match') {
-          showInfoNotification(failure.message, durationInMills: 2500);
+          showInfoNotification(context, failure.message, durationInMills: 2500);
           showBvnInfoUpdate(
             context: context,
             onTap: (p0) {
@@ -320,12 +327,13 @@ class AuthProvider extends ChangeNotifier {
                   fullName: p0.first,
                   phoneNumber: p0.last,
                 );
-                updateBvn(requestDto);
+                updateBvn(requestDto, context);
               }
             },
           ).show(context);
         } else {
-          showErrorNotification(failure.message, durationInMills: 3000);
+          showErrorNotification(context, failure.message,
+              durationInMills: 3000);
         }
       },
       (res) {
@@ -336,7 +344,7 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> updateBvn(AuthParams params) async {
+  Future<void> updateBvn(AuthParams params, BuildContext context) async {
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
     notifyListeners();
@@ -348,7 +356,7 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -372,7 +380,7 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -384,7 +392,8 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> forgotPasswordInit(AuthParams params) async {
+  Future<void> forgotPasswordInit(
+      AuthParams params, BuildContext context) async {
     onboardingResp = ApiResult<String>.idle();
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
@@ -397,7 +406,7 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
@@ -408,7 +417,8 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> forgotPasswordReset(AuthParams params) async {
+  Future<void> forgotPasswordReset(
+      AuthParams params, BuildContext context) async {
     onboardingResp = ApiResult<String>.idle();
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
@@ -421,12 +431,12 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        showErrorNotification(failure.message, durationInMills: 2000);
+        showErrorNotification(context, failure.message, durationInMills: 2000);
         notifyListeners();
       },
       (res) {
         onboardingResp = ApiResult<String>.success(jsonEncode(res));
-        showSuccessNotification('Password reset successfully');
+        showSuccessNotification(context, 'Password reset successfully');
         notifyListeners();
       },
     );
@@ -440,8 +450,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void sessionTimeout(String reason, BuildContext? context) {
-    showErrorNotification(reason);
-
     AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
     notifyListeners();
   }

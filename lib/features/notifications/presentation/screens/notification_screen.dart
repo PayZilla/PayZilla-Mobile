@@ -29,7 +29,7 @@ class NotificationScreen extends StatelessWidget {
             onPressed: notProvider.count > 0
                 ? notProvider.markNotificationsAsRead
                 : () {
-                    showInfoNotification('No unread notifications');
+                    showInfoNotification(context, 'No unread notifications');
                   },
             icon: LocalSvgImage(notificationCheckSvg),
           ),

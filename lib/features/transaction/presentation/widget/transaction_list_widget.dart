@@ -35,7 +35,8 @@ class _TransactionListState extends State<TransactionList> {
       backgroundColor: AppColors.textHeaderColor,
       onRefresh: () async {
         if (widget.useRefresh) {
-          transactionsProvider.fetchMore(transactionsProvider.pageNumCount);
+          transactionsProvider.fetchMore(
+              transactionsProvider.pageNumCount, context);
         }
       },
       child: ListView.separated(
@@ -47,7 +48,7 @@ class _TransactionListState extends State<TransactionList> {
           final data = transactionsProvider.transactionsFetched[index];
           return GestureDetector(
             onTap: () {
-              transactionsProvider.onTransactionTapped(data);
+              transactionsProvider.onTransactionTapped(data, context);
               AppNavigator.of(context).push(AppRoutes.allTransactions);
             },
             child: Container(

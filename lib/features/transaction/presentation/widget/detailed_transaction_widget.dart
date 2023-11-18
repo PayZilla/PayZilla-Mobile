@@ -172,7 +172,7 @@ class DetailedTransactionWidget extends StatelessWidget {
         AppButton(
           textTitle: 'Share Receipt',
           action: () {
-            showInfoNotification('COMING SOON');
+            showInfoNotification(context, 'COMING SOON');
           },
         ),
         const YBox(Insets.dim_32),

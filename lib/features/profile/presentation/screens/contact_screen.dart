@@ -111,6 +111,7 @@ class _ContactScreenState extends State<ContactScreen> {
                         if (profileProvider.contactsResponse.isSuccess) {
                           if (profileProvider.contactsResponse.data!.isEmpty) {
                             showInfoNotification(
+                              context,
                               "This phone number doesn't exist on our record.\nInvite them to join PayZilla",
                               durationInMills: 3000,
                             );
@@ -132,13 +133,14 @@ class _ContactScreenState extends State<ContactScreen> {
                           ).show(context);
                         } else if (profileProvider.contactsResponse.isError) {
                           showInfoNotification(
+                            context,
                             "This phone number doesn't exist on our record.\nInvite them to join PayZilla",
                             durationInMills: 3000,
                           );
                         }
                       });
                     } else {
-                      showInfoNotification('No phone number');
+                      showInfoNotification(context, 'No phone number');
                     }
                   },
                   child: localContactWidget(

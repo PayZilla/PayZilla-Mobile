@@ -104,6 +104,7 @@ class ReferralScreen extends StatelessWidget {
                   color: AppColors.textBodyColor,
                 ).onTap(
                   () => authPV.user.referralCode.toClipboard(
+                    context: context,
                     feedbackMsg: 'Payment Link copied to clipboard',
                   ),
                 ),

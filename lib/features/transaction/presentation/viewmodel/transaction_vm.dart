@@ -60,7 +60,7 @@ class TransactionProvider extends ChangeNotifier {
       (res) {
         accountDetailsRES = ApiResult<AccountDetailsModel>.success(res);
         if (!res.hasSetPin) {
-          showInfoNotification('Set account transaction pin');
+          showInfoNotification(context, 'Set account transaction pin');
           AppNavigator.of(context).push(AppRoutes.fromHomeToPin);
         }
         notifyListeners();
@@ -69,7 +69,7 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getCards() async {
+  Future<void> getCards(BuildContext context) async {
     cardsServiceResponse =
         ApiResult<List<MultiSelectItem<CardsModel>>>.loading('Loading...');
     notifyListeners();
@@ -78,7 +78,7 @@ class TransactionProvider extends ChangeNotifier {
       (failure) {
         cardsServiceResponse =
             ApiResult<List<MultiSelectItem<CardsModel>>>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
@@ -89,19 +89,19 @@ class TransactionProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> deleteCard(int cardId) async {
+  Future<void> deleteCard(int cardId, BuildContext context) async {
     deleteCardRES = ApiResult<bool>.loading('Loading...');
     notifyListeners();
     final failureOrData = await _cardsRepository.deleteCard(cardId);
     await failureOrData.fold(
       (failure) {
         deleteCardRES = ApiResult<bool>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) async {
         deleteCardRES = ApiResult<bool>.success(res);
-        await getCards();
+        await getCards(context);
         notifyListeners();
       },
     );
@@ -124,7 +124,7 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> chargeCard(int amount, int cardId) async {
+  Future<void> chargeCard(int amount, int cardId, BuildContext context) async {
     chargeCardRES = ApiResult<bool>.loading('Loading...');
     notifyListeners();
     final failureOrData = await _cardsRepository.chargeCard(amount, cardId);
@@ -132,6 +132,7 @@ class TransactionProvider extends ChangeNotifier {
       (failure) {
         chargeCardRES = ApiResult<bool>.error(failure.message);
         showErrorNotification(
+          context,
           failure.message.removeSpecialCharactersOnError(),
           durationInMills: 3500,
         );
@@ -139,6 +140,7 @@ class TransactionProvider extends ChangeNotifier {
       },
       (res) async {
         showSuccessNotification(
+          context,
           'Card charge successfully',
           durationInMills: 3000,
         );
@@ -157,13 +159,14 @@ class TransactionProvider extends ChangeNotifier {
     await failureOrData.fold(
       (failure) {
         finalizeAddCardRES = ApiResult<bool>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) async {
-        await getCards().then((value) {
+        await getCards(context).then((value) {
           finalizeAddCardRES = ApiResult<bool>.success(res);
           showSuccessNotification(
+            context,
             'Card added successfully',
             durationInMills: 3000,
           );
@@ -175,7 +178,7 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getBanks() async {
+  Future<void> getBanks(BuildContext context) async {
     banksServiceResponse = ApiResult<List<BanksModel>>.loading('Loading...');
     valBanksOrWalletResponse = ApiResult<WalletOrBankModel>.idle();
     notifyListeners();
@@ -184,7 +187,7 @@ class TransactionProvider extends ChangeNotifier {
       (failure) {
         banksServiceResponse =
             ApiResult<List<BanksModel>>.error(failure.message);
-        showErrorNotification(failure.message);
+        showErrorNotification(context, failure.message);
         notifyListeners();
       },
       (res) {
@@ -199,7 +202,8 @@ class TransactionProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> validateBanksOrWallet(ValidateBankOrWalletDto params) async {
+  Future<void> validateBanksOrWallet(
+      ValidateBankOrWalletDto params, BuildContext context) async {
     valBanksOrWalletResponse =
         ApiResult<WalletOrBankModel>.loading('Loading...');
     notifyListeners();
@@ -211,7 +215,7 @@ class TransactionProvider extends ChangeNotifier {
       (failure) {
         valBanksOrWalletResponse =
             ApiResult<WalletOrBankModel>.error(failure.message);
-        showErrorNotification(failure.message, durationInMills: 3500);
+        showErrorNotification(context, failure.message, durationInMills: 3500);
         notifyListeners();
       },
       (res) {
@@ -221,7 +225,8 @@ class TransactionProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> transferBanksOrWallet(ValidateBankOrWalletDto params) async {
+  Future<void> transferBanksOrWallet(
+      ValidateBankOrWalletDto params, BuildContext context) async {
     transBanksOrWalletResponse = ApiResult<String>.loading('Loading...');
     notifyListeners();
     final failureOrData =
@@ -230,6 +235,7 @@ class TransactionProvider extends ChangeNotifier {
       (failure) {
         transBanksOrWalletResponse = ApiResult<String>.error(failure.message);
         showErrorNotification(
+          context,
           failure.message.removeSpecialCharactersOnError(),
           durationInMills: 3500,
         );

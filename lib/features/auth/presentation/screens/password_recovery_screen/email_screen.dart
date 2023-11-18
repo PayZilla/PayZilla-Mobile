@@ -71,7 +71,9 @@ class _EmailRecoveryState extends State<EmailRecovery> with FormMixin {
                 showLoading: provider.onboardingResp.isLoading,
                 action: () {
                   validate(() async {
-                    await provider.forgotPasswordInit(requestDto).then((value) {
+                    await provider
+                        .forgotPasswordInit(requestDto, context)
+                        .then((value) {
                       if (provider.onboardingResp.isSuccess) {
                         AppNavigator.of(context).push(
                           AppRoutes.recoveryToVerify,

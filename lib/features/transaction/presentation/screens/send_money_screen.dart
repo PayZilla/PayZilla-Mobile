@@ -181,7 +181,8 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> with FormMixin {
                                     textTitle: 'Confirm',
                                     action: () {
                                       if (requestDto.transactionPin.isEmpty) {
-                                        showInfoNotification('Enter valid PIN');
+                                        showInfoNotification(
+                                            context, 'Enter valid PIN');
                                       } else {
                                         Navigator.pop(context, true);
                                       }
@@ -194,7 +195,8 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> with FormMixin {
                               ).show(context).then((value) {
                                 if (value != null) {
                                   transferP
-                                      .transferBanksOrWallet(requestDto)
+                                      .transferBanksOrWallet(
+                                          requestDto, context)
                                       .then((value) {
                                     if (transferP
                                         .transBanksOrWalletResponse.isSuccess) {

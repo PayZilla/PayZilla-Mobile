@@ -1,16 +1,18 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:pay_zilla/config/config.dart';
 
 enum NotificationMessageType { info, error, success }
 
 // for info messages
 void showInfoNotification(
+  BuildContext context,
   String message, {
   int? durationInMills,
   bool autoDismiss = true,
 }) {
   _showNotification(
+    context,
     message,
     NotificationMessageType.info,
     durationInMills: durationInMills,
@@ -20,25 +22,35 @@ void showInfoNotification(
 
 // for error messages
 void showErrorNotification(
+  BuildContext context,
   String message, {
   int? durationInMills,
   bool autoDismiss = true,
 }) {
-  _showNotification(
-    message,
-    NotificationMessageType.error,
-    durationInMills: durationInMills,
-    autoDismiss: autoDismiss,
-  );
+  if (message == 'Phone number must be verified') {
+    const SizedBox.shrink();
+  } else {
+    _showNotification(
+      context,
+      message,
+      message == 'Phone number must be verified'
+          ? NotificationMessageType.info
+          : NotificationMessageType.error,
+      durationInMills: durationInMills,
+      autoDismiss: autoDismiss,
+    );
+  }
 }
 
 // for success messages
 void showSuccessNotification(
+  BuildContext context,
   String message, {
   int? durationInMills,
   bool autoDismiss = true,
 }) {
   _showNotification(
+    context,
     message,
     NotificationMessageType.success,
     durationInMills: durationInMills,
@@ -46,94 +58,49 @@ void showSuccessNotification(
   );
 }
 
-// generic notification method
 void _showNotification(
+  BuildContext context,
   String message,
   NotificationMessageType type, {
   int? durationInMills,
   bool autoDismiss = true,
 }) {
-  showSimpleNotification(
-    Column(
-      children: [
-        Row(
-          children: [
-            Icon(
-              _getNotificationItemFromType(type).iconData,
-              color: const Color(0xFFFFFFFF),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _getNotificationItemFromType(type).title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    message,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-      ],
-    ),
-    background: _getNotificationItemFromType(type).itemColor,
-    slideDismissDirection: DismissDirection.up,
-    elevation: 5,
+  Flushbar(
+    message: message,
     duration: Duration(milliseconds: durationInMills ?? 3000),
-    autoDismiss: autoDismiss,
-  );
-}
-
-// get notification item from the type supplied
-_NotificationItem _getNotificationItemFromType(NotificationMessageType type) {
-  switch (type) {
-    case NotificationMessageType.error:
-      return _NotificationItem(
-        title: 'Error',
-        iconData: Icons.error_outline_rounded,
-        itemColor: Colors.red,
-      );
-    case NotificationMessageType.info:
-      return _NotificationItem(
-        title: 'Info',
-        iconData: Icons.info_outline_rounded,
-        itemColor: Colors.grey.shade800,
-      );
-    case NotificationMessageType.success:
-      return _NotificationItem(
-        title: 'Success',
-        iconData: Icons.check_circle_outline_rounded,
-        itemColor: AppColors.btnPrimaryColor,
-      );
-  }
-}
-
-class _NotificationItem {
-  _NotificationItem({
-    required this.title,
-    required this.iconData,
-    required this.itemColor,
-  });
-
-  final String title;
-  final IconData iconData;
-  final Color itemColor;
+    flushbarPosition: FlushbarPosition.TOP,
+    dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+    forwardAnimationCurve: Curves.elasticInOut,
+    animationDuration: const Duration(milliseconds: 500),
+    backgroundColor: type == NotificationMessageType.error
+        ? AppColors.borderErrorColor
+        : type == NotificationMessageType.info
+            ? AppColors.textHeaderColor
+            : AppColors.btnPrimaryColor,
+    titleText: Text(
+      type == NotificationMessageType.error
+          ? 'Error'
+          : type == NotificationMessageType.info
+              ? 'Info'
+              : 'Success',
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    icon: Icon(
+      type == NotificationMessageType.error
+          ? Icons.error
+          : type == NotificationMessageType.info
+              ? Icons.info
+              : Icons.check_circle,
+      color: type == NotificationMessageType.error
+          ? Colors.white
+          : type == NotificationMessageType.info
+              ? AppColors.white
+              : AppColors.btnPrimaryColor,
+    ),
+    // messageText: Text(message, style: TextStyle(color: Colors.white),),
+  ).show(context);
 }

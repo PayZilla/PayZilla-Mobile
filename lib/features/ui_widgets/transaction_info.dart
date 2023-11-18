@@ -55,7 +55,7 @@ class TransactionInfo extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Clipboard.setData(ClipboardData(text: toCopy)).then((_) {
-          showInfoNotification('$toCopy copied to clipboard');
+          showInfoNotification(context, '$toCopy copied to clipboard');
         });
       },
       child: Container(

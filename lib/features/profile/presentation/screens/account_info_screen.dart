@@ -97,7 +97,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
               final pickedImage =
                   await const ChooseUploadOption().show<XFile>(context);
               if (pickedImage != null) {
-                await profileProvider.uploadImage(pickedImage.path);
+                await profileProvider.uploadImage(pickedImage.path, context);
                 setState(() {});
               }
             }),

@@ -42,7 +42,7 @@ FutureBottomSheet<Widget> showBvnInfoUpdate({
               onTap([nameTEC.text, phoneTEC.text]);
               AppNavigator.of(context).popDialog();
             } else {
-              showErrorNotification('Enter valid BVN information');
+              showErrorNotification(context, 'Enter valid BVN information');
             }
           },
         ),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
@@ -66,9 +67,11 @@ extension StringExtension on String {
     return Uri.encodeComponent(this);
   }
 
-  void toClipboard({String feedbackMsg = 'Copied to clipboard'}) {
+  void toClipboard(
+      {String feedbackMsg = 'Copied to clipboard',
+      required BuildContext context}) {
     Clipboard.setData(ClipboardData(text: this))
-        .then((value) => showSuccessNotification(feedbackMsg))
+        .then((value) => showSuccessNotification(context, feedbackMsg))
         .catchError((_) {});
   }
 }

@@ -6,7 +6,7 @@ const String selfie = 'assets/pngs/selfie.jpg';
 
 // app logo path
 final String logoSvg = 'logo'.svg;
-final String logoWithNamePng = 'logo_and_name'.png;
+final String logoWithNamePng = 'payzilla'.png;
 final String logoPng = 'logo'.png;
 const String logoJpeg = 'assets/pngs/logo-pay-zilla.jpeg';
 

@@ -38,15 +38,15 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
   void initState() {
     super.initState();
 
-    context.read<TransactionHistoryProvider>().init();
+    context.read<TransactionHistoryProvider>().init(context);
     Future.microtask(() {
       dashboardProvider
         ..getWallets()
         ..getCategories();
-      authProvider.getUser();
+      authProvider.getUser(context: context);
       qrProvider.getAccounts(context);
       notificationProvider.getNotifications();
-      historyProvider.getTransactionHistories();
+      historyProvider.getTransactionHistories(context: context);
 
       setState(() {});
     });
@@ -81,17 +81,17 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
           onTabSelected: (tab) {
             if (tab == AppNavTab.none) return;
 
-            authProvider.getUser();
+            authProvider.getUser(context: context);
             dashboardProvider.getWallets();
             qrProvider
-              ..getCards()
+              ..getCards(context)
               ..getAccounts(context);
 
             if (tab == AppNavTab.home) {
               notificationProvider.getNotifications();
             }
             if (tab == AppNavTab.home || tab == AppNavTab.activity) {
-              historyProvider.getTransactionHistories();
+              historyProvider.getTransactionHistories(context: context);
             }
 
             AppNavigator.of(context).push(AppRoutes.tab(tab));
@@ -169,7 +169,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
                 AppRoutes.qrScan,
                 args: QRScreenArgs(authProvider.user.phoneNumber),
               );
-              qrProvider.validateBanksOrWallet(requestDto);
+              qrProvider.validateBanksOrWallet(requestDto, context);
             },
             child: Container(
               height: context.getHeight(0.07),

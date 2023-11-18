@@ -153,9 +153,10 @@ class _BillPaymentVerificationScreenState
                           varianceCode:
                               widget.args.billPaymentDto.variationCode,
                         );
-                        dsProvider.payBill(requestDto).then((value) {
+                        dsProvider.payBill(requestDto, context).then((value) {
                           if (dsProvider.billPaymentRES.isSuccess) {
                             showSuccessNotification(
+                              context,
                               dsProvider.billPaymentRES.data ?? 'Success',
                             );
                             AppNavigator.of(context).push(AppRoutes.home);
@@ -164,7 +165,7 @@ class _BillPaymentVerificationScreenState
                       } else {
                         // remove bill payment here
                         requestDto = requestDto.copyWith(billName: '');
-                        dsProvider.verifyBill(requestDto);
+                        dsProvider.verifyBill(requestDto, context);
                       }
                     });
                   },

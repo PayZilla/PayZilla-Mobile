@@ -27,7 +27,7 @@ class _BankTransferScreenState extends State<BankTransferScreen>
   void initState() {
     super.initState();
     Future.microtask(
-      () => transactionP.getBanks(),
+      () => transactionP.getBanks(context),
     );
     requestDto = requestDto.copyWith(channel: Channel.bank);
   }
@@ -113,7 +113,7 @@ class _BankTransferScreenState extends State<BankTransferScreen>
                         bankChannelDto.copyWith(accountNumber: input);
                     requestDto =
                         requestDto.copyWith(bankChannel: bankChannelDto);
-                    transactionP.validateBanksOrWallet(requestDto);
+                    transactionP.validateBanksOrWallet(requestDto, context);
                   }
                 },
               ),
@@ -218,7 +218,8 @@ class _BankTransferScreenState extends State<BankTransferScreen>
                                 textTitle: 'Confirm',
                                 action: () {
                                   if (requestDto.transactionPin.isEmpty) {
-                                    showInfoNotification('Enter valid PIN');
+                                    showInfoNotification(
+                                        context, 'Enter valid PIN');
                                   } else {
                                     Navigator.pop(context, true);
                                   }
@@ -231,7 +232,7 @@ class _BankTransferScreenState extends State<BankTransferScreen>
                           ).show(context).then((value) {
                             if (value != null) {
                               transactionP
-                                  .transferBanksOrWallet(requestDto)
+                                  .transferBanksOrWallet(requestDto, context)
                                   .then((value) {
                                 if (transactionP
                                     .transBanksOrWalletResponse.isSuccess) {

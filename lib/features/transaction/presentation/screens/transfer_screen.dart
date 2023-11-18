@@ -167,8 +167,8 @@ class _TransferScreenState extends State<TransferScreen> with FormMixin {
                                   ),
                                 );
 
-                                await transProvider
-                                    .validateBanksOrWallet(requestDto);
+                                await transProvider.validateBanksOrWallet(
+                                    requestDto, context);
                                 if (transProvider
                                     .valBanksOrWalletResponse.isSuccess) {
                                   // ignore: use_build_context_synchronously
@@ -183,7 +183,8 @@ class _TransferScreenState extends State<TransferScreen> with FormMixin {
                                   );
                                 }
                               } else {
-                                showInfoNotification('No phone number');
+                                showInfoNotification(
+                                    context, 'No phone number');
                               }
                             },
                             child: SelectableContactWidget(
@@ -209,7 +210,7 @@ class _TransferScreenState extends State<TransferScreen> with FormMixin {
                             channel: Channel.wallet,
                           );
                           transProvider
-                              .validateBanksOrWallet(requestDto)
+                              .validateBanksOrWallet(requestDto, context)
                               .then((value) {
                             if (transProvider
                                 .valBanksOrWalletResponse.isSuccess) {

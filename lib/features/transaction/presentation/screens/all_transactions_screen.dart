@@ -85,7 +85,12 @@ class AllTransactionsScreen extends StatelessWidget {
                                           (e) => Text(
                                             tp.isBalanceVisible
                                                 ? '********'
-                                                : money.formatValue(e.balance),
+                                                : money.formatValue(
+                                                    (double.tryParse(
+                                                          e.balance,
+                                                        ))! *
+                                                        100,
+                                                  ),
                                             style: context.textTheme.bodyMedium!
                                                 .copyWith(
                                               color: AppColors.white,
@@ -125,7 +130,7 @@ class AllTransactionsScreen extends StatelessWidget {
                               ).onTap(() {
                                 Future.wait([
                                   dsProvider.getWallets(),
-                                  tp.getTransactionHistories(),
+                                  tp.getTransactionHistories(context: context),
                                 ]);
                               }),
                             ],

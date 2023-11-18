@@ -132,6 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
                   validate(() => provider.signUp(requestDto, context));
                 },
               ),
+              /*
               const YBox(Insets.dim_26),
               Row(
                 children: const [
@@ -153,9 +154,9 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
               const YBox(Insets.dim_26),
               Row(
                 children: [
-                  socialAuthWidget(googleSvg),
+                  socialAuthWidget(googleSvg, context),
                   const XBox(Insets.dim_24),
-                  socialAuthWidget(appleSvg),
+                  socialAuthWidget(appleSvg, context),
                 ],
               ),
               YBox(context.getHeight(0.07)),
@@ -182,7 +183,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
                     ],
                   ),
                 ),
-              ),
+              ),*/
               const YBox(Insets.dim_16),
               AppEnvManager.instance.getEnvironment().fold(
                     ifDevelopment: _showEnvName,

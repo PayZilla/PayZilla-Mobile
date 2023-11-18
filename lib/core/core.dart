@@ -20,4 +20,3 @@ export 'core_app_utils/core_config.dart';
 export 'core_app_utils/jwt.dart';
 export 'core_app_utils/token_interceptor.dart';
 export 'core_dto/google_maps_response.dart';
-export 'services/google_maps_services.dart';

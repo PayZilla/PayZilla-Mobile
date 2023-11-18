@@ -102,7 +102,7 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
                 action: () {
                   validate(() async {
                     await profileProvider
-                        .profileUpdate(requestDto)
+                        .profileUpdate(requestDto, context)
                         .then((value) {
                       if (profileProvider.userProfileUpdate.isSuccess) {
                         AppNavigator.of(context).push(AppRoutes.home);

@@ -52,7 +52,7 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
             ),
             const YBox(Insets.dim_8),
             Text(
-              'We need to know this for regulatory reasons. And also we’re curious!',
+              'We need to know this for regulatory reasons.\nPlease select!',
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.textBodyColor,
                 fontWeight: FontWeight.w400,
@@ -95,6 +95,13 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
                         .add(i.value.title.replaceAll(' ', '_').toLowerCase());
                   }
                 }
+                if (selected.isEmpty) {
+                  showInfoNotification(
+                    context,
+                    'Select what you would use PayZilla for',
+                  );
+                  return;
+                }
                 await provider.purpose(selected, context);
               },
             ),
@@ -108,9 +115,9 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
   Widget getGridItem(MultiSelectItem item, int index) {
     final product = item.value as ReasonsModel;
     final textColor =
-        item.selected ? AppColors.white : AppColors.btnPrimaryColor;
+        item.selected ? AppColors.btnPrimaryColor : AppColors.white;
 
-    final bgColor = item.selected ? AppColors.btnPrimaryColor : AppColors.white;
+    final bgColor = item.selected ? AppColors.white : AppColors.btnPrimaryColor;
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -123,30 +130,55 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
           right: Insets.dim_20,
         ),
         decoration: BoxDecoration(
-          color: bgColor,
+          color: AppColors.white,
           border: Border.all(color: AppColors.borderColor),
           borderRadius: Corners.mdBorder,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            const YBox(Insets.dim_22),
-            LocalSvgImage(
-              product.image,
-              color: textColor,
-              height: 24,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const YBox(Insets.dim_22),
+                LocalSvgImage(
+                  product.image,
+                  color: AppColors.btnPrimaryColor,
+                  height: 24,
+                ),
+                const Spacer(),
+                Text(
+                  product.title,
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    color: AppColors.btnPrimaryColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: Insets.dim_14,
+                  ),
+                ),
+                const YBox(Insets.dim_22),
+              ],
             ),
-            const Spacer(),
-            Text(
-              product.title,
-              style: context.textTheme.bodyMedium!.copyWith(
-                color: textColor,
-                fontWeight: FontWeight.w600,
-                fontSize: Insets.dim_14,
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                height: 30,
+                width: 30,
+                margin: const EdgeInsets.only(top: Insets.dim_16),
+                decoration: BoxDecoration(
+                  color: textColor,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: bgColor),
+                ),
+                child: Center(
+                  child: item.selected
+                      ? Icon(
+                          Icons.check,
+                          color: bgColor,
+                        )
+                      : null,
+                ),
               ),
-            ),
-            const YBox(Insets.dim_22),
+            )
           ],
         ),
       ),
