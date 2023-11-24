@@ -23,7 +23,7 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AuthProvider>();
-    final profileProvider = context.read<ProfileProvider>();
+    final profileProvider = context.watch<ProfileProvider>();
     return AppScaffold(
       appBar: CustomAppBar(
         titleWidget: Text(
@@ -101,13 +101,7 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen>
                 showLoading: profileProvider.userProfileUpdate.isLoading,
                 action: () {
                   validate(() async {
-                    await profileProvider
-                        .profileUpdate(requestDto, context)
-                        .then((value) {
-                      if (profileProvider.userProfileUpdate.isSuccess) {
-                        AppNavigator.of(context).push(AppRoutes.home);
-                      }
-                    });
+                    await profileProvider.profileUpdate(requestDto, context);
                   });
                 },
               ),

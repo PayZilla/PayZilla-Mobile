@@ -3,38 +3,31 @@ import 'package:local_auth/local_auth.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 
-class AuthRepository extends Repository {
-  AuthRepository({
+// ignore: one_member_abstracts
+abstract class AuthRepository {
+  Future<Either<ApiFailure, UserAuthModel>> login(AuthParams param);
+  Future<Either<ApiFailure, User>> getUser();
+  Future<Either<ApiFailure, List>> getKyc();
+  Future<Either<ApiFailure, UserAuthModel>> signUp(AuthParams param);
+  Future<Either<ApiFailure, List<ReasonsModel>>> fetchReasons();
+  Future<Either<ApiFailure, String>> emailVerificationInitiate();
+  Future<Either<ApiFailure, String>> tokenVerification(AuthParams params);
+  Future<Either<ApiFailure, bool>> initializeBvn(AuthParams params);
+  Future<Either<ApiFailure, bool>> updateBvn(AuthParams params);
+  Future<Either<ApiFailure, User>> purpose(List<String> purpose);
+  Future<Either<ApiFailure, bool>> forgotPasswordInit(AuthParams params);
+  Future<Either<ApiFailure, bool>> forgotPasswordReset(AuthParams params);
+  Future<Either<ApiFailure, bool>> pinSetup(String params);
+}
+
+class AuthRepositoryImp implements AuthRepository {
+  AuthRepositoryImp({
     required this.remoteDataSource,
-    required this.localDataSource,
     required this.localAuthentication,
   });
 
   final IAuthRemoteDataSource remoteDataSource;
-  final IAuthLocalDataSource localDataSource;
   final LocalAuthentication localAuthentication;
-
-  set biometricMode(bool value) =>
-      localDataSource.saveBiometricMode(value: value);
-
-  Future<bool> isLocalAuthEnabled() async {
-    final isEnabled = await localAuthentication.canCheckBiometrics;
-    final hasOneOrMoreBiometric =
-        (await localAuthentication.getAvailableBiometrics()).isNotEmpty;
-    return isEnabled && hasOneOrMoreBiometric;
-  }
-
-  Future<bool> canUseBiometric() async {
-    final isBiometricsEnabled = await isLocalAuthEnabled();
-    final isBiometricsPrefEnabled =
-        await localDataSource.getBiometricMode ?? false;
-    final email = await localDataSource.getUserEmail();
-    final password = await localDataSource.getUserPassword();
-    return email.isNotEmpty &&
-        password.isNotEmpty &&
-        isBiometricsEnabled &&
-        isBiometricsPrefEnabled;
-  }
 
   Future<Either<Failure, Unit>> useLocalAuth() async {
     try {
@@ -52,119 +45,77 @@ class AuthRepository extends Repository {
     }
   }
 
-  Future<Either<Failure, UserAuthModel>> login(
+  @override
+  Future<Either<ApiFailure, UserAuthModel>> login(
     AuthParams requestDto,
   ) async {
-    return runGuard(() async {
-      localDataSource.flushLocalStorage();
-
-      final response = await remoteDataSource.login(requestDto);
-      localDataSource
-        ..saveUserEmail(response.user.email)
-        ..saveToken(response.accessToken)
-        ..saveUserPassword(requestDto.password);
-      await getUser();
-
-      return response;
-    });
+    return remoteDataSource.login(requestDto);
   }
 
-  Future<Either<Failure, User>> getUser() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getUser();
-      localDataSource.saveAuthUserPref(response);
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, User>> getUser() {
+    // localDataSource.saveAuthUserPref(response);
+    return remoteDataSource.getUser();
   }
 
-  Future<Either<Failure, List>> getKyc() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getKyc();
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List>> getKyc() async {
+    return remoteDataSource.getKyc();
   }
 
-  Future<Either<Failure, UserAuthModel>> signUp(
+  @override
+  Future<Either<ApiFailure, UserAuthModel>> signUp(
     AuthParams requestDto,
   ) async {
-    return runGuard(() async {
-      localDataSource.flushLocalStorage();
-      final response = await remoteDataSource.signUp(requestDto);
-      localDataSource
-        ..saveUserEmail(response.user.email)
-        ..saveToken(response.accessToken);
-
-      return response;
-    });
+    return remoteDataSource.signUp(requestDto);
   }
 
-  Future<Either<Failure, List<ReasonsModel>>> fetchReasons() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.fetchReasons();
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List<ReasonsModel>>> fetchReasons() async {
+    return remoteDataSource.fetchReasons();
   }
 
-  Future<Either<Failure, String>> emailVerificationInitiate() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.emailVerificationInitiate();
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, String>> emailVerificationInitiate() async {
+    return remoteDataSource.emailVerificationInitiate();
   }
 
-  Future<Either<Failure, String>> tokenVerification(
-    AuthParams params, {
-    required String path,
-    String? email,
-  }) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.tokenVerification(
-        params,
-        path: path,
-      );
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, String>> tokenVerification(
+    AuthParams params,
+  ) async {
+    return remoteDataSource.tokenVerification(params);
   }
 
-  Future<Either<Failure, bool>> initializeBvn(AuthParams params) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.initializeBvn(params);
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> initializeBvn(AuthParams params) async {
+    return remoteDataSource.initializeBvn(params);
   }
 
-  Future<Either<Failure, bool>> updateBvn(AuthParams params) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.updateBvn(params);
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> updateBvn(AuthParams params) async {
+    return remoteDataSource.updateBvn(params);
   }
 
-  Future<Either<Failure, User>> purpose(List<String> purpose) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.purpose(purpose);
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, User>> purpose(List<String> purpose) async {
+    return remoteDataSource.purpose(purpose);
   }
 
-  Future<Either<Failure, bool>> forgotPasswordInit(AuthParams params) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.forgotPasswordInit(params);
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> forgotPasswordInit(AuthParams params) async {
+    return remoteDataSource.forgotPasswordInit(params);
   }
 
-  Future<Either<Failure, bool>> forgotPasswordReset(AuthParams params) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.forgotPasswordReset(params);
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> forgotPasswordReset(
+    AuthParams params,
+  ) async {
+    return remoteDataSource.forgotPasswordReset(params);
   }
 
-  Future<Either<Failure, bool>> pinSetup(String pin) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.setPin(pin);
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> pinSetup(String pin) async {
+    return remoteDataSource.setPin(pin);
   }
 }

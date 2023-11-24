@@ -2,37 +2,36 @@ import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
-class TransactionHistoryRepository extends Repository {
-  TransactionHistoryRepository({
+abstract class TransactionHistoryRepository {
+  Future<Either<ApiFailure, TransactionData>> getTransactionHistory(
+    int pageNum,
+  );
+  Future<Either<ApiFailure, dynamic>> getTransactionOverview();
+  Future<Either<ApiFailure, SingleTransactionModel>> getTransaction(String ref);
+}
+
+class TransactionHistoryRepositoryImpl extends TransactionHistoryRepository {
+  TransactionHistoryRepositoryImpl({
     required this.remoteDataSource,
   });
 
   final ITransactionHistoryRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, TransactionData>> getTransactionHistory(
+  @override
+  Future<Either<ApiFailure, TransactionData>> getTransactionHistory(
     int pageNum,
   ) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getTransactionHistory(pageNum);
-
-      return response;
-    });
+    return remoteDataSource.getTransactionHistory(pageNum);
   }
 
-  Future<Either<Failure, dynamic>> getTransactionOverview() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getTransactionOverview();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, dynamic>> getTransactionOverview() async {
+    return remoteDataSource.getTransactionOverview();
   }
 
-  Future<Either<Failure, SingleTransactionModel>> getTransaction(
+  @override
+  Future<Either<ApiFailure, SingleTransactionModel>> getTransaction(
       String ref) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getTransaction(ref);
-
-      return response;
-    });
+    return remoteDataSource.getTransaction(ref);
   }
 }

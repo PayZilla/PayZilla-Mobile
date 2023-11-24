@@ -1,11 +1,13 @@
+import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
 
 abstract class INotificationDataSource {
-  Future<List<NotificationModel>> getNotifications();
-  Future<NotificationModel> getNotification(String id);
-  Future<String> markNotificationAsRead(String id);
-  Future<String> markNotificationsAsRead();
+  Future<Either<ApiFailure, NotificationModel>> getNotification(String id);
+
+  Future<Either<ApiFailure, List<NotificationModel>>> getNotifications();
+  Future<Either<ApiFailure, String>> markNotificationAsRead(String id);
+  Future<Either<ApiFailure, String>> markNotificationsAsRead();
 }
 
 class NotificationDataSource implements INotificationDataSource {
@@ -13,42 +15,42 @@ class NotificationDataSource implements INotificationDataSource {
 
   final HttpManager http;
   @override
-  Future<NotificationModel> getNotification(String id) async {
+  Future<Either<ApiFailure, NotificationModel>> getNotification(
+      String id) async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(notificationEndpoints.getNotification(id)),
       );
-      if (response.isResultOk) {
-        return NotificationModel.fromJson(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(NotificationModel.fromJson(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<List<NotificationModel>> getNotifications() async {
+  Future<Either<ApiFailure, List<NotificationModel>>> getNotifications() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(notificationEndpoints.getNotifications),
       );
-      if (response.isResultOk) {
-        final data = response.data['notifications'] as List;
-        return data
-            .map(
-              (e) => NotificationModel.fromJson(Map<String, dynamic>.from(e)),
-            )
-            .toList();
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(
+        (response.data['notifications'] as List)
+            .map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> markNotificationAsRead(String id) async {
+  Future<Either<ApiFailure, String>> markNotificationAsRead(String id) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -56,17 +58,16 @@ class NotificationDataSource implements INotificationDataSource {
           {},
         ),
       );
-      if (response.isResultOk) {
-        return response.message;
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.message);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> markNotificationsAsRead() async {
+  Future<Either<ApiFailure, String>> markNotificationsAsRead() async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -74,12 +75,11 @@ class NotificationDataSource implements INotificationDataSource {
           {},
         ),
       );
-      if (response.isResultOk) {
-        return response.message;
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.message);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 }

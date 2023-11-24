@@ -4,36 +4,35 @@ import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/dashboard/data/datasource/account_datasource.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
-class AccountRepository extends Repository {
-  AccountRepository({
+abstract class AccountRepository {
+  Future<Either<ApiFailure, List<WalletsModel>>> getWallets();
+  Future<Either<ApiFailure, List<ContactsModel>>> getContacts(
+    List<String> contacts,
+  );
+  Future<Either<ApiFailure, AccountDetailsModel>> getAccounts();
+}
+
+class AccountRepositoryImpl extends AccountRepository {
+  AccountRepositoryImpl({
     required this.remoteDataSource,
   });
 
   final IAccountRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, List<WalletsModel>>> getWallets() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getWallets();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List<WalletsModel>>> getWallets() async {
+    return remoteDataSource.getWallets();
   }
 
-  Future<Either<Failure, List<ContactsModel>>> getContacts(
+  @override
+  Future<Either<ApiFailure, List<ContactsModel>>> getContacts(
     List<String> contacts,
   ) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getContacts(contacts);
-
-      return response;
-    });
+    return remoteDataSource.getContacts(contacts);
   }
 
-  Future<Either<Failure, AccountDetailsModel>> getAccounts() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getAccounts();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, AccountDetailsModel>> getAccounts() async {
+    return remoteDataSource.getAccounts();
   }
 }

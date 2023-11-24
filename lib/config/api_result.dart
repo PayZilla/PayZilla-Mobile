@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
+
 enum Status { idle, loading, success, error }
 
-class ApiResult<T> {
+class ApiResult<T> extends ChangeNotifier {
   ApiResult({
     this.message = 'Unknown error occurred',
     this.data,

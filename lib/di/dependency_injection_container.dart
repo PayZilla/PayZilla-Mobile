@@ -6,6 +6,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/di/datasource.dart';
 import 'package:pay_zilla/di/repositories.dart';
+import 'package:pay_zilla/di/usecases.dart';
 import 'package:pay_zilla/di/view_model_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -31,6 +32,9 @@ Future<void> initServiceLocator(
 
   // register others
   await _registerOthers(flavor, enableLogging);
+
+// register use cases
+  registerUseCases(sl);
 }
 
 // Any other class

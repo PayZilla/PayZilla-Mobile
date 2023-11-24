@@ -3,34 +3,31 @@ import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 
-class ProfileRepository extends Repository {
-  ProfileRepository({
+abstract class ProfileRepository {
+  Future<Either<ApiFailure, bool>> uploadImage(String profileUrl);
+  Future<Either<ApiFailure, User>> updateProfile(AuthParams params);
+  Future<Either<ApiFailure, List<FAQsModel>>> getFAQs();
+}
+
+class ProfileRepositoryImpl extends ProfileRepository {
+  ProfileRepositoryImpl({
     required this.remoteDataSource,
   });
 
   final IProfileRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, bool>> uploadImage(String profileUrl) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.uploadImage(profileUrl);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> uploadImage(String profileUrl) async {
+    return remoteDataSource.uploadImage(profileUrl);
   }
 
-  Future<Either<Failure, User>> updateProfile(AuthParams params) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.updateProfile(params);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, User>> updateProfile(AuthParams params) async {
+    return remoteDataSource.updateProfile(params);
   }
 
-  Future<Either<Failure, List<FAQsModel>>> getFAQs() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getFAQs();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List<FAQsModel>>> getFAQs() async {
+    return remoteDataSource.getFAQs();
   }
 }

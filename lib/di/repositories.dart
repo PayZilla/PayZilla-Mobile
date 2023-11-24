@@ -8,42 +8,43 @@ import 'package:pay_zilla/features/transaction/transaction.dart';
 
 void registerRepositories(GetIt getIt) {
   getIt
-    ..registerFactory(
-      () => AuthRepository(
+    ..registerFactory<AuthRepository>(
+      () => AuthRepositoryImp(
         localAuthentication: getIt(),
-        localDataSource: getIt(),
         remoteDataSource: getIt(),
       ),
     )
-    ..registerFactory(
-      () => ProfileRepository(
+    ..registerFactory<ProfileRepository>(
+      () => ProfileRepositoryImpl(
         remoteDataSource: getIt(),
       ),
     )
-    ..registerFactory(
-      () => BillRepository(
+    ..registerFactory<BillRepository>(
+      () => BillRepositoryImpl(
         remoteDataSource: getIt(),
       ),
     )
-    ..registerFactory(
-      () => CardsRepository(
+    ..registerFactory<CardsRepository>(
+      () => CardsRepositoryImpl(
         remoteDataSource: getIt(),
       ),
     )
-    ..registerFactory(
-      () => AccountRepository(
+    ..registerFactory<AccountRepository>(
+      () => AccountRepositoryImpl(
         remoteDataSource: getIt(),
       ),
     )
-    ..registerFactory(
-      () => TransferRepository(
+    ..registerFactory<TransferRepository>(
+      () => TransferRepositoryImpl(
         remoteDataSource: getIt(),
       ),
     )
-    ..registerFactory(
-      () => NotificationRepository(getIt()),
+    ..registerFactory<NotificationRepository>(
+      () => NotificationRepositoryImpl(getIt()),
     )
-    ..registerFactory(
-      () => TransactionHistoryRepository(remoteDataSource: getIt()),
+    ..registerFactory<TransactionHistoryRepository>(
+      () => TransactionHistoryRepositoryImpl(
+        remoteDataSource: getIt(),
+      ),
     );
 }

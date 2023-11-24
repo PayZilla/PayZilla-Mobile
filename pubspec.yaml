@@ -75,7 +75,7 @@ dependencies:
   # state and data mgt
   path_provider: ^2.0.8
   shared_preferences: ^2.0.8
-  provider: ^6.0.2
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"

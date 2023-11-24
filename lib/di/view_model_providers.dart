@@ -13,37 +13,81 @@ void registerViewModelProviders(GetIt getIt) {
   getIt
     ..registerFactory(OnboardingProvider.new)
     ..registerFactory(
-      () => AuthProvider(authRepository: getIt()),
+      () => AuthProvider(
+        loginUseCase: getIt(),
+        userUserCase: getIt(),
+        userUserKycCase: getIt(),
+        signUpUseCase: getIt(),
+        emailVerificationUseCase: getIt(),
+        tokenVerificationUseCase: getIt(),
+        fetchReasonsUseCase: getIt(),
+        forgotPasswordResetUseCase: getIt(),
+        forgotPasswordUseCase: getIt(),
+        initializeBvnUseCase: getIt(),
+        pinSetupUseCase: getIt(),
+        purposeUseCase: getIt(),
+        updateBvnUseCase: getIt(),
+      ),
     )
     ..registerFactory(
       MyCardsProvider.new,
     )
     ..registerFactory(
-      () => ProfileProvider(getIt(), getIt(), getIt()),
+      () => ProfileProvider(
+        getIt(),
+        getIt(),
+        getIt(),
+        getIt(),
+        getIt(),
+      ),
     )
     ..registerFactory(
-      () => NotificationProvider(getIt()),
+      () => NotificationProvider(
+        getIt(),
+        getIt(),
+        getIt(),
+        getIt(),
+      ),
     )
     ..registerFactory(
       AnalyticProvider.new,
     )
     ..registerFactory(
       () => DashboardProvider(
-        billRepository: getIt(),
-        cardsRepository: getIt(),
-        accountRepository: getIt(),
+        chargeCardsUseCase: getIt(),
+        deleteCardsUseCase: getIt(),
+        finalizeCardsUseCase: getIt(),
+        getAccountsUseCase: getIt(),
+        getCardsUseCase: getIt(),
+        getCatsIDUseCase: getIt(),
+        getCatsUseCase: getIt(),
+        getContactsUseCase: getIt(),
+        getServiceIdUseCase: getIt(),
+        getWalletsUseCase: getIt(),
+        initCardsUseCase: getIt(),
+        payBillUseCase: getIt(),
+        purchaseUseCase: getIt(),
+        verifyUseCase: getIt(),
       ),
     )
     ..registerFactory(
       () => TransactionProvider(
-        accountTranRepository: getIt(),
-        cardsRepository: getIt(),
-        transferRepository: getIt(),
+        accountTranUseCases: getIt(),
+        cardsUseCase: getIt(),
+        transferUseCase: getIt(),
+        getWalletsUseCase: getIt(),
+        chargeCardsUseCase: getIt(),
+        deleteCardsUseCase: getIt(),
+        finalizeCardsUseCase: getIt(),
+        initCardsUseCase: getIt(),
+        transferWalletBankUseCase: getIt(),
+        validateBankUseCase: getIt(),
       ),
     )
     ..registerFactory(
       () => TransactionHistoryProvider(
-        historyRepository: getIt(),
+        getTransactionUseCase: getIt(),
+        getSingleTransactionUseCase: getIt(),
       ),
     );
 }

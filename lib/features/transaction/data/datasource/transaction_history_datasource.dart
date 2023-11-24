@@ -1,10 +1,13 @@
+import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
 abstract class ITransactionHistoryRemoteDataSource {
-  Future<TransactionData> getTransactionHistory(int pageNum);
-  Future<SingleTransactionModel> getTransaction(String ref);
-  Future<dynamic> getTransactionOverview();
+  Future<Either<ApiFailure, TransactionData>> getTransactionHistory(
+    int pageNum,
+  );
+  Future<Either<ApiFailure, SingleTransactionModel>> getTransaction(String ref);
+  Future<Either<ApiFailure, dynamic>> getTransactionOverview();
 }
 
 class TransactionHistoryRemoteDataSource
@@ -13,47 +16,50 @@ class TransactionHistoryRemoteDataSource
   final HttpManager http;
 
   @override
-  Future<TransactionData> getTransactionHistory(int pageNum) async {
+  Future<Either<ApiFailure, TransactionData>> getTransactionHistory(
+    int pageNum,
+  ) async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(transactionsEndpoints.getTransactions(pageNum)),
       );
-      if (response.isResultOk) {
-        return TransactionData.fromJson(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(TransactionData.fromJson(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future getTransactionOverview() async {
+  Future<Either<ApiFailure, dynamic>> getTransactionOverview() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(transactionsEndpoints.getTransactionsOverview),
       );
-      if (response.isResultOk) {
-        return response.data;
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<SingleTransactionModel> getTransaction(String ref) async {
+  Future<Either<ApiFailure, SingleTransactionModel>> getTransaction(
+    String ref,
+  ) async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(transactionsEndpoints.getTransaction(ref)),
       );
-      if (response.isResultOk) {
-        return SingleTransactionModel.fromJson(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(SingleTransactionModel.fromJson(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 }

@@ -37,9 +37,7 @@ class _TransferScreenState extends State<TransferScreen> with FormMixin {
   @override
   Widget build(BuildContext context) {
     profileProvider = context.watch<ProfileProvider>();
-    final dsProvider = context.watch<DashboardProvider>();
     final transProvider = context.watch<TransactionProvider>();
-    final money = context.money();
 
     return Stack(
       children: [

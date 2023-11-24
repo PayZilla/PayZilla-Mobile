@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
+import 'package:pay_zilla/features/transaction/usecase/transaction_usecase.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TransactionHistoryProvider extends ChangeNotifier {
   TransactionHistoryProvider({
-    required TransactionHistoryRepository historyRepository,
+    required TransactionUseCase getTransactionUseCase,
+    required GetTransactionUseCase getSingleTransactionUseCase,
   }) {
-    _historyRepository = historyRepository;
+    _getTransactionUseCase = getTransactionUseCase;
+    _getSingleTransactionUseCase = getSingleTransactionUseCase;
   }
 
-  late TransactionHistoryRepository _historyRepository;
+  late TransactionUseCase _getTransactionUseCase;
+  late GetTransactionUseCase _getSingleTransactionUseCase;
 
   DeBouncer deBouncer = DeBouncer(milliseconds: 200);
   int pageNumCount = 1;
@@ -43,13 +47,14 @@ class TransactionHistoryProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getTransactionHistories(
-      {int pageNum = 1, required BuildContext context}) async {
+  Future<void> getTransactionHistories({
+    int pageNum = 1,
+    required BuildContext context,
+  }) async {
     getTransactionsResponse =
         ApiResult<List<TransactionModel>>.loading('Loading...');
     notifyListeners();
-    final failureOrData =
-        await _historyRepository.getTransactionHistory(pageNum);
+    final failureOrData = await _getTransactionUseCase.call(pageNum);
     failureOrData.fold(
       (failure) {
         getTransactionsResponse =
@@ -89,11 +94,13 @@ class TransactionHistoryProvider extends ChangeNotifier {
   }
 
   Future<void> getTransactionHistory(
-      String reference, BuildContext context) async {
+    String reference,
+    BuildContext context,
+  ) async {
     getTransactionResponse =
         ApiResult<SingleTransactionModel>.loading('Loading...');
     notifyListeners();
-    final failureOrData = await _historyRepository.getTransaction(reference);
+    final failureOrData = await _getSingleTransactionUseCase.call(reference);
     failureOrData.fold(
       (failure) {
         getTransactionResponse =
@@ -110,7 +117,9 @@ class TransactionHistoryProvider extends ChangeNotifier {
   }
 
   Future<void> onTransactionTapped(
-      TransactionModel data, BuildContext context) async {
+    TransactionModel data,
+    BuildContext context,
+  ) async {
     transactionModel = SingleTransactionModel.empty();
     isDetailedVisibleMethod(val: true);
     await getTransactionHistory(data.reference, context);

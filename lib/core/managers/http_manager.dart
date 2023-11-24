@@ -121,7 +121,7 @@ class HttpManager {
       throw AppServerException(_handleException(response.data));
     } catch (e) {
       Log().debug(
-        'the _makeRequest exception caught ${AppConfig.baseUrl}/api$endpoint',
+        'the _makeRequest exception caught ${AppConfig.baseUrl}$endpoint',
         e.toString(),
       );
       if (e is ServerException) {
@@ -147,6 +147,7 @@ class HttpManager {
   }
 
   String _handleException(dynamic err) {
+    Log().error('Exception handler logger', err.toString());
     if (enableLogging) Log().error('Exception handler logger', err.toString());
     if (err != null && err.toString().isNotEmpty) {
       if (err['errors'] != null) {

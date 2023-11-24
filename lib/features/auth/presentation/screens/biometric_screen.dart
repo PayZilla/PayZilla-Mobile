@@ -56,7 +56,7 @@ class _BiometricScreenState extends State<BiometricScreen> with FormMixin {
               textTitle: 'Enable biometric access',
               showLoading: provider.genericAuthResp.isLoading,
               action: () {
-                provider.authRepository.biometricMode = true;
+                // provider.authRepository.biometricMode = true;
               },
             ),
             const YBox(Insets.dim_26),

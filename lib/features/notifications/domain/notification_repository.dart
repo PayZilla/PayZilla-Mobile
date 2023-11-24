@@ -2,40 +2,37 @@ import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
 
-class NotificationRepository extends Repository {
-  NotificationRepository(this.remoteDataSource);
+abstract class NotificationRepository {
+  Future<Either<ApiFailure, NotificationModel>> getNotification(String id);
+  Future<Either<ApiFailure, List<NotificationModel>>> getNotifications();
+  Future<Either<ApiFailure, String>> markNotificationAsRead(String id);
+  Future<Either<ApiFailure, String>> markNotificationsAsRead();
+}
+
+class NotificationRepositoryImpl extends NotificationRepository {
+  NotificationRepositoryImpl(this.remoteDataSource);
 
   final INotificationDataSource remoteDataSource;
 
-  Future<Either<Failure, NotificationModel>> getNotification(String id) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getNotification(id);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, NotificationModel>> getNotification(
+    String id,
+  ) async {
+    return remoteDataSource.getNotification(id);
   }
 
-  Future<Either<Failure, List<NotificationModel>>> getNotifications() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getNotifications();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List<NotificationModel>>> getNotifications() async {
+    return remoteDataSource.getNotifications();
   }
 
-  Future<Either<Failure, String>> markNotificationAsRead(String id) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.markNotificationAsRead(id);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, String>> markNotificationAsRead(String id) async {
+    return remoteDataSource.markNotificationAsRead(id);
   }
 
-  Future<Either<Failure, String>> markNotificationsAsRead() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.markNotificationsAsRead();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, String>> markNotificationsAsRead() async {
+    return remoteDataSource.markNotificationsAsRead();
   }
 }

@@ -3,28 +3,53 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
+import 'package:pay_zilla/core/mixins/use_case.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
+import 'package:pay_zilla/features/dashboard/usecase/acount_usecases.dart';
+import 'package:pay_zilla/features/dashboard/usecase/cards_usecase.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
+import 'package:pay_zilla/features/transaction/usecase/transfer_usecase.dart';
 import 'package:pay_zilla/features/ui_widgets/image.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class TransactionProvider extends ChangeNotifier {
   TransactionProvider({
-    required AccountRepository accountTranRepository,
-    required CardsRepository cardsRepository,
-    required TransferRepository transferRepository,
+    required GetAccountsUseCase accountTranUseCases,
+    required GetWalletsUseCase getWalletsUseCase,
+    required GetCardsUseCase cardsUseCase,
+    required TransferUseCase transferUseCase,
+    required DeleteCardsUseCase deleteCardsUseCase,
+    required InitCardsUseCase initCardsUseCase,
+    required ChargeCardsUseCase chargeCardsUseCase,
+    required FinalizeCardsUseCase finalizeCardsUseCase,
+    required ValidateBankUseCase validateBankUseCase,
+    required TransferWalletBankUseCase transferWalletBankUseCase,
   }) {
-    _accountTranRepository = accountTranRepository;
-    _cardsRepository = cardsRepository;
-    _transferRepository = transferRepository;
+    _accountTranUseCases = accountTranUseCases;
+    _getWalletsUseCase = getWalletsUseCase;
+    _getCardsUseCase = cardsUseCase;
+    _transferUseCase = transferUseCase;
+    _deleteCardsUseCase = deleteCardsUseCase;
+    _initCardsUseCase = initCardsUseCase;
+    _chargeCardsUseCase = chargeCardsUseCase;
+    _finalizeCardsUseCase = finalizeCardsUseCase;
+    _validateBankUseCase = validateBankUseCase;
+    _transferWalletBankUseCase = transferWalletBankUseCase;
 
     _plugin.initialize(publicKey: dotenv.env['PAY_STACK_PUBLIC_LIVE_KEY']!);
   }
 
-  late AccountRepository _accountTranRepository;
-  late CardsRepository _cardsRepository;
-  late TransferRepository _transferRepository;
+  late GetAccountsUseCase _accountTranUseCases;
+  late GetWalletsUseCase _getWalletsUseCase;
+  late GetCardsUseCase _getCardsUseCase;
+  late DeleteCardsUseCase _deleteCardsUseCase;
+  late InitCardsUseCase _initCardsUseCase;
+  late ChargeCardsUseCase _chargeCardsUseCase;
+  late FinalizeCardsUseCase _finalizeCardsUseCase;
+  late TransferUseCase _transferUseCase;
+  late ValidateBankUseCase _validateBankUseCase;
+  late TransferWalletBankUseCase _transferWalletBankUseCase;
   final _plugin = PaystackPlugin();
 
   ApiResult<List<MultiSelectItem<CardsModel>>> cardsServiceResponse =
@@ -50,7 +75,7 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> getAccounts(BuildContext context) async {
     accountDetailsRES = ApiResult<AccountDetailsModel>.loading('Loading...');
     notifyListeners();
-    final failureOrData = await _accountTranRepository.getAccounts();
+    final failureOrData = await _accountTranUseCases.call(NoParams());
     failureOrData.fold(
       (failure) {
         accountDetailsRES =
@@ -73,7 +98,7 @@ class TransactionProvider extends ChangeNotifier {
     cardsServiceResponse =
         ApiResult<List<MultiSelectItem<CardsModel>>>.loading('Loading...');
     notifyListeners();
-    final failureOrData = await _cardsRepository.getCards();
+    final failureOrData = await _getCardsUseCase.call(NoParams());
     failureOrData.fold(
       (failure) {
         cardsServiceResponse =
@@ -92,7 +117,7 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> deleteCard(int cardId, BuildContext context) async {
     deleteCardRES = ApiResult<bool>.loading('Loading...');
     notifyListeners();
-    final failureOrData = await _cardsRepository.deleteCard(cardId);
+    final failureOrData = await _deleteCardsUseCase.call(cardId);
     await failureOrData.fold(
       (failure) {
         deleteCardRES = ApiResult<bool>.error(failure.message);
@@ -110,7 +135,7 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> initializeCard() async {
     initializeRefRES = ApiResult<CardInitiateModel>.loading('Loading...');
     notifyListeners();
-    final failureOrData = await _cardsRepository.initializeCard();
+    final failureOrData = await _initCardsUseCase.call(NoParams());
     failureOrData.fold(
       (failure) {
         initializeRefRES = ApiResult<CardInitiateModel>.error(failure.message);
@@ -127,7 +152,7 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> chargeCard(int amount, int cardId, BuildContext context) async {
     chargeCardRES = ApiResult<bool>.loading('Loading...');
     notifyListeners();
-    final failureOrData = await _cardsRepository.chargeCard(amount, cardId);
+    final failureOrData = await _chargeCardsUseCase.call([amount, cardId]);
     await failureOrData.fold(
       (failure) {
         chargeCardRES = ApiResult<bool>.error(failure.message);
@@ -144,7 +169,7 @@ class TransactionProvider extends ChangeNotifier {
           'Card charge successfully',
           durationInMills: 3000,
         );
-        await _accountTranRepository.getWallets();
+        await _getWalletsUseCase.call(NoParams());
         chargeCardRES = ApiResult<bool>.success(res);
         notifyListeners();
       },
@@ -155,7 +180,7 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> finalizeAddCard(String refId, BuildContext context) async {
     finalizeAddCardRES = ApiResult<bool>.loading('Loading...');
     notifyListeners();
-    final failureOrData = await _cardsRepository.finalizeAddCard(refId);
+    final failureOrData = await _finalizeCardsUseCase.call(refId);
     await failureOrData.fold(
       (failure) {
         finalizeAddCardRES = ApiResult<bool>.error(failure.message);
@@ -182,7 +207,7 @@ class TransactionProvider extends ChangeNotifier {
     banksServiceResponse = ApiResult<List<BanksModel>>.loading('Loading...');
     valBanksOrWalletResponse = ApiResult<WalletOrBankModel>.idle();
     notifyListeners();
-    final failureOrData = await _transferRepository.getBanks();
+    final failureOrData = await _transferUseCase.call(NoParams());
     failureOrData.fold(
       (failure) {
         banksServiceResponse =
@@ -209,8 +234,7 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
     Log().debug('What is validated ', params.toJson());
 
-    final failureOrData =
-        await _transferRepository.validateBanksOrWallet(params);
+    final failureOrData = await _validateBankUseCase.call(params);
     failureOrData.fold(
       (failure) {
         valBanksOrWalletResponse =
@@ -229,8 +253,7 @@ class TransactionProvider extends ChangeNotifier {
       ValidateBankOrWalletDto params, BuildContext context) async {
     transBanksOrWalletResponse = ApiResult<String>.loading('Loading...');
     notifyListeners();
-    final failureOrData =
-        await _transferRepository.transferBanksOrWallet(params);
+    final failureOrData = await _transferWalletBankUseCase.call(params);
     failureOrData.fold(
       (failure) {
         transBanksOrWalletResponse = ApiResult<String>.error(failure.message);

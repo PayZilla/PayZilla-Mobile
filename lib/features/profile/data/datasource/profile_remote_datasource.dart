@@ -1,12 +1,13 @@
+import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 
 // ignore: one_member_abstracts
 abstract class IProfileRemoteDataSource {
-  Future<bool> uploadImage(String url);
-  Future<User> updateProfile(AuthParams params);
-  Future<List<FAQsModel>> getFAQs();
+  Future<Either<ApiFailure, bool>> uploadImage(String url);
+  Future<Either<ApiFailure, User>> updateProfile(AuthParams params);
+  Future<Either<ApiFailure, List<FAQsModel>>> getFAQs();
 }
 
 class ProfileRemoteDataSource implements IProfileRemoteDataSource {
@@ -14,7 +15,7 @@ class ProfileRemoteDataSource implements IProfileRemoteDataSource {
 
   final HttpManager http;
   @override
-  Future<bool> uploadImage(String url) async {
+  Future<Either<ApiFailure, bool>> uploadImage(String url) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -22,17 +23,16 @@ class ProfileRemoteDataSource implements IProfileRemoteDataSource {
           {'avatar_url': url},
         ),
       );
-      if (response.isResultOk) {
-        return response.status;
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<User> updateProfile(AuthParams params) async {
+  Future<Either<ApiFailure, User>> updateProfile(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -40,28 +40,31 @@ class ProfileRemoteDataSource implements IProfileRemoteDataSource {
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return User.fromMap(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(User.fromMap(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<List<FAQsModel>> getFAQs() async {
+  Future<Either<ApiFailure, List<FAQsModel>>> getFAQs() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(othersEndpoints.faqs),
       );
-      if (response.isResultOk) {
-        final data = response.data as List;
-        return data.map((e) => FAQsModel.fromJson(e)).toList();
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(
+        (response.data as List)
+            .map((e) => FAQsModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 }

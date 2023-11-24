@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/di/dependency_injection_container.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
-
+/*
 abstract class Repository with LogoutMixin {
   Repository({NetworkManager? networkNotifier})
       : _networkNotifier = networkNotifier ?? sl<NetworkManager>();
@@ -51,3 +51,4 @@ abstract class Repository with LogoutMixin {
     return Left(NetworkFailure());
   }
 }
+*/

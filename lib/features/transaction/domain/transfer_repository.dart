@@ -2,38 +2,39 @@ import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
-class TransferRepository extends Repository {
-  TransferRepository({
+abstract class TransferRepository {
+  Future<Either<ApiFailure, List<BanksModel>>> getBanks();
+  Future<Either<ApiFailure, WalletOrBankModel>> validateBanksOrWallet(
+    ValidateBankOrWalletDto params,
+  );
+  Future<Either<ApiFailure, String>> transferBanksOrWallet(
+    ValidateBankOrWalletDto params,
+  );
+}
+
+class TransferRepositoryImpl extends TransferRepository {
+  TransferRepositoryImpl({
     required this.remoteDataSource,
   });
 
   final ITransferRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, List<BanksModel>>> getBanks() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getBanks();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List<BanksModel>>> getBanks() async {
+    return remoteDataSource.getBanks();
   }
 
-  Future<Either<Failure, WalletOrBankModel>> validateBanksOrWallet(
+  @override
+  Future<Either<ApiFailure, WalletOrBankModel>> validateBanksOrWallet(
     ValidateBankOrWalletDto params,
   ) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.validateBanksOrWallet(params);
-
-      return response;
-    });
+    return remoteDataSource.validateBanksOrWallet(params);
   }
 
-  Future<Either<Failure, String>> transferBanksOrWallet(
+  @override
+  Future<Either<ApiFailure, String>> transferBanksOrWallet(
     ValidateBankOrWalletDto params,
   ) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.transferBanksOrWallet(params);
-
-      return response;
-    });
+    return remoteDataSource.transferBanksOrWallet(params);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/di/dependency_injection_container.dart';
+import 'package:pay_zilla/functional_utils/log_util.dart';
 
 enum Flavor { development, production }
 
@@ -45,7 +46,10 @@ extension AppConfig on Flavor {
   }
 
   static String get baseUrl {
-    return _constants[_Constants.baseUrl]!;
+    final val = _constants[_Constants.baseUrl]!;
+
+    Log().debug('The val of base url is $val');
+    return val;
   }
 
   static String get appName {

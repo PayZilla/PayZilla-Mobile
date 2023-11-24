@@ -1,18 +1,48 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
+import 'package:pay_zilla/core/mixins/use_case.dart';
+import 'package:pay_zilla/di/dependency_injection_container.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/auth/usecase/auth_usecase.dart';
+import 'package:pay_zilla/features/auth/usecase/user_usecase.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider({
-    required this.authRepository,
+    required this.loginUseCase,
+    required this.userUserCase,
+    required this.userUserKycCase,
+    required this.signUpUseCase,
+    required this.emailVerificationUseCase,
+    required this.tokenVerificationUseCase,
+    required this.pinSetupUseCase,
+    required this.fetchReasonsUseCase,
+    required this.initializeBvnUseCase,
+    required this.updateBvnUseCase,
+    required this.forgotPasswordUseCase,
+    required this.forgotPasswordResetUseCase,
+    required this.purposeUseCase,
   });
 
-  final AuthRepository authRepository;
+  LogInUseCase loginUseCase;
+  GetUserUseCase userUserCase;
+  GetUserKycUseCase userUserKycCase;
+  SignUpUseCase signUpUseCase;
+  EmailVerificationUseCase emailVerificationUseCase;
+  TokenVerificationUseCase tokenVerificationUseCase;
+  PinSetupUseCase pinSetupUseCase;
+  FetchReasonsUseCase fetchReasonsUseCase;
+  InitializeBvnUseCase initializeBvnUseCase;
+  UpdateBvnUseCase updateBvnUseCase;
+  ForgotPasswordUseCase forgotPasswordUseCase;
+  ForgotPasswordResetUseCase forgotPasswordResetUseCase;
+  PurposeUseCase purposeUseCase;
 
   final deBouncer = DeBouncer(milliseconds: 200);
 
@@ -44,7 +74,7 @@ class AuthProvider extends ChangeNotifier {
     genericAuthResp = ApiResult<UserAuthModel>.loading('Logging in....');
     notifyListeners();
 
-    final failureOrLogin = await authRepository.login(requestDto);
+    final failureOrLogin = await loginUseCase.call(requestDto);
     await failureOrLogin.fold(
       (failure) {
         genericAuthResp = ApiResult<UserAuthModel>.error(failure.message);
@@ -58,6 +88,14 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
       },
       (res) async {
+        sl<IAuthLocalDataSource>()
+          ..flushLocalStorage()
+          ..saveAuthUserPref(res.user)
+          ..saveUserEmail(res.user.email)
+          ..saveToken(res.accessToken)
+          ..saveUserPassword(requestDto.password);
+        await getUser(context: context);
+
         //1. Handle all conditions on login response first
         if (!res.user.hasVerifiedEmail) {
           final verificationMsg =
@@ -65,6 +103,7 @@ class AuthProvider extends ChangeNotifier {
           showInfoNotification(context, verificationMsg, durationInMills: 3500);
           genericAuthResp = ApiResult<UserAuthModel>.error(verificationMsg);
           notifyListeners();
+
           AppNavigator.of(context).push(
             AppRoutes.pin,
             args: GenericTokenVerificationArgs(
@@ -79,8 +118,11 @@ class AuthProvider extends ChangeNotifier {
           genericAuthResp = ApiResult<UserAuthModel>.error(
             'You have not verified phone number (${res.user.phoneNumber})',
           );
-          showInfoNotification(context, genericAuthResp.message,
-              durationInMills: 3500);
+          showInfoNotification(
+            context,
+            genericAuthResp.message,
+            durationInMills: 3500,
+          );
           notifyListeners();
           // ignore: use_build_context_synchronously
           AppNavigator.of(context).push(AppRoutes.country);
@@ -104,7 +146,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> getKyc(BuildContext context) async {
-    final failureOrKYC = await authRepository.getKyc();
+    final failureOrKYC = await userUserKycCase.call(NoParams());
 
     await failureOrKYC.fold(
       (failure) {
@@ -114,30 +156,27 @@ class AuthProvider extends ChangeNotifier {
         if (res.isEmpty) {
           AppNavigator.of(context).push(AppRoutes.countryToBvn);
         } else {
-          await authRepository.canUseBiometric().then(
-                (value) => {
-                  if (value)
-                    {AppNavigator.of(context).push(AppRoutes.biometric)}
-                  else
-                    {AppNavigator.of(context).push(AppRoutes.home)}
-                },
-              );
+          await sl<IAuthLocalDataSource>().canUseBiometric
+              ? AppNavigator.of(context).push(AppRoutes.biometric)
+              : AppNavigator.of(context).push(AppRoutes.home);
         }
       },
     );
   }
 
-  Future<User> getUser(
-      {bool useNetworkCall = true, required BuildContext context}) async {
+  Future<User> getUser({
+    bool useNetworkCall = true,
+    required BuildContext context,
+  }) async {
     _user = User.empty();
-    final userLocal = await authRepository.localDataSource.getAuthUserPref();
+    final userLocal = await sl<IAuthLocalDataSource>().getAuthUserPref();
     if (userLocal != null) {
       _user = userLocal as User;
       notifyListeners();
     }
     if (!useNetworkCall) return _user;
 
-    final failureOrUser = await authRepository.getUser();
+    final failureOrUser = await userUserCase.call(NoParams());
     failureOrUser.fold(
       (failure) {
         showErrorNotification(context, failure.message, durationInMills: 2000);
@@ -145,6 +184,7 @@ class AuthProvider extends ChangeNotifier {
       },
       (res) {
         _user = res;
+
         notifyListeners();
       },
     );
@@ -166,7 +206,7 @@ class AuthProvider extends ChangeNotifier {
     signUpAuthResp = ApiResult<UserAuthModel>.loading('Signing up....');
     notifyListeners();
 
-    final failureOrLogin = await authRepository.signUp(requestDto);
+    final failureOrLogin = await signUpUseCase.call(requestDto);
     failureOrLogin.fold(
       (failure) {
         signUpAuthResp = ApiResult<UserAuthModel>.error(failure.message);
@@ -175,6 +215,10 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
       },
       (res) {
+        sl<IAuthLocalDataSource>().flushLocalStorage();
+        sl<IAuthLocalDataSource>()
+          ..saveUserEmail(res.user.email)
+          ..saveToken(res.accessToken);
         AppNavigator.of(context).push(
           AppRoutes.pin,
           args: GenericTokenVerificationArgs(
@@ -194,7 +238,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> pinSetup(String pin, BuildContext context) async {
     onboardingResp = ApiResult<String>.loading('Loading...');
     notifyListeners();
-    final failureOrLogin = await authRepository.pinSetup(pin);
+    final failureOrLogin = await pinSetupUseCase.call(pin);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -216,7 +260,7 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.fetchReasons();
+    final failureOrLogin = await fetchReasonsUseCase.call(NoParams());
     failureOrLogin.fold(
       (failure) {
         reasonsResp = ApiResult<List<ReasonsModel>>.error(failure.message);
@@ -239,7 +283,7 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.emailVerificationInitiate();
+    final failureOrLogin = await emailVerificationUseCase.call(NoParams());
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -276,10 +320,7 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.tokenVerification(
-      params,
-      path: endpointPath,
-    );
+    final failureOrLogin = await tokenVerificationUseCase.call(params);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -309,7 +350,7 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.initializeBvn(params);
+    final failureOrLogin = await initializeBvnUseCase.call(params);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -332,8 +373,11 @@ class AuthProvider extends ChangeNotifier {
             },
           ).show(context);
         } else {
-          showErrorNotification(context, failure.message,
-              durationInMills: 3000);
+          showErrorNotification(
+            context,
+            failure.message,
+            durationInMills: 3000,
+          );
         }
       },
       (res) {
@@ -349,7 +393,7 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.updateBvn(params);
+    final failureOrLogin = await updateBvnUseCase.call(params);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -373,7 +417,7 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.purpose(purpose);
+    final failureOrLogin = await purposeUseCase.call(purpose);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -393,13 +437,15 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> forgotPasswordInit(
-      AuthParams params, BuildContext context) async {
+    AuthParams params,
+    BuildContext context,
+  ) async {
     onboardingResp = ApiResult<String>.idle();
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.forgotPasswordInit(params);
+    final failureOrLogin = await forgotPasswordUseCase.call(params);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -418,13 +464,15 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> forgotPasswordReset(
-      AuthParams params, BuildContext context) async {
+    AuthParams params,
+    BuildContext context,
+  ) async {
     onboardingResp = ApiResult<String>.idle();
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
     notifyListeners();
 
-    final failureOrLogin = await authRepository.forgotPasswordReset(params);
+    final failureOrLogin = await forgotPasswordResetUseCase.call(params);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -455,7 +503,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void logout(BuildContext? context) {
-    authRepository.localDataSource.flushLocalStorage();
+    sl<IAuthLocalDataSource>().flushLocalStorage();
 
     AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
 

@@ -2,50 +2,44 @@ import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 
-class CardsRepository extends Repository {
-  CardsRepository({
+abstract class CardsRepository {
+  Future<Either<ApiFailure, List<MultiSelectItem<CardsModel>>>> getCards();
+  Future<Either<ApiFailure, CardInitiateModel>> initializeCard();
+  Future<Either<ApiFailure, bool>> finalizeAddCard(String refId);
+  Future<Either<ApiFailure, bool>> deleteCard(int cardId);
+  Future<Either<ApiFailure, bool>> chargeCard(int amount, int cardId);
+}
+
+class CardsRepositoryImpl extends CardsRepository {
+  CardsRepositoryImpl({
     required this.remoteDataSource,
   });
 
   final ICardsRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, List<MultiSelectItem<CardsModel>>>> getCards() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getCards();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List<MultiSelectItem<CardsModel>>>>
+      getCards() async {
+    return remoteDataSource.getCards();
   }
 
-  Future<Either<Failure, CardInitiateModel>> initializeCard() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.initializeCard();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, CardInitiateModel>> initializeCard() async {
+    return remoteDataSource.initializeCard();
   }
 
-  Future<Either<Failure, bool>> finalizeAddCard(String refId) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.finalizeAddCard(refId);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> finalizeAddCard(String refId) async {
+    return remoteDataSource.finalizeAddCard(refId);
   }
 
-  Future<Either<Failure, bool>> deleteCard(int cardId) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.deleteCard(cardId);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> deleteCard(int cardId) async {
+    return remoteDataSource.deleteCard(cardId);
   }
 
-  Future<Either<Failure, bool>> chargeCard(int amount, int cardId) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.chargeCard(amount, cardId);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, bool>> chargeCard(int amount, int cardId) async {
+    return remoteDataSource.chargeCard(amount, cardId);
   }
 }

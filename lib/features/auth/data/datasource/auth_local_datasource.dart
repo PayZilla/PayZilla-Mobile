@@ -6,6 +6,7 @@ import 'package:pay_zilla/core/core.dart';
 abstract class IAuthLocalDataSource {
   FutureOr<bool?> get showVerificationBanner;
   FutureOr<bool?> get getBiometricMode;
+  FutureOr<bool> get canUseBiometric;
 
   FutureOr<String> getUserEmail();
   FutureOr<String> getUserPassword(); // for biometric auth
@@ -127,5 +128,13 @@ class AuthLocalDataSource implements IAuthLocalDataSource {
   @override
   void saveAuthUserPref(User pref) {
     unawaited(_localCache.put(CacheKeys.user, pref.toJson()));
+  }
+
+  @override
+  Future<bool> get canUseBiometric async {
+    final isBiometricsPrefEnabled = await getBiometricMode ?? false;
+    final email = await getUserEmail();
+    final password = await getUserPassword();
+    return email.isNotEmpty && password.isNotEmpty && isBiometricsPrefEnabled;
   }
 }

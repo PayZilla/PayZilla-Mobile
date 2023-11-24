@@ -1,37 +1,43 @@
+import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
 abstract class ITransferRemoteDataSource {
-  Future<List<BanksModel>> getBanks();
-  Future<WalletOrBankModel> validateBanksOrWallet(
+  Future<Either<ApiFailure, List<BanksModel>>> getBanks();
+  Future<Either<ApiFailure, WalletOrBankModel>> validateBanksOrWallet(
     ValidateBankOrWalletDto params,
   );
-  Future<String> transferBanksOrWallet(ValidateBankOrWalletDto params);
+  Future<Either<ApiFailure, String>> transferBanksOrWallet(
+    ValidateBankOrWalletDto params,
+  );
 }
 
 class TransferRemoteDataSource implements ITransferRemoteDataSource {
   TransferRemoteDataSource(this.http);
   final HttpManager http;
+
   @override
-  Future<List<BanksModel>> getBanks() async {
+  Future<Either<ApiFailure, List<BanksModel>>> getBanks() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(transferEndpoints.getBanks),
       );
-      if (response.isResultOk) {
-        final data = response.data as List;
-        return data
+
+      return Right(
+        (response.data as List)
             .map((e) => BanksModel.fromJson(Map<String, dynamic>.from(e)))
-            .toList();
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+            .toList(),
+      );
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> transferBanksOrWallet(ValidateBankOrWalletDto params) async {
+  Future<Either<ApiFailure, String>> transferBanksOrWallet(
+      ValidateBankOrWalletDto params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -39,17 +45,17 @@ class TransferRemoteDataSource implements ITransferRemoteDataSource {
           params.toJson(),
         ),
       );
-      if (response.isResultOk) {
-        return response.message;
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(response.message);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<WalletOrBankModel> validateBanksOrWallet(
+  Future<Either<ApiFailure, WalletOrBankModel>> validateBanksOrWallet(
     ValidateBankOrWalletDto params,
   ) async {
     try {
@@ -59,12 +65,12 @@ class TransferRemoteDataSource implements ITransferRemoteDataSource {
           params.toJson(),
         ),
       );
-      if (response.isResultOk) {
-        return WalletOrBankModel.fromJson(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(WalletOrBankModel.fromJson(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 }

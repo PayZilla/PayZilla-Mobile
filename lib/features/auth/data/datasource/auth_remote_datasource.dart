@@ -1,21 +1,23 @@
+import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
-import 'package:pay_zilla/functional_utils/log_util.dart';
 
 abstract class IAuthRemoteDataSource {
-  Future<UserAuthModel> login(AuthParams params);
-  Future<bool> forgotPasswordInit(AuthParams params);
-  Future<bool> forgotPasswordReset(AuthParams params);
-  Future<User> getUser();
-  Future<List<dynamic>> getKyc();
-  Future<UserAuthModel> signUp(AuthParams params);
-  Future<List<ReasonsModel>> fetchReasons();
-  Future<String> emailVerificationInitiate();
-  Future<String> tokenVerification(AuthParams params, {required String path});
-  Future<bool> initializeBvn(AuthParams params);
-  Future<bool> updateBvn(AuthParams params);
-  Future<User> purpose(List<String> purpose);
-  Future<bool> setPin(String pin);
+  Future<Either<ApiFailure, User>> getUser();
+  Future<Either<ApiFailure, User>> purpose(List<String> purpose);
+
+  Future<Either<ApiFailure, UserAuthModel>> login(AuthParams params);
+  Future<Either<ApiFailure, UserAuthModel>> signUp(AuthParams params);
+
+  Future<Either<ApiFailure, List<ReasonsModel>>> fetchReasons();
+  Future<Either<ApiFailure, List<dynamic>>> getKyc();
+  Future<Either<ApiFailure, String>> emailVerificationInitiate();
+  Future<Either<ApiFailure, String>> tokenVerification(AuthParams params);
+  Future<Either<ApiFailure, bool>> initializeBvn(AuthParams params);
+  Future<Either<ApiFailure, bool>> updateBvn(AuthParams params);
+  Future<Either<ApiFailure, bool>> setPin(String pin);
+  Future<Either<ApiFailure, bool>> forgotPasswordInit(AuthParams params);
+  Future<Either<ApiFailure, bool>> forgotPasswordReset(AuthParams params);
 }
 
 class AuthRemoteDataSource implements IAuthRemoteDataSource {
@@ -23,7 +25,7 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   final HttpManager http;
 
   @override
-  Future<UserAuthModel> login(AuthParams params) async {
+  Future<Either<ApiFailure, UserAuthModel>> login(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -31,32 +33,32 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return UserAuthModel.fromMap(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(UserAuthModel.fromMap(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<User> getUser() async {
+  Future<Either<ApiFailure, User>> getUser() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(userEndpoints.getUser),
       );
-      if (response.isResultOk) {
-        return User.fromMap(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(User.fromMap(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<UserAuthModel> signUp(AuthParams params) async {
+  Future<Either<ApiFailure, UserAuthModel>> signUp(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -64,34 +66,32 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return UserAuthModel.fromMap(response.data);
-      }
 
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(UserAuthModel.fromMap(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<List<ReasonsModel>> fetchReasons() async {
+  Future<Either<ApiFailure, List<ReasonsModel>>> fetchReasons() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(''),
       );
-      if (response.isResultOk) {
-        return [];
-      }
 
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return const Right([]);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> emailVerificationInitiate() async {
+  Future<Either<ApiFailure, String>> emailVerificationInitiate() async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -99,40 +99,37 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           {},
         ),
       );
-      if (response.isResultOk) {
-        return response.message;
-      }
 
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.message);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> tokenVerification(
-    AuthParams params, {
-    required String path,
-  }) async {
+  Future<Either<ApiFailure, String>> tokenVerification(
+    AuthParams params,
+  ) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
-          path,
+          params.tokenRoute,
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return response.message;
-      }
 
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.message);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<bool> initializeBvn(AuthParams params) async {
+  Future<Either<ApiFailure, bool>> initializeBvn(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -140,18 +137,17 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return response.status;
-      }
 
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<bool> updateBvn(AuthParams params) async {
+  Future<Either<ApiFailure, bool>> updateBvn(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -159,34 +155,31 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return response.status;
-      }
-
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<List> getKyc() async {
+  Future<Either<ApiFailure, List<dynamic>>> getKyc() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(authEndpoints.getKyc),
       );
-      if (response.isResultOk) {
-        return response.data;
-      }
 
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.data);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<User> purpose(List<String> purpose) async {
+  Future<Either<ApiFailure, User>> purpose(List<String> purpose) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -194,18 +187,17 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           {'registration_purpose': purpose},
         ),
       );
-      if (response.isResultOk) {
-        return User.fromMap(response.data);
-      }
 
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(User.fromMap(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<bool> setPin(String pin) async {
+  Future<Either<ApiFailure, bool>> setPin(String pin) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -213,19 +205,16 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           {'pin': pin},
         ),
       );
-      Log().debug('The message returned', response.data);
-      if (response.isResultOk) {
-        return response.status;
-      }
-
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<bool> forgotPasswordInit(AuthParams params) async {
+  Future<Either<ApiFailure, bool>> forgotPasswordInit(AuthParams params) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -233,18 +222,18 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return response.status;
-      }
-
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<bool> forgotPasswordReset(AuthParams params) async {
+  Future<Either<ApiFailure, bool>> forgotPasswordReset(
+    AuthParams params,
+  ) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -252,13 +241,11 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           params.toMap(),
         ),
       );
-      if (response.isResultOk) {
-        return response.status;
-      }
-
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 }

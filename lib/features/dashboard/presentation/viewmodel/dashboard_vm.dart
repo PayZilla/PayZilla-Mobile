@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/core/mixins/use_case.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
+import 'package:pay_zilla/features/dashboard/usecase/acount_usecases.dart';
+import 'package:pay_zilla/features/dashboard/usecase/bills_usecase.dart';
+import 'package:pay_zilla/features/dashboard/usecase/cards_usecase.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class DashboardProvider extends ChangeNotifier {
   DashboardProvider({
-    required this.billRepository,
-    required this.cardsRepository,
-    required this.accountRepository,
+    required this.getWalletsUseCase,
+    required this.getContactsUseCase,
+    required this.getAccountsUseCase,
+    required this.getCatsUseCase,
+    required this.getCatsIDUseCase,
+    required this.getServiceIdUseCase,
+    required this.purchaseUseCase,
+    required this.verifyUseCase,
+    required this.payBillUseCase,
+    required this.getCardsUseCase,
+    required this.initCardsUseCase,
+    required this.finalizeCardsUseCase,
+    required this.deleteCardsUseCase,
+    required this.chargeCardsUseCase,
   });
 
-  final BillRepository billRepository;
-  final CardsRepository cardsRepository;
-  final AccountRepository accountRepository;
+// account
+  GetWalletsUseCase getWalletsUseCase;
+  GetContactsUseCase getContactsUseCase;
+  GetAccountsUseCase getAccountsUseCase;
+// bills
+  GetCatsUseCase getCatsUseCase;
+  GetCatsIDUseCase getCatsIDUseCase;
+  GetServiceIdUseCase getServiceIdUseCase;
+  PurchaseUseCase purchaseUseCase;
+  VerifyUseCase verifyUseCase;
+  PayBillUseCase payBillUseCase;
+// cards
+  GetCardsUseCase getCardsUseCase;
+  InitCardsUseCase initCardsUseCase;
+  FinalizeCardsUseCase finalizeCardsUseCase;
+  DeleteCardsUseCase deleteCardsUseCase;
+  ChargeCardsUseCase chargeCardsUseCase;
 
   // Airtime bills TEC
   final amountController = TextEditingController();
@@ -46,7 +75,7 @@ class DashboardProvider extends ChangeNotifier {
   Future<void> getWallets() async {
     getWalletsResponse = ApiResult<List<WalletsModel>>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await accountRepository.getWallets();
+    final failureOrCat = await getWalletsUseCase.call(NoParams());
     failureOrCat.fold(
       (failure) {
         getWalletsResponse =
@@ -64,7 +93,7 @@ class DashboardProvider extends ChangeNotifier {
   Future<void> getCategories() async {
     billResponse = ApiResult<List<BillCatModel>>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await billRepository.getCategories();
+    final failureOrCat = await getCatsUseCase.call(NoParams());
     failureOrCat.fold(
       (failure) {
         billResponse = ApiResult<List<BillCatModel>>.error(failure.message);
@@ -83,7 +112,7 @@ class DashboardProvider extends ChangeNotifier {
     billCategoriesResponse =
         ApiResult<List<BillServiceModel>>.loading('Loading...');
 
-    final failureOrCat = await billRepository.getCategoryId(id);
+    final failureOrCat = await getCatsIDUseCase.call(id);
     failureOrCat.fold(
       (failure) {
         billCategoriesResponse =
@@ -102,7 +131,7 @@ class DashboardProvider extends ChangeNotifier {
   Future<List<Variations>> getServiceId(String id, BuildContext context) async {
     billServiceResponse = ApiResult<BillVariantModel>.loading('Loading...');
 
-    final failureOrCat = await billRepository.getServiceId(id);
+    final failureOrCat = await getServiceIdUseCase.call(id);
     failureOrCat.fold(
       (failure) {
         billServiceResponse =
@@ -143,7 +172,7 @@ class DashboardProvider extends ChangeNotifier {
     );
     payBillResponse = ApiResult<String>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await billRepository.purchaseAirtime(data.toJson());
+    final failureOrCat = await purchaseUseCase.call(data.toJson());
     failureOrCat.fold(
       (failure) {
         payBillResponse = ApiResult<String>.error(failure.message);
@@ -162,7 +191,7 @@ class DashboardProvider extends ChangeNotifier {
     payBillResponse = ApiResult<String>.idle();
     payBillResponse = ApiResult<String>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await billRepository.verifyBill(data);
+    final failureOrCat = await verifyUseCase.call(data);
     failureOrCat.fold(
       (failure) {
         payBillResponse = ApiResult<String>.error(failure.message);
@@ -180,7 +209,7 @@ class DashboardProvider extends ChangeNotifier {
   Future<void> payBill(BillPaymentDto data, BuildContext context) async {
     billPaymentRES = ApiResult<String>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await billRepository.payBill(data);
+    final failureOrCat = await payBillUseCase.call(data);
     failureOrCat.fold(
       (failure) {
         billPaymentRES = ApiResult<String>.error(failure.message);

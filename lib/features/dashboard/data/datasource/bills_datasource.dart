@@ -1,14 +1,15 @@
+import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 abstract class IBillRemoteDataSource {
-  Future<List<BillCatModel>> getCategories();
-  Future<List<BillServiceModel>> getCategoryId(String id);
-  Future<BillVariantModel> getServiceId(String id);
-  Future<String> purchaseAirtime(Map<String, dynamic> data);
-  Future<String> verifyBill(BillPaymentDto data);
-  Future<String> payBill(BillPaymentDto data);
+  Future<Either<ApiFailure, List<BillCatModel>>> getCategories();
+  Future<Either<ApiFailure, List<BillServiceModel>>> getCategoryId(String id);
+  Future<Either<ApiFailure, BillVariantModel>> getServiceId(String id);
+  Future<Either<ApiFailure, String>> purchaseAirtime(Map<String, dynamic> data);
+  Future<Either<ApiFailure, String>> verifyBill(BillPaymentDto data);
+  Future<Either<ApiFailure, String>> payBill(BillPaymentDto data);
 }
 
 class BillRemoteDataSource implements IBillRemoteDataSource {
@@ -17,101 +18,104 @@ class BillRemoteDataSource implements IBillRemoteDataSource {
   final HttpManager http;
 
   @override
-  Future<List<BillCatModel>> getCategories() async {
+  Future<Either<ApiFailure, List<BillCatModel>>> getCategories() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(accountEndpoints.billCategories),
       );
-      if (response.isResultOk) {
-        final data = response.data as List;
 
-        return data
-            .map((e) => BillCatModel.fromJson(Map<String, dynamic>.from(e)))
-            .toList();
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(
+        (response.data as List)
+            .map((e) => BillCatModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<List<BillServiceModel>> getCategoryId(String id) async {
+  Future<Either<ApiFailure, List<BillServiceModel>>> getCategoryId(
+    String id,
+  ) async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(accountEndpoints.billCategoryId(id)),
       );
-      if (response.isResultOk) {
-        final data = response.data as List;
-        return data
-            .map((e) => BillServiceModel.fromJson(Map<String, dynamic>.from(e)))
-            .toList();
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(
+        (response.data as List)
+            .map((e) => BillServiceModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<BillVariantModel> getServiceId(String id) async {
+  Future<Either<ApiFailure, BillVariantModel>> getServiceId(String id) async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(accountEndpoints.billCategoryServiceId(id)),
       );
-      if (response.isResultOk) {
-        return BillVariantModel.fromJson(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(BillVariantModel.fromJson(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> purchaseAirtime(Map<String, dynamic> data) async {
+  Future<Either<ApiFailure, String>> purchaseAirtime(
+    Map<String, dynamic> data,
+  ) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(accountEndpoints.payAirtime, data),
       );
-      if (response.isResultOk) {
-        return response.message;
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.message);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> verifyBill(BillPaymentDto data) async {
+  Future<Either<ApiFailure, String>> verifyBill(BillPaymentDto data) async {
     Log().debug('what is verified', data.toJson());
     try {
       final response = ResponseDto.fromMap(
         await http.post(accountEndpoints.verifyBill, data.toJson()),
       );
-      if (response.isResultOk) {
-        return response.data['customerName'];
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(response.data['customerName']);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<String> payBill(BillPaymentDto data) async {
+  Future<Either<ApiFailure, String>> payBill(BillPaymentDto data) async {
     Log().debug('what is paid', data.toJson());
     try {
       final response = ResponseDto.fromMap(
         await http.post(accountEndpoints.payBill, data.toJson()),
       );
-      if (response.isResultOk) {
-        return response.message;
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+      return Right(response.message);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 }

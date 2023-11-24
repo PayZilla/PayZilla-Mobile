@@ -2,62 +2,55 @@ import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 
-class BillRepository extends Repository {
-  BillRepository({
+abstract class BillRepository {
+  Future<Either<ApiFailure, List<BillCatModel>>> getCategories();
+  Future<Either<ApiFailure, List<BillServiceModel>>> getCategoryId(String id);
+  Future<Either<ApiFailure, BillVariantModel>> getServiceId(String id);
+  Future<Either<ApiFailure, String>> purchaseAirtime(
+    Map<String, dynamic> data,
+  );
+  Future<Either<ApiFailure, String>> verifyBill(BillPaymentDto data);
+  Future<Either<ApiFailure, String>> payBill(BillPaymentDto data);
+}
+
+class BillRepositoryImpl extends BillRepository {
+  BillRepositoryImpl({
     required this.remoteDataSource,
   });
 
   final IBillRemoteDataSource remoteDataSource;
 
-  Future<Either<Failure, List<BillCatModel>>> getCategories() async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getCategories();
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, List<BillCatModel>>> getCategories() async {
+    return remoteDataSource.getCategories();
   }
 
-  Future<Either<Failure, List<BillServiceModel>>> getCategoryId(
+  @override
+  Future<Either<ApiFailure, List<BillServiceModel>>> getCategoryId(
     String id,
   ) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getCategoryId(id);
-
-      return response;
-    });
+    return remoteDataSource.getCategoryId(id);
   }
 
-  Future<Either<Failure, BillVariantModel>> getServiceId(String id) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.getServiceId(id);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, BillVariantModel>> getServiceId(String id) async {
+    return remoteDataSource.getServiceId(id);
   }
 
-  Future<Either<Failure, String>> purchaseAirtime(
+  @override
+  Future<Either<ApiFailure, String>> purchaseAirtime(
     Map<String, dynamic> data,
   ) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.purchaseAirtime(data);
-
-      return response;
-    });
+    return remoteDataSource.purchaseAirtime(data);
   }
 
-  Future<Either<Failure, String>> verifyBill(BillPaymentDto data) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.verifyBill(data);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, String>> verifyBill(BillPaymentDto data) async {
+    return remoteDataSource.verifyBill(data);
   }
 
-  Future<Either<Failure, String>> payBill(BillPaymentDto data) async {
-    return runGuard(() async {
-      final response = await remoteDataSource.payBill(data);
-
-      return response;
-    });
+  @override
+  Future<Either<ApiFailure, String>> payBill(BillPaymentDto data) async {
+    return remoteDataSource.payBill(data);
   }
 }

@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/core/mixins/use_case.dart';
 import 'package:pay_zilla/features/notifications/notifications.dart';
+import 'package:pay_zilla/features/notifications/usecase/notification_usecase.dart';
 import 'package:pay_zilla/functional_utils/assets.dart';
 
 class NotificationProvider extends ChangeNotifier {
-  NotificationProvider(this.notificationRepository);
+  NotificationProvider(
+    this.getNotificationUseCase,
+    this.getNotificationsUseCase,
+    this.markNotificationUseCase,
+    this.markNotificationsUseCase,
+  );
 
-  final NotificationRepository notificationRepository;
+  final GetNotificationUseCase getNotificationUseCase;
+  final GetNotificationsUseCase getNotificationsUseCase;
+  final MarkNotificationUseCase markNotificationUseCase;
+  final MarkNotificationsUseCase markNotificationsUseCase;
 
   ApiResult<List<NotificationModel>> notificationRes =
       ApiResult<List<NotificationModel>>.idle();
@@ -24,7 +34,7 @@ class NotificationProvider extends ChangeNotifier {
     notificationRes = ApiResult<List<NotificationModel>>.loading('Loading...');
     notifyListeners();
     final failureOrNotification =
-        await notificationRepository.getNotifications();
+        await getNotificationsUseCase.call(NoParams());
     failureOrNotification.fold(
       (failure) {
         notificationRes =
@@ -49,7 +59,7 @@ class NotificationProvider extends ChangeNotifier {
     readNotificationRes = ApiResult<String>.loading('Loading...');
     notifyListeners();
     final failureOrNotification =
-        await notificationRepository.markNotificationsAsRead();
+        await markNotificationsUseCase.call(NoParams());
     await failureOrNotification.fold(
       (failure) {
         readNotificationRes = ApiResult<String>.error(failure.message);

@@ -17,11 +17,11 @@ class AuthAndRefreshTokenInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final token = await cache.get<String>(CacheKeys.token);
+    Log().debug('The token cached.. $token');
 
     var isExpired = false;
     if (token != null) {
       isExpired = Jwt.isExpired(token);
-      Log().debug('The token cached.. $token', [isExpired]);
 
       if (isExpired) {
         handler.reject(

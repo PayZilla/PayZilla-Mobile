@@ -4,23 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
+import 'package:pay_zilla/core/mixins/use_case.dart';
+import 'package:pay_zilla/di/dependency_injection_container.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/auth/usecase/user_usecase.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
+import 'package:pay_zilla/features/dashboard/usecase/acount_usecases.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
+import 'package:pay_zilla/features/profile/usecase/profile_usecase.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class ProfileProvider extends ChangeNotifier {
   ProfileProvider(
-    this.profileRepository,
-    this.authProvider,
-    this.accountRepository,
+    this.uploadImageUseCase,
+    this.updateProfileUseCase,
+    this.getFaqsUseCase,
+    this.getUserUseCase,
+    this.getContactsUseCase,
   );
 
-  final ProfileRepository profileRepository;
-  final AuthProvider authProvider;
-  final AccountRepository accountRepository;
+  final UploadImageUseCase uploadImageUseCase;
+  final UpdateProfileUseCase updateProfileUseCase;
+  final GetFaqsUseCase getFaqsUseCase;
+  final GetUserUseCase getUserUseCase;
+  final GetContactsUseCase getContactsUseCase;
 
   bool _profileLoader = false;
   bool get profileLoader => _profileLoader;
@@ -86,7 +95,7 @@ class ProfileProvider extends ChangeNotifier {
 
   // pay zilla upload
   Future<void> payUploadImage(String imgPath, BuildContext context) async {
-    final failureOrImageUrl = await profileRepository.uploadImage(imgPath);
+    final failureOrImageUrl = await uploadImageUseCase.call(imgPath);
     await failureOrImageUrl.fold(
       (failure) {
         showErrorNotification(context, failure.message, durationInMills: 2000);
@@ -94,7 +103,7 @@ class ProfileProvider extends ChangeNotifier {
       },
       (res) async {
         if (res) {
-          await authProvider.getUser(context: context);
+          await getUserUseCase.call(NoParams());
           notifyListeners();
         }
       },
@@ -107,7 +116,7 @@ class ProfileProvider extends ChangeNotifier {
     userProfileUpdate = ApiResult<User>.idle();
     userProfileUpdate = ApiResult<User>.loading('Loading...');
     notifyListeners();
-    final failureOrProfile = await profileRepository.updateProfile(params);
+    final failureOrProfile = await updateProfileUseCase.call(params);
     await failureOrProfile.fold(
       (failure) {
         showErrorNotification(context, failure.message, durationInMills: 2000);
@@ -115,14 +124,12 @@ class ProfileProvider extends ChangeNotifier {
         notifyListeners();
       },
       (res) async {
-        await authProvider.getUser(context: context).then(
-              (value) => {
-                showSuccessNotification(
-                  context,
-                  'Profile updated successfully',
-                ),
-              },
-            );
+        showSuccessNotification(
+          context,
+          'Profile updated successfully',
+        );
+        sl<IAuthLocalDataSource>().saveAuthUserPref(res);
+
         userProfileUpdate = ApiResult<User>.success(res);
         notifyListeners();
       },
@@ -133,7 +140,7 @@ class ProfileProvider extends ChangeNotifier {
   Future<void> getContacts(List<String> contacts) async {
     contactsResponse = ApiResult<List<ContactsModel>>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await accountRepository.getContacts(contacts);
+    final failureOrCat = await getContactsUseCase.call(contacts);
     failureOrCat.fold(
       (failure) {
         contactsResponse =
@@ -151,7 +158,7 @@ class ProfileProvider extends ChangeNotifier {
   Future<void> getFAQs() async {
     faqResponse = ApiResult<List<FAQsModel>>.loading('Loading...');
     notifyListeners();
-    final failureOrCat = await profileRepository.getFAQs();
+    final failureOrCat = await getFaqsUseCase.call(NoParams());
     failureOrCat.fold(
       (failure) {
         faqResponse = ApiResult<List<FAQsModel>>.error(failure.message);
@@ -292,7 +299,7 @@ class ProfileProvider extends ChangeNotifier {
       ),
     ).then((value) async {
       if (value != null && value) {
-        authProvider.logout(context);
+        sl<AuthProvider>().logout(context);
       }
     });
   }

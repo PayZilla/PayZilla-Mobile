@@ -1,12 +1,14 @@
+import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
 abstract class IAccountRemoteDataSource {
-  Future<List<WalletsModel>> getWallets();
-  Future<AccountDetailsModel> getAccounts();
-
-  Future<List<ContactsModel>> getContacts(List<String> contacts);
+  Future<Either<ApiFailure, List<WalletsModel>>> getWallets();
+  Future<Either<ApiFailure, List<ContactsModel>>> getContacts(
+    List<String> contacts,
+  );
+  Future<Either<ApiFailure, AccountDetailsModel>> getAccounts();
 }
 
 class AccountRemoteDataSource implements IAccountRemoteDataSource {
@@ -14,38 +16,43 @@ class AccountRemoteDataSource implements IAccountRemoteDataSource {
   final HttpManager http;
 
   @override
-  Future<List<WalletsModel>> getWallets() async {
+  Future<Either<ApiFailure, List<WalletsModel>>> getWallets() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(accountEndpoints.getWallets),
       );
-      if (response.isResultOk) {
-        final data = response.data as List;
-        return data.map((e) => WalletsModel.fromJson(e)).toList();
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(
+        (response.data as List)
+            .map((e) => WalletsModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<AccountDetailsModel> getAccounts() async {
+  Future<Either<ApiFailure, AccountDetailsModel>> getAccounts() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(accountEndpoints.getAccountDetails),
       );
-      if (response.isResultOk) {
-        return AccountDetailsModel.fromJson(response.data);
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(AccountDetailsModel.fromJson(response.data));
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 
   @override
-  Future<List<ContactsModel>> getContacts(List<String> contacts) async {
+  Future<Either<ApiFailure, List<ContactsModel>>> getContacts(
+    List<String> contacts,
+  ) async {
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -53,13 +60,16 @@ class AccountRemoteDataSource implements IAccountRemoteDataSource {
           {'contacts': contacts},
         ),
       );
-      if (response.isResultOk) {
-        final data = response.data as List;
-        return data.map((e) => ContactsModel.fromJson(e)).toList();
-      }
-      throw AppServerException(response.message);
-    } catch (_) {
-      rethrow;
+
+      return Right(
+        (response.data as List)
+            .map((e) => ContactsModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
     }
   }
 }
