@@ -215,8 +215,9 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
       },
       (res) {
-        sl<IAuthLocalDataSource>().flushLocalStorage();
         sl<IAuthLocalDataSource>()
+          ..flushLocalStorage()
+          ..saveAuthUserPref(res.user)
           ..saveUserEmail(res.user.email)
           ..saveToken(res.accessToken);
         AppNavigator.of(context).push(
