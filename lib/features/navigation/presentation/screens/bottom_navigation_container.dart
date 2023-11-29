@@ -53,12 +53,6 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     authProvider = context.watch<AuthProvider>();
     qrProvider = context.watch<TransactionProvider>();
@@ -68,126 +62,129 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
     if (widget.hideNav || authProvider.showNavBar) {
       return Container();
     }
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.passthrough,
-      children: [
-        BottomAppBar(
-          color: const Color(0xFFA6AAB4),
-          selectedColor: AppColors.borderColor,
-          backgroundColor: AppColors.grey,
-          selectedTab: widget.selectedTab,
-          height: context.getHeight(0.08),
-          onTabSelected: (tab) {
-            if (tab == AppNavTab.none) return;
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.passthrough,
+        children: [
+          BottomAppBar(
+            color: const Color(0xFFA6AAB4),
+            selectedColor: AppColors.borderColor,
+            backgroundColor: AppColors.grey,
+            selectedTab: widget.selectedTab,
+            height: context.getHeight(0.08),
+            onTabSelected: (tab) {
+              if (tab == AppNavTab.none) return;
 
-            authProvider.getUser(context: context);
-            dashboardProvider.getWallets();
-            qrProvider
-              ..getCards(context)
-              ..getAccounts(context);
+              authProvider.getUser(context: context);
+              dashboardProvider.getWallets();
+              qrProvider
+                ..getCards(context)
+                ..getAccounts(context);
 
-            if (tab == AppNavTab.home) {
-              notificationProvider.getNotifications();
-            }
-            if (tab == AppNavTab.home || tab == AppNavTab.activity) {
-              historyProvider.getTransactionHistories(context: context);
-            }
+              if (tab == AppNavTab.home) {
+                notificationProvider.getNotifications();
+              }
+              if (tab == AppNavTab.home || tab == AppNavTab.activity) {
+                historyProvider.getTransactionHistories(context: context);
+              }
 
-            AppNavigator.of(context).push(AppRoutes.tab(tab));
-          },
-          items: [
-            BottomAppBarItem(
-              icon: LocalSvgImage(
-                homeInActive,
-                height: 22,
-              ),
-              activeIcon: LocalSvgImage(
-                homeActive,
-                height: 25,
-              ),
-              title: 'Home',
-              tab: AppNavTab.home,
-            ),
-            BottomAppBarItem(
-              icon: LocalSvgImage(
-                myCardInactive,
-                height: 22,
-              ),
-              activeIcon: LocalSvgImage(
-                myCardActive,
-                height: 22,
-              ),
-              title: 'My Card',
-              tab: AppNavTab.card,
-            ),
-            BottomAppBarItem(
-              icon: const SizedBox.shrink(),
-              activeIcon: const SizedBox.shrink(),
-              title: ' ',
-              tab: AppNavTab.none,
-            ),
-            BottomAppBarItem(
-              icon: LocalSvgImage(
-                activityInactive,
-                height: 22,
-              ),
-              activeIcon: LocalSvgImage(
-                activityActive,
-                height: 22,
-              ),
-              title: 'Activity',
-              tab: AppNavTab.activity,
-            ),
-            BottomAppBarItem(
-              icon: LocalSvgImage(
-                profileInactive,
-                height: 22,
-              ),
-              activeIcon: LocalSvgImage(
-                profileActive,
-                height: 22,
-              ),
-              title: 'Profile',
-              tab: AppNavTab.profile,
-            ),
-          ],
-        ),
-        Positioned(
-          top: -5,
-          left: context.getWidth(.39),
-          child: GestureDetector(
-            onTap: () {
-              walletChannel = walletChannel.copyWith(
-                paymentId: authProvider.user.phoneNumber,
-              );
-              requestDto = requestDto.copyWith(
-                walletChannel: walletChannel,
-                channel: Channel.wallet,
-              );
-              AppNavigator.of(context).push(
-                AppRoutes.qrScan,
-                args: QRScreenArgs(authProvider.user.phoneNumber),
-              );
-              qrProvider.validateBanksOrWallet(requestDto, context);
+              AppNavigator.of(context).push(AppRoutes.tab(tab));
             },
-            child: Container(
-              height: context.getHeight(0.07),
-              width: context.getHeight(0.1),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.appSecondaryColor,
+            items: [
+              BottomAppBarItem(
+                icon: LocalSvgImage(
+                  homeInActive,
+                  height: 22,
+                ),
+                activeIcon: LocalSvgImage(
+                  homeActive,
+                  height: 25,
+                ),
+                title: 'Home',
+                tab: AppNavTab.home,
               ),
-              child: Center(
-                child: LocalSvgImage(
-                  scanSvg,
-                  height: context.getHeight(0.04),
+              BottomAppBarItem(
+                icon: LocalSvgImage(
+                  myCardInactive,
+                  height: 22,
+                ),
+                activeIcon: LocalSvgImage(
+                  myCardActive,
+                  height: 22,
+                ),
+                title: 'My Card',
+                tab: AppNavTab.card,
+              ),
+              BottomAppBarItem(
+                icon: const SizedBox.shrink(),
+                activeIcon: const SizedBox.shrink(),
+                title: ' ',
+                tab: AppNavTab.none,
+              ),
+              BottomAppBarItem(
+                icon: LocalSvgImage(
+                  activityInactive,
+                  height: 22,
+                ),
+                activeIcon: LocalSvgImage(
+                  activityActive,
+                  height: 22,
+                ),
+                title: 'Activity',
+                tab: AppNavTab.activity,
+              ),
+              BottomAppBarItem(
+                icon: LocalSvgImage(
+                  profileInactive,
+                  height: 22,
+                ),
+                activeIcon: LocalSvgImage(
+                  profileActive,
+                  height: 22,
+                ),
+                title: 'Profile',
+                tab: AppNavTab.profile,
+              ),
+            ],
+          ),
+          Positioned(
+            top: -5,
+            left: context.getWidth(.39),
+            child: GestureDetector(
+              onTap: () {
+                walletChannel = walletChannel.copyWith(
+                  paymentId: authProvider.user.phoneNumber,
+                );
+                requestDto = requestDto.copyWith(
+                  walletChannel: walletChannel,
+                  channel: Channel.wallet,
+                );
+                AppNavigator.of(context).push(
+                  AppRoutes.qrScan,
+                  args: QRScreenArgs(authProvider.user.phoneNumber),
+                );
+                qrProvider.validateBanksOrWallet(requestDto, context);
+              },
+              child: Container(
+                height: context.getHeight(0.07),
+                width: context.getHeight(0.1),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.appSecondaryColor,
+                ),
+                child: Center(
+                  child: LocalSvgImage(
+                    scanSvg,
+                    height: context.getHeight(0.04),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -73,6 +73,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> login(AuthParams requestDto, BuildContext context) async {
     genericAuthResp = ApiResult<UserAuthModel>.loading('Logging in....');
     notifyListeners();
+    sl<IAuthLocalDataSource>().flushLocalStorage();
 
     final failureOrLogin = await loginUseCase.call(requestDto);
     await failureOrLogin.fold(
@@ -95,7 +96,9 @@ class AuthProvider extends ChangeNotifier {
           ..saveToken(res.accessToken)
           ..saveUserPassword(requestDto.password);
         await getUser(context: context);
+        AppNavigator.of(context).push(AppRoutes.home);
 
+/*
         //1. Handle all conditions on login response first
         if (!res.user.hasVerifiedEmail) {
           final verificationMsg =
@@ -137,7 +140,7 @@ class AuthProvider extends ChangeNotifier {
         }
         //2. Now handle user journey on kyc status
 
-        await getKyc(context);
+        await getKyc(context);*/
 
         genericAuthResp = ApiResult<UserAuthModel>.success(res);
         notifyListeners();
@@ -180,6 +183,9 @@ class AuthProvider extends ChangeNotifier {
     failureOrUser.fold(
       (failure) {
         showErrorNotification(context, failure.message, durationInMills: 2000);
+        if (failure is SessionFailure) {
+          AppNavigator.of(context).push(AppRoutes.homeToLogout);
+        }
         notifyListeners();
       },
       (res) {
@@ -205,6 +211,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> signUp(AuthParams requestDto, BuildContext context) async {
     signUpAuthResp = ApiResult<UserAuthModel>.loading('Signing up....');
     notifyListeners();
+    sl<IAuthLocalDataSource>().flushLocalStorage();
 
     final failureOrLogin = await signUpUseCase.call(requestDto);
     failureOrLogin.fold(
@@ -216,7 +223,6 @@ class AuthProvider extends ChangeNotifier {
       },
       (res) {
         sl<IAuthLocalDataSource>()
-          ..flushLocalStorage()
           ..saveAuthUserPref(res.user)
           ..saveUserEmail(res.user.email)
           ..saveToken(res.accessToken);
@@ -224,7 +230,7 @@ class AuthProvider extends ChangeNotifier {
           AppRoutes.pin,
           args: GenericTokenVerificationArgs(
             email: res.user.email,
-            path: AppRoutes.country,
+            path: AppRoutes.home,
             endpointPath: authEndpoints.emailVerificationVerify,
           ),
         );
@@ -498,16 +504,9 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void sessionTimeout(String reason, BuildContext? context) {
-    AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
-    notifyListeners();
-  }
-
-  void logout(BuildContext? context) {
+  void sessionLogout(BuildContext context) {
     sl<IAuthLocalDataSource>().flushLocalStorage();
-
-    AppNavigator.of(context!).push(AppRoutes.onboardingAuth);
-
+    AppNavigator.of(context).push(AppRoutes.onboarding);
     notifyListeners();
   }
 }

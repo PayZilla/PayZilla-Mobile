@@ -37,6 +37,7 @@ class AppRoutes {
 
   // dashboard routes
   static const homeToNotifications = '/tab/home/notifications';
+  static const homeToLogout = '/tab/home/logout';
   static const allTransactions = '/tab/home/all-transactions';
   static const transfer = '/tab/home/transfer';
   static const bankTransfer = '/tab/home/transfer-bank';

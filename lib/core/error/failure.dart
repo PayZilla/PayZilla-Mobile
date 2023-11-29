@@ -31,6 +31,13 @@ class ServerFailure extends Failure {
   String get message => msg;
 }
 
+class SessionFailure extends Failure {
+  SessionFailure([this.msg = '']);
+  final String msg;
+  @override
+  String get message => msg;
+}
+
 class UnexpectedFailure extends Failure {
   @override
   String get message => 'Unexpected error occurred';

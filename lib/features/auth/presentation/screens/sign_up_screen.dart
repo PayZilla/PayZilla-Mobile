@@ -94,7 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> with FormMixin {
               PhoneNumberTextFormField(
                 key: ValueKey(requestDto.phoneNumber),
                 initialValue: requestDto.phoneNumber,
-                hintText: '081xxxxxxxx',
+                hintText: 'Phone Number',
                 onSaved: (phoneNumber) {
                   requestDto = requestDto.copyWith(
                     phoneNumber: phoneNumber,

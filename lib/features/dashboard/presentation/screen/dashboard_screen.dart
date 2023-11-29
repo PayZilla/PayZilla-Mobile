@@ -125,9 +125,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           referEarnSvg
                         ],
                         name: const [
-                          'Deposit',
-                          'Transfers',
-                          'Withdraw',
+                          'Add Money',
+                          'To PayZilla',
+                          'To Bank',
                           'Refer & Earn'
                         ],
                         todo: [

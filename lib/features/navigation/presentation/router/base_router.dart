@@ -77,6 +77,7 @@ GoRouter getBaseRouter() {
           )!,
         ),
       ),
+
       //Note (Dev)=> create sub routes for nav tabs inside this routes list
       GoRoute(
         path: '/tab/:tab_name',

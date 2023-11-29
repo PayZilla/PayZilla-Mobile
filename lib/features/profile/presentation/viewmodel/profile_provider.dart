@@ -298,9 +298,7 @@ class ProfileProvider extends ChangeNotifier {
         ),
       ),
     ).then((value) async {
-      if (value != null && value) {
-        sl<AuthProvider>().logout(context);
-      }
+      if (value != null && value) {}
     });
   }
 }

@@ -67,7 +67,7 @@ void _showNotification(
 }) {
   Flushbar(
     message: message,
-    duration: Duration(milliseconds: durationInMills ?? 3000),
+    duration: Duration(milliseconds: durationInMills ?? 5000),
     flushbarPosition: FlushbarPosition.TOP,
     dismissDirection: FlushbarDismissDirection.HORIZONTAL,
     forwardAnimationCurve: Curves.elasticInOut,

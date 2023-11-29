@@ -31,7 +31,7 @@ FutureBottomSheet<Widget> showBvnInfoUpdate({
         PhoneNumberTextFormField(
           key: const ValueKey('09'),
           labelText: 'Phone Number',
-          hintText: '081xxxxxxxx',
+          hintText: 'Phone Number',
           controller: phoneTEC,
         ),
         const YBox(Insets.dim_60),

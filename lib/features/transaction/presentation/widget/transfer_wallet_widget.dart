@@ -22,6 +22,10 @@ class TransferWalletCard extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final data = dsProvider.getWalletsResponse.data?[index];
+          final balance = data != null && data.balance.isNotEmpty
+              ? (double.parse(data.balance) * 100).toString()
+              : '0';
+
           return Container(
             height: context.getHeight(0.05),
             width: context.getWidth(0.9),
@@ -49,7 +53,7 @@ class TransferWalletCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        money.formatValue(data?.balance ?? 0),
+                        money.formatValue(balance),
                         style: context.textTheme.bodyMedium!.copyWith(
                           color: AppColors.white,
                           fontWeight: FontWeight.w700,

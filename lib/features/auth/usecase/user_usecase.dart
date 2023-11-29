@@ -8,7 +8,7 @@ class GetUserUseCase implements UseCase<User, NoParams> {
   AuthRepository authRepository;
 
   @override
-  Future<Either<ApiFailure, User>> call(NoParams params) {
+  Future<Either<Failure, User>> call(NoParams params) {
     return authRepository.getUser();
   }
 }

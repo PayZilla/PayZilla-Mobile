@@ -1,9 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/functional_utils/log_util.dart';
 
 abstract class IAuthRemoteDataSource {
-  Future<Either<ApiFailure, User>> getUser();
+  Future<Either<Failure, User>> getUser();
   Future<Either<ApiFailure, User>> purpose(List<String> purpose);
 
   Future<Either<ApiFailure, UserAuthModel>> login(AuthParams params);
@@ -43,7 +44,7 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   }
 
   @override
-  Future<Either<ApiFailure, User>> getUser() async {
+  Future<Either<Failure, User>> getUser() async {
     try {
       final response = ResponseDto.fromMap(
         await http.get(userEndpoints.getUser),
@@ -53,6 +54,9 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
     } on AppServerException catch (err) {
       return Left(ApiFailure(msg: err.message));
     } catch (err) {
+      if (err is SessionExpiredServerException) {
+        return Left(SessionFailure(err.toString()));
+      }
       return Left(ApiFailure(msg: err.toString()));
     }
   }

@@ -135,6 +135,7 @@ class AtmCardWidget extends StatelessWidget {
             color: AppColors.textHeaderColor,
             height: .14,
             showLoader: false,
+            textStatus: '',
           );
   }
 }
@@ -222,10 +223,12 @@ class TempLoadingAtmCard extends StatelessWidget {
     this.color,
     this.height,
     this.showLoader = true,
+    this.textStatus = 'Loading...',
   });
   final Color? color;
   final double? height;
   final bool showLoader;
+  final String textStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +286,7 @@ class TempLoadingAtmCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Loading...',
+                      textStatus,
                       style: context.textTheme.bodyMedium!.copyWith(
                         color: AppColors.white,
                         fontWeight: FontWeight.w700,

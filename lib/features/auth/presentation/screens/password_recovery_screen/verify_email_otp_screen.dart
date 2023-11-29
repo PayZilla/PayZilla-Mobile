@@ -123,6 +123,7 @@ class _GenericTokenVerificationState extends State<GenericTokenVerification>
                 action: () {
                   requestDto =
                       requestDto.copyWith(tokenRoute: widget.args.endpointPath);
+
                   validate(
                     () => provider.tokenVerification(
                       requestDto,

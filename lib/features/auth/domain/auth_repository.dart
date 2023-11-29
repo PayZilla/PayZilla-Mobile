@@ -6,7 +6,7 @@ import 'package:pay_zilla/features/auth/auth.dart';
 // ignore: one_member_abstracts
 abstract class AuthRepository {
   Future<Either<ApiFailure, UserAuthModel>> login(AuthParams param);
-  Future<Either<ApiFailure, User>> getUser();
+  Future<Either<Failure, User>> getUser();
   Future<Either<ApiFailure, List>> getKyc();
   Future<Either<ApiFailure, UserAuthModel>> signUp(AuthParams param);
   Future<Either<ApiFailure, List<ReasonsModel>>> fetchReasons();
@@ -53,7 +53,7 @@ class AuthRepositoryImp implements AuthRepository {
   }
 
   @override
-  Future<Either<ApiFailure, User>> getUser() {
+  Future<Either<Failure, User>> getUser() {
     // localDataSource.saveAuthUserPref(response);
     return remoteDataSource.getUser();
   }

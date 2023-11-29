@@ -23,14 +23,6 @@ class _SignInState extends State<SignIn> with FormMixin {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-    //   final user = await context
-    //       .read<AuthProvider>()
-    //       .getUser(useNetworkCall: false, context: context);
-    //   if (!user.isEmpty) {
-    //     requestDto = requestDto.copyWith(email: user.email);
-    //   }
-    // });
   }
 
   @override
