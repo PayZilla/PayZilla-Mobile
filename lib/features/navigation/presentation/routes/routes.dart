@@ -2,6 +2,7 @@ import 'package:pay_zilla/features/navigation/navigation.dart';
 
 class AppRoutes {
 //splash screen first
+  static const root = '/';
   static const splash = '/splash';
 
   //onboarding screen and where you can go and come from Onboarding

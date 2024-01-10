@@ -16,26 +16,16 @@ class MyApp extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: MultiProvider(
         providers: providers,
-        child: MaterialApp(
+        child: MaterialApp.router(
           title: 'PayZilla',
           theme: AppTheme.defaultTheme(context),
           debugShowCheckedModeBanner: false,
-          home: Builder(
-            builder: (context) {
-              final media = MediaQuery.of(context);
-              Dims.setSize(media);
-              return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaleFactor: 1,
-                ),
-                child: Router(
-                  routerDelegate: router.routerDelegate,
-                  routeInformationParser: router.routeInformationParser,
-                  backButtonDispatcher: RootBackButtonDispatcher(),
-                ),
-              );
-            },
-          ),
+          routerConfig: router,
+          builder: (context, child) {
+            final media = MediaQuery.of(context);
+            Dims.setSize(media);
+            return child!;
+          },
         ),
       ),
     );

@@ -21,6 +21,6 @@ class AppNavigator {
 
   /// use to pop an open dialog modal
   void popDialog([dynamic data]) {
-    GoRouter.of(context).navigator?.pop(data);
+    GoRouter.of(context).pop(data);
   }
 }

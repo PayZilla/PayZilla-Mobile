@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
@@ -6,6 +7,10 @@ import 'package:pay_zilla/features/splash_screen/splash_screen.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
 final _savedArgs = {};
+final GlobalKey<NavigatorState> _rootNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shell');
 
 ///use the args registry for situations where multiple nested routes have different argument requirements
 T? argsRegistry<T>(String key, Object? args) {
@@ -17,41 +22,16 @@ T? argsRegistry<T>(String key, Object? args) {
 
 GoRouter getBaseRouter() {
   return GoRouter(
-    urlPathStrategy: UrlPathStrategy.path,
-    initialLocation: AppRoutes.splash,
-    navigatorBuilder: (context, state, child) {
-      AppNavTab? tab;
-      bool? hideNav;
-
-      if (state.location.split('/')[1] == 'tab') {
-        final tabName = state.location.split('/')[2];
-        tab = AppNavTabUtil.fromString(tabName);
-        try {
-          //Note (Dev) => this is for cases where you have nested route inside of a tab and you don't want to show the bottom nav (design spec)
-          hideNav = state.location.split('/')[3].isNotEmpty;
-        } catch (e) {
-          hideNav = false;
-        }
-
-        if (tab == null) {
-          throw PageNotFoundException(state.location);
-        }
-      }
-
-      return Scaffold(
-        body: Column(
-          children: [
-            Expanded(child: child),
-            if (tab != null)
-              BottomNavigationContainer(
-                selectedTab: tab,
-                hideNav: hideNav ?? false,
-              ),
-          ],
-        ),
-      );
-    },
+    initialLocation: AppRoutes.root,
+    navigatorKey: _rootNavigatorKey,
+    debugLogDiagnostics: kDebugMode,
     routes: [
+      GoRoute(
+        path: AppRoutes.root,
+        builder: (context, state) {
+          return const SplashScreen();
+        },
+      ),
       GoRoute(
         path: '/splash',
         builder: (context, state) {
@@ -77,33 +57,46 @@ GoRouter getBaseRouter() {
           )!,
         ),
       ),
-
-      //Note (Dev)=> create sub routes for nav tabs inside this routes list
-      GoRoute(
-        path: '/tab/:tab_name',
-        builder: (context, state) {
-          final tabName = state.params['tab_name'];
-          final tab = AppNavTabUtil.fromString(tabName);
-
-          if (tab == null) {
-            throw PageNotFoundException(state.location);
+      ShellRoute(
+        navigatorKey: _shellNavigatorKey,
+        builder: (BuildContext context, GoRouterState state, Widget child) {
+          AppNavTab? tab;
+          bool? hideNav;
+          if (state.fullPath != null) {
+            if (state.fullPath!.split('/')[1] == 'tab') {
+              final tabName = state.fullPath!.split('/')[2];
+              tab = AppNavTabUtil.fromString(tabName);
+              try {
+                hideNav = state.fullPath!.split('/')[3].isNotEmpty;
+              } catch (e) {
+                hideNav = false;
+              }
+              if (tab == null) {
+                throw PageNotFoundException(state.fullPath!);
+              }
+            }
           }
 
-          tabScreens.sort((a, b) => a.tab.index.compareTo(b.tab.index));
-
-          return IndexedStack(
-            key: const ValueKey('tab_indexed_stack'),
-            index: tab.index,
-            children: tabScreens.map((e) => e.body).toList(),
+          return Scaffold(
+            body: Column(
+              children: [
+                Expanded(child: child),
+                if (tab != null)
+                  BottomNavigationContainer(
+                    selectedTab: tab,
+                    hideNav: hideNav ?? false,
+                  ),
+              ],
+            ),
           );
         },
         routes: [
-          //Note (Dev)=> create sub routes for nav tabs
+          // //Note (Dev)=> create sub routes for nav tabs
           ...dashboardRouter,
           ...myCardRouter,
           ...profileRouter,
         ],
-      )
+      ),
     ],
   );
 }
