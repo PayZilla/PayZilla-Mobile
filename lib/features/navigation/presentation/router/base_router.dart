@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pay_zilla/features/analytics/analytics.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
+import 'package:pay_zilla/features/card/card.dart';
+import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
+import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/features/splash_screen/splash_screen.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
 
@@ -91,10 +95,33 @@ GoRouter getBaseRouter() {
           );
         },
         routes: [
-          // //Note (Dev)=> create sub routes for nav tabs
-          ...dashboardRouter,
-          ...myCardRouter,
-          ...profileRouter,
+          GoRoute(
+            path: AppRoutes.home,
+            builder: (context, state) {
+              return const DashboardScreen();
+            },
+            routes: dashboardRouter,
+          ),
+          GoRoute(
+            path: AppRoutes.myCard,
+            builder: (context, state) {
+              return const MyCardScreen();
+            },
+            routes: myCardRouter,
+          ),
+          GoRoute(
+            path: AppRoutes.activity,
+            builder: (context, state) {
+              return const AnalyticsScreen();
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.profile,
+            builder: (context, state) {
+              return const ProfileScreen();
+            },
+            routes: profileRouter,
+          ),
         ],
       ),
     ],

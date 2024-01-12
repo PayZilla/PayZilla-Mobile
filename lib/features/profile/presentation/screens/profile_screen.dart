@@ -46,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
                       color: AppColors.textBodyColor.withOpacity(0.05),
                       blurRadius: 10,
                       spreadRadius: 10,
-                    )
+                    ),
                   ],
                 ),
                 child: Container(
@@ -143,7 +143,7 @@ class ProfileScreen extends StatelessWidget {
               const YBox(Insets.dim_18),
             ],
           ),
-          if (profile.loading) Container(color: Colors.transparent)
+          if (profile.loading) Container(color: Colors.transparent),
         ],
       ),
     );

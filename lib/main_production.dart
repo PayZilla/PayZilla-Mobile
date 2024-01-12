@@ -7,10 +7,6 @@ import 'package:pay_zilla/core/core.dart';
 
 Future<void> main() async {
   await AppSetups.runSetups(environment: Flavor.production).whenComplete(
-    () => runZonedGuarded(() async => runApp(MyApp()), (error, trace) {
-      if (kReleaseMode) {
-        FirebaseCrashlytics.instance.recordError(error, trace);
-      }
-    }),
+    () => runApp(MyApp()),
   );
 }

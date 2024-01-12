@@ -287,7 +287,16 @@ class TransactionProvider extends ChangeNotifier {
       ..currency = 'NGN';
 
     await _plugin
-        .checkout(context, method: CheckoutMethod.card, charge: charge)
+        .checkout(
+      context,
+      method: CheckoutMethod.card,
+      charge: charge,
+      logo: LocalImage(
+        logoPng,
+        width: 50,
+        height: 50,
+      ),
+    )
         .then((value) async {
       if (value.status == true) {
         if (topUp) {

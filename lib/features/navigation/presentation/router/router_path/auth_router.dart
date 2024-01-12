@@ -36,9 +36,9 @@ GoRoute authRouter() {
                     )!,
                   );
                 },
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
       GoRoute(

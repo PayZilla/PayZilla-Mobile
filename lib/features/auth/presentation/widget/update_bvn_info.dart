@@ -17,6 +17,7 @@ FutureBottomSheet<Widget> showBvnInfoUpdate({
     height: context.getHeight(0.5),
     isDismissible: dismissible,
     title: 'Update Bvn Info',
+    desc: 'Enter your name as registered on your BVN',
     searchWidget: Column(
       children: [
         const YBox(Insets.dim_34),

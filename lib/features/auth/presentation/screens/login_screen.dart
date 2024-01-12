@@ -70,7 +70,7 @@ class _SignInState extends State<SignIn> with FormMixin {
                 isLoading: provider.genericAuthResp.isLoading,
                 inputType: TextInputType.emailAddress,
                 onSaved: (value) {
-                  requestDto = requestDto.copyWith(email: value);
+                  requestDto = requestDto.copyWith(email: value?.toLowerCase());
                 },
                 validator: (input) => Validators.validateEmail(
                   value: input,

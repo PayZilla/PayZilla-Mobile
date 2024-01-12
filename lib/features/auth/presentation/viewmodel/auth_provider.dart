@@ -289,7 +289,7 @@ class AuthProvider extends ChangeNotifier {
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
     notifyListeners();
-
+    Log().debug('Request OTP');
     final failureOrLogin = await emailVerificationUseCase.call(NoParams());
     failureOrLogin.fold(
       (failure) {
@@ -354,31 +354,41 @@ class AuthProvider extends ChangeNotifier {
   Future<void> initializeBvn(AuthParams params, BuildContext context) async {
     onboardingResp = ApiResult<String>.idle();
     onboardingResp = ApiResult<String>.loading('Loading up....');
+    Log().debug('Initialization value for BVN', params.toMap());
 
     notifyListeners();
 
     final failureOrLogin = await initializeBvnUseCase.call(params);
-    failureOrLogin.fold(
-      (failure) {
+    await failureOrLogin.fold(
+      (failure) async {
         onboardingResp = ApiResult<String>.error(failure.message);
 
         notifyListeners();
 
         if (failure.message == 'Bvn name not match') {
-          showInfoNotification(context, failure.message, durationInMills: 2500);
-          showBvnInfoUpdate(
+          showInfoNotification(
+            context,
+            'BVN name not match PayZilla user name',
+            durationInMills: 3500,
+          );
+          var requestDto = AuthParams.empty();
+          await showBvnInfoUpdate(
             context: context,
-            onTap: (p0) {
+            onTap: (p0) async {
               if (p0.isNotEmpty) {
-                var requestDto = AuthParams.empty();
                 requestDto = requestDto.copyWith(
                   fullName: p0.first,
                   phoneNumber: p0.last,
                 );
-                updateBvn(requestDto, context);
+                notifyListeners();
               }
             },
           ).show(context);
+
+          await updateBvn(requestDto, context);
+
+          onboardingResp = ApiResult<String>.idle();
+          notifyListeners();
         } else {
           showErrorNotification(
             context,
@@ -389,13 +399,13 @@ class AuthProvider extends ChangeNotifier {
       },
       (res) {
         onboardingResp = ApiResult<String>.success(res.toString());
-
         notifyListeners();
       },
     );
   }
 
   Future<void> updateBvn(AuthParams params, BuildContext context) async {
+    onboardingResp = ApiResult<String>.idle();
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
     notifyListeners();
@@ -412,7 +422,7 @@ class AuthProvider extends ChangeNotifier {
       },
       (res) {
         onboardingResp = ApiResult<String>.success(res.toString());
-
+        showSuccessNotification(context, 'BVN info updated successfully');
         notifyListeners();
       },
     );

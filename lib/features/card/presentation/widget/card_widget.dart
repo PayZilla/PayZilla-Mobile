@@ -49,7 +49,8 @@ class AtmCardWidget extends StatelessWidget {
                         alignment: Alignment.topCenter,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: Insets.dim_22),
+                            horizontal: Insets.dim_22,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.textHeaderColor.withOpacity(0.5),
                           ),
@@ -76,7 +77,8 @@ class AtmCardWidget extends StatelessWidget {
                         child: Container(
                           color: AppColors.appSecondaryColor,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: Insets.dim_22),
+                            horizontal: Insets.dim_22,
+                          ),
                           child: Row(
                             children: [
                               if (dsProvider.showBalance)
@@ -109,7 +111,7 @@ class AtmCardWidget extends StatelessWidget {
                                 activeColor: AppColors.white,
                                 trackColor: color,
                                 thumbColor: color,
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -233,7 +235,7 @@ class TempLoadingAtmCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.getHeight(height ?? 0.24),
+      height: context.getHeight(height ?? 0.30),
       width: context.getWidth(0.9),
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
@@ -244,7 +246,7 @@ class TempLoadingAtmCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const YBox(Insets.dim_24),
+          const YBox(Insets.dim_16),
           Expanded(
             child: Row(
               children: [
@@ -324,7 +326,7 @@ class TempLoadingAtmCard extends StatelessWidget {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

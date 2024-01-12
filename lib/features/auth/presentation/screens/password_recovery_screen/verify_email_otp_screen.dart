@@ -105,7 +105,9 @@ class _GenericTokenVerificationState extends State<GenericTokenVerification>
                     }
                   },
                   child: Text(
-                    getCurrentOtpTimeoutCount(),
+                    widget.args.email.toLowerCase() == 'your bvn data'
+                        ? ''
+                        : getCurrentOtpTimeoutCount(),
                     style: const TextStyle(
                       color: AppColors.appSecondaryColor,
                       fontWeight: FontWeight.w700,

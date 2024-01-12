@@ -286,19 +286,22 @@ class ProfileProvider extends ChangeNotifier {
                         showLoading: loading,
                         backgroundColor: AppColors.borderErrorColor,
                         action: () {
+                          sl<IAuthLocalDataSource>().flushLocalStorage();
                           Navigator.pop(context, true);
                         },
                       ),
-                    )
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           ),
         ),
       ),
     ).then((value) async {
-      if (value != null && value) {}
+      if (value != null && value) {
+        AppNavigator.of(context).push(AppRoutes.onboardingAuth);
+      }
     });
   }
 }
