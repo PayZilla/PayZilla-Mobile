@@ -56,151 +56,166 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Insets.dim_22),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const YBox(Insets.dim_20),
-            Container(
-              clipBehavior: Clip.hardEdge,
-              padding: const EdgeInsets.symmetric(
-                horizontal: Insets.dim_22,
-                vertical: Insets.dim_12,
+            Text(
+              'Top-up via Bank Transfer',
+              style: context.textTheme.bodyMedium!.copyWith(
+                color: AppColors.textHeaderColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+                letterSpacing: 0.30,
               ),
+            ),
+            const YBox(Insets.dim_6),
+            Text(
+              'Top up by transferring to your virtual account details below linked to your PayZilla account from any of your bank platform(Internet or mobile banking)',
+              style: context.textTheme.bodyMedium!.copyWith(
+                color: AppColors.black.withOpacity(0.7),
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                letterSpacing: 0.30,
+              ),
+            ),
+            const YBox(Insets.dim_12),
+            Container(
               decoration: BoxDecoration(
                 borderRadius: Corners.mdBorder,
-                color: AppColors.borderColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.black.withOpacity(0.2),
-                    blurRadius: 2,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+                border: Border.all(
+                  color: AppColors.black.withOpacity(0.3),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: Insets.dim_16,
+                horizontal: Insets.dim_12,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    leading: LocalSvgImage(bankSvg),
-                    title: Text(
-                      'Bank Details',
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textHeaderColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        letterSpacing: 0.30,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Top up via bank transfer (Internet or Mobile banking)',
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textBodyColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                        letterSpacing: 0.30,
-                      ),
-                    ),
-                  ),
-                  const YBox(Insets.dim_12),
-                  const Divider(),
-                  const YBox(Insets.dim_12),
+                  const YBox(Insets.dim_4),
                   if (transactionP.accountDetailsRES.isSuccess) ...[
-                    Text(
-                      transactionP.accountDetailsRES.data!.name,
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textHeaderColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        letterSpacing: 0.30,
+                    Row(
+                      children: List.generate(
+                        transactionP.accountDetailsRES.data!.banks.length,
+                        (index) {
+                          final data = transactionP
+                              .accountDetailsRES.data!.banks.reversed
+                              .toList()[index];
+                          return Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Account Holder',
+                                  style: context.textTheme.bodyMedium!.copyWith(
+                                    color: AppColors.black.withOpacity(0.3),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    letterSpacing: 0.30,
+                                  ),
+                                ),
+                                Text(
+                                  transactionP.accountDetailsRES.data!.name,
+                                  style: context.textTheme.bodyMedium!.copyWith(
+                                    color: AppColors.textHeaderColor,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    letterSpacing: 0.30,
+                                  ),
+                                ),
+                                const YBox(Insets.dim_8),
+                                Text(
+                                  'Account Number',
+                                  style: context.textTheme.bodyMedium!.copyWith(
+                                    color: AppColors.black.withOpacity(0.3),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    letterSpacing: 0.30,
+                                  ),
+                                ),
+                                Text(
+                                  data.accountNumber,
+                                  style: context.textTheme.bodyMedium!.copyWith(
+                                    color: AppColors.textHeaderColor,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    letterSpacing: 0.30,
+                                  ),
+                                ),
+                                const YBox(Insets.dim_8),
+                                Text(
+                                  'Bank Name',
+                                  style: context.textTheme.bodyMedium!.copyWith(
+                                    color: AppColors.black.withOpacity(0.3),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    letterSpacing: 0.30,
+                                  ),
+                                ),
+                                Text(
+                                  data.bankName,
+                                  style: context.textTheme.bodyMedium!.copyWith(
+                                    color: AppColors.textHeaderColor,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    letterSpacing: 0.30,
+                                  ),
+                                ),
+                                const YBox(Insets.dim_12),
+                                const Text(
+                                  'Share',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.appGreen,
+                                  ),
+                                ).onTap(
+                                  () async {
+                                    await shareAccountDetails(
+                                      data,
+                                      transactionP.accountDetailsRES.data!.name,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    SizedBox(
-                      height: context.getHeight(0.15),
-                      child: Scrollbar(
-                        controller: controller,
-                        thumbVisibility: true,
-                        radius: const Radius.circular(Insets.dim_12),
-                        child: ListView.builder(
-                          controller: controller,
-                          itemCount:
-                              transactionP.accountDetailsRES.data!.banks.length,
-                          itemBuilder: (context, index) {
-                            final data = transactionP
-                                .accountDetailsRES.data!.banks[index];
-                            return Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Insets.dim_24,
-                                horizontal: Insets.dim_16,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    PhosphorIcons.copy,
-                                    size: Insets.dim_24,
-                                    color: AppColors.textBodyColor,
-                                  ).onTap(
-                                    () => data.toJson().toString().toClipboard(
-                                          context: context,
-                                          feedbackMsg:
-                                              '${data.bankName} details copied to clipboard',
-                                        ),
-                                  ),
-                                  const XBox(Insets.dim_14),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        data.bankName,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.textBodyColor,
-                                        ),
-                                      ),
-                                      const YBox(Insets.dim_4),
-                                      Text(
-                                        data.accountNumber,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.textBodyColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  const Text(
-                                    'Share',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.black,
-                                    ),
-                                  ).onTap(
-                                    () async {
-                                      await shareAccountDetails(
-                                        data,
-                                        transactionP
-                                            .accountDetailsRES.data!.name,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                    const YBox(Insets.dim_14),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Note: ',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          letterSpacing: 0.30,
                         ),
+                        children: [
+                          TextSpan(
+                            text: 'Supreme MFB is 0.00% Charges Free',
+                            style: context.textTheme.bodyMedium!.copyWith(
+                              color: AppColors.brown,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              letterSpacing: 0.30,
+                            ),
+                          )
+                        ],
                       ),
                     ),
+                  ] else ...[
+                    const Center(child: CircularProgressIndicator()),
                   ],
                 ],
               ),
             ),
             const YBox(Insets.dim_20),
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Expanded(child: Divider(thickness: 2)),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Insets.dim_12),
@@ -333,3 +348,150 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
     );
   }
 }
+
+/**
+ * 
+ * 
+ * 
+ *     Container(
+              clipBehavior: Clip.hardEdge,
+              padding: const EdgeInsets.symmetric(
+                horizontal: Insets.dim_22,
+                vertical: Insets.dim_12,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: Corners.mdBorder,
+                color: AppColors.borderColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black.withOpacity(0.2),
+                    blurRadius: 2,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    leading: LocalSvgImage(bankSvg),
+                    title: Text(
+                      'Bank Details',
+                      style: context.textTheme.bodyMedium!.copyWith(
+                        color: AppColors.textHeaderColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        letterSpacing: 0.30,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Top up via bank transfer (Internet or Mobile banking)',
+                      style: context.textTheme.bodyMedium!.copyWith(
+                        color: AppColors.textBodyColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        letterSpacing: 0.30,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+ *    const YBox(Insets.dim_12),
+                  const Divider(),
+                  const YBox(Insets.dim_12),
+                  if (transactionP.accountDetailsRES.isSuccess) ...[
+                    Text(
+                      transactionP.accountDetailsRES.data!.name,
+                      style: context.textTheme.bodyMedium!.copyWith(
+                        color: AppColors.textHeaderColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        letterSpacing: 0.30,
+                      ),
+                    ),
+                   
+                  ],
+ *  SizedBox(
+                      height: context.getHeight(0.15),
+                      child: Scrollbar(
+                        controller: controller,
+                        thumbVisibility: true,
+                        radius: const Radius.circular(Insets.dim_12),
+                        child: ListView.builder(
+                          controller: controller,
+                          itemCount:
+                              transactionP.accountDetailsRES.data!.banks.length,
+                          itemBuilder: (context, index) {
+                            final data = transactionP
+                                .accountDetailsRES.data!.banks[index];
+                            return Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: Insets.dim_24,
+                                horizontal: Insets.dim_16,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    PhosphorIcons.copy,
+                                    size: Insets.dim_24,
+                                    color: AppColors.textBodyColor,
+                                  ).onTap(
+                                    () => data.toJson().toString().toClipboard(
+                                          context: context,
+                                          feedbackMsg:
+                                              '${data.bankName} details copied to clipboard',
+                                        ),
+                                  ),
+                                  const XBox(Insets.dim_14),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        data.bankName,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.textBodyColor,
+                                        ),
+                                      ),
+                                      const YBox(Insets.dim_4),
+                                      Text(
+                                        data.accountNumber,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.textBodyColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  const Text(
+                                    'Share',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.black,
+                                    ),
+                                  ).onTap(
+                                    () async {
+                                      await shareAccountDetails(
+                                        data,
+                                        transactionP
+                                            .accountDetailsRES.data!.name,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+ */

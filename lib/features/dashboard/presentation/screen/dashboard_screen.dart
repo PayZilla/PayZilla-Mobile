@@ -128,7 +128,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           'Add Money',
                           'To PayZilla',
                           'To Bank',
-                          'Refer & Earn'
+                          'Refer & Earn',
                         ],
                         todo: [
                           () => dsProvider.goTo(
@@ -457,7 +457,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ],
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -474,7 +474,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 : const TransactionList(useRefresh: false),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),

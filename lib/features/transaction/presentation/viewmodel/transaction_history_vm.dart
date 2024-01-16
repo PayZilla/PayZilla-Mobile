@@ -23,7 +23,12 @@ class TransactionHistoryProvider extends ChangeNotifier {
 
   ScrollController? controller;
 
-  List<TransactionModel> transactionsFetched = [];
+  List<TransactionModel> _transactionsFetched = [];
+  List<TransactionModel> get transactionsFetched => _transactionsFetched;
+  set transactionsFetched(List<TransactionModel> value) {
+    _transactionsFetched = value;
+    notifyListeners();
+  }
 
   ApiResult<List<TransactionModel>> getTransactionsResponse =
       ApiResult<List<TransactionModel>>.idle();

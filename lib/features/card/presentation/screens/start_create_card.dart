@@ -36,7 +36,7 @@ class _StartCreateCardScreenState extends State<StartCreateCardScreen> {
           ),
           const Spacer(),
           Text(
-            'Create your PayZilla Card',
+            'Top-up via Bank Card',
             style: context.textTheme.bodyMedium!.copyWith(
               color: AppColors.textHeaderColor,
               fontWeight: FontWeight.w700,
@@ -45,7 +45,7 @@ class _StartCreateCardScreenState extends State<StartCreateCardScreen> {
           ),
           const YBox(Insets.dim_12),
           Text(
-            'The customizable, no hidden fee, instant discount debit or credit card',
+            'The account linked to your bank card should have a minimum balance of NGN50, which will be charged and refunded to your PayZilla account',
             style: context.textTheme.bodyMedium!.copyWith(
               color: AppColors.textBodyColor,
               fontWeight: FontWeight.w400,
