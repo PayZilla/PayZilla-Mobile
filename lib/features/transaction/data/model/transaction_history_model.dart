@@ -48,7 +48,7 @@ class TransactionModel extends Equatable {
       category: json['category'] ?? '',
       type: json['type'] ?? '',
       status: json['status'] ?? '',
-      amount: json['amount'] ?? 0,
+      amount: json['amount'] ?? 0.0,
       description: json['description'] ?? '',
       date: json['date'] ?? '',
     );
@@ -60,7 +60,7 @@ class TransactionModel extends Equatable {
       category: '',
       type: '',
       status: '',
-      amount: 0,
+      amount: 0.0,
       description: '',
       date: '',
     );
@@ -70,7 +70,7 @@ class TransactionModel extends Equatable {
   final String category;
   final String type;
   final String status;
-  final int amount;
+  final num amount;
   final String description;
   final String date;
 

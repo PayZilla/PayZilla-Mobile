@@ -16,7 +16,7 @@ FutureBottomSheet<Widget> showBvnInfoUpdate({
     future: () => Future.value([]),
     height: context.getHeight(0.5),
     isDismissible: dismissible,
-    title: 'Update Bvn Info',
+    title: 'Use the form below to update your BVN info',
     desc: 'Enter your name as registered on your BVN',
     searchWidget: Column(
       children: [

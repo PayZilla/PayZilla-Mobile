@@ -36,7 +36,9 @@ class _TransactionListState extends State<TransactionList> {
       onRefresh: () async {
         if (widget.useRefresh) {
           transactionsProvider.fetchMore(
-              transactionsProvider.pageNumCount, context);
+            transactionsProvider.pageNumCount,
+            context,
+          );
         }
       },
       child: ListView.separated(

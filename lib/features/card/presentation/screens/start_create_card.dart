@@ -54,7 +54,7 @@ class _StartCreateCardScreenState extends State<StartCreateCardScreen> {
           ),
           const YBox(Insets.dim_44),
           AppSolidButton(
-            textTitle: 'Get Free Card',
+            textTitle: 'Continue',
             showLoading: transactionP.initializeRefRES.isLoading ||
                 transactionP.finalizeAddCardRES.isLoading,
             action: () {

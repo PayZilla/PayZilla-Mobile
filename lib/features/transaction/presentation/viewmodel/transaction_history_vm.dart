@@ -44,6 +44,7 @@ class TransactionHistoryProvider extends ChangeNotifier {
   }
 
   void init(BuildContext context) {
+    transactionsFetched = [];
     controller = ScrollController();
     if (controller!.hasClients) {
       controller!.addListener(() {

@@ -23,6 +23,7 @@ class FundingAccountDetails extends StatefulWidget {
 class _FundingAccountDetailsState extends State<FundingAccountDetails> {
   ScrollController controller = ScrollController();
   late TransactionProvider transactionP;
+  String bankName = '';
   @override
   void initState() {
     super.initState();
@@ -102,6 +103,11 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
                           final data = transactionP
                               .accountDetailsRES.data!.banks.reversed
                               .toList()[index];
+                          bankName = transactionP
+                              .accountDetailsRES.data!.banks.reversed
+                              .toList()
+                              .first
+                              .bankName;
                           return Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,20 +202,23 @@ class _FundingAccountDetailsState extends State<FundingAccountDetails> {
                         ),
                         children: [
                           TextSpan(
-                            text: 'Supreme MFB is 0.00% Charges Free',
+                            text: '$bankName is 0.00% Charges Free',
                             style: context.textTheme.bodyMedium!.copyWith(
                               color: AppColors.brown,
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
                               letterSpacing: 0.30,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
-                  ] else ...[
+                  ] else if (transactionP.accountDetailsRES.isLoading) ...[
                     const Center(child: CircularProgressIndicator()),
-                  ],
+                  ] else
+                    Center(
+                      child: Text(transactionP.accountDetailsRES.message),
+                    ),
                 ],
               ),
             ),
