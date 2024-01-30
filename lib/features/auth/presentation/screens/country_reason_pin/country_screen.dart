@@ -69,10 +69,22 @@ class _CountryScreenState extends State<CountryScreen> with FormMixin {
             const Spacer(),
             AppSolidButton(
               textTitle: 'Continue',
-              showLoading: provider.genericAuthResp.isLoading,
-              action: () => validate(
-                () => AppNavigator.of(context).push(AppRoutes.countryToBvn),
-              ),
+              showLoading: provider.onboardingResp.isLoading,
+              action: () => validate(() {
+                provider.initializeBvn(context).then((value) {
+                  if (provider.onboardingResp.isSuccess) {
+                    AppNavigator.of(context).push(AppRoutes.countryToBvn);
+                    // AppNavigator.of(context).push(
+                    //   AppRoutes.pin,
+                    //   args: GenericTokenVerificationArgs(
+                    //     email: 'your BVN data',
+                    //     path: AppRoutes.bvnToReasons,
+                    //     endpointPath: authEndpoints.bvnVerification,
+                    //   ),
+                    // );
+                  }
+                });
+              }),
             ),
             const YBox(Insets.dim_20),
             Center(

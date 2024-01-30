@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
+import 'package:pay_zilla/functional_utils/log_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -25,7 +26,6 @@ class _AppWebviewState extends State<AppWebview> {
   @override
   void initState() {
     super.initState();
-
     // #docRegion platform_features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
@@ -47,6 +47,9 @@ class _AppWebviewState extends State<AppWebview> {
                 loadingPercent = progress;
               });
             }
+          },
+          onUrlChange: (change) {
+            Log().debug('Web view navigating to', change.url.toString());
           },
         ),
       )
@@ -71,7 +74,9 @@ class _AppWebviewState extends State<AppWebview> {
       ),
       body: loadingPercent != 100
           ? const AppCircularLoadingWidget()
-          : WebViewWidget(controller: _controller),
+          : SafeArea(
+              child: WebViewWidget(controller: _controller),
+            ),
     );
   }
 }

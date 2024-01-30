@@ -11,7 +11,8 @@ class _AuthEndpoints {
   final emailVerificationVerify = '/auth/email-verification/verify';
 
   final getKyc = '/kycs';
-  final bvnInitialize = '/kycs/bvn/initialize';
+  final bvnInitialize = '/bvn/';
+//kycs/bvn/initialize
   final bvnVerification = '/kycs/bvn/verify';
   final bvnUpdate = '/kycs/bvn/update-name';
 

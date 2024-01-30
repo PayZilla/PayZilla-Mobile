@@ -25,7 +25,14 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
   Widget build(BuildContext context) {
     final provider = context.watch<AuthProvider>();
 
-    return AppScaffold(
+    return AppWebview(
+      args: AppWebViewArgs(
+        provider.onboardingResp.data!,
+        'Validate BVN',
+      ),
+    );
+/*
+    AppScaffold(
       appBar: CustomAppBar(
         leading: AppBoxedButton(
           onPressed: () => AppNavigator.of(context).pop(),
@@ -176,20 +183,7 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
               showLoading: provider.onboardingResp.isLoading,
               action: () {
                 validate(
-                  () {
-                    provider.initializeBvn(requestDto, context).then((value) {
-                      if (provider.onboardingResp.isSuccess) {
-                        AppNavigator.of(context).push(
-                          AppRoutes.pin,
-                          args: GenericTokenVerificationArgs(
-                            email: 'your BVN data',
-                            path: AppRoutes.bvnToReasons,
-                            endpointPath: authEndpoints.bvnVerification,
-                          ),
-                        );
-                      }
-                    });
-                  },
+                  () {},
                 );
               },
             ),
@@ -197,6 +191,6 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
           ],
         ),
       ),
-    );
+    );*/
   }
 }

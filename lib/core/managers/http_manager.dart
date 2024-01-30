@@ -9,9 +9,15 @@ enum RequestType { get, post, put, patch, delete }
 
 const successCodes = [200, 201, 203, 204];
 
+enum Version {
+  v1,
+  v2,
+}
+
 class HttpManager {
   HttpManager({
     Dio? dio1,
+    Dio? dio2,
     required ILocalCache cache,
     required String baseUrl,
     required this.enableLogging,
@@ -26,15 +32,29 @@ class HttpManager {
     _dio1.interceptors.add(
       RequestsInspectorInterceptor(),
     );
+
+    _dio2 = dio2 ?? Dio();
+    _dio2.options.baseUrl = 'https://wow.davenportmfb.com';
+    _dio2.options.connectTimeout = 30000;
+    _dio2.options.receiveTimeout = 30000;
+
+    _dio2.interceptors.add(
+      RequestsInspectorInterceptor(),
+    );
   }
-  late Dio _dio1;
+  late Dio _dio1, _dio2;
   bool enableLogging;
 
-  Future get(String endpoint, {Map<String, dynamic>? data}) async {
+  Future get(
+    String endpoint, {
+    Map<String, dynamic>? data,
+    Version version = Version.v1,
+  }) async {
     return _makeRequest(
       RequestType.get,
       endpoint,
       data,
+      version: version,
     );
   }
 
@@ -84,13 +104,17 @@ class HttpManager {
   Future _makeRequest(
     RequestType type,
     String endpoint,
-    dynamic data,
-  ) async {
+    dynamic data, {
+    Version version = Version.v1,
+  }) async {
     try {
       late Response response;
       switch (type) {
         case RequestType.get:
-          response = await _dio1.get(endpoint);
+          response = version == Version.v1
+              ? await _dio1.get(endpoint)
+              : await _dio2.get(endpoint);
+
           break;
         case RequestType.post:
           response = await _dio1.post(endpoint, data: data);

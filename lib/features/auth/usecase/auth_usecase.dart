@@ -69,13 +69,13 @@ class FetchReasonsUseCase implements UseCase<List<ReasonsModel>, NoParams> {
 }
 
 // initialize BVN use case
-class InitializeBvnUseCase implements UseCase<bool, AuthParams> {
+class InitializeBvnUseCase implements UseCase<String, NoParams> {
   InitializeBvnUseCase({required this.authRepository});
   AuthRepository authRepository;
 
   @override
-  Future<Either<ApiFailure, bool>> call(AuthParams params) {
-    return authRepository.initializeBvn(params);
+  Future<Either<ApiFailure, String>> call(NoParams params) {
+    return authRepository.initializeBvn();
   }
 }
 

@@ -38,8 +38,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer>
   void initState() {
     super.initState();
 
-    context.read<TransactionHistoryProvider>().init(context);
     Future.microtask(() {
+      context.read<TransactionHistoryProvider>().init(context);
       dashboardProvider
         ..getWallets()
         ..getCategories();

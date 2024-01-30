@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
-import 'package:pay_zilla/functional_utils/log_util.dart';
 
 abstract class IAuthRemoteDataSource {
   Future<Either<Failure, User>> getUser();
@@ -14,7 +13,7 @@ abstract class IAuthRemoteDataSource {
   Future<Either<ApiFailure, List<dynamic>>> getKyc();
   Future<Either<ApiFailure, String>> emailVerificationInitiate();
   Future<Either<ApiFailure, String>> tokenVerification(AuthParams params);
-  Future<Either<ApiFailure, bool>> initializeBvn(AuthParams params);
+  Future<Either<ApiFailure, String>> initializeBvn();
   Future<Either<ApiFailure, bool>> updateBvn(AuthParams params);
   Future<Either<ApiFailure, bool>> setPin(String pin);
   Future<Either<ApiFailure, bool>> forgotPasswordInit(AuthParams params);
@@ -133,16 +132,12 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   }
 
   @override
-  Future<Either<ApiFailure, bool>> initializeBvn(AuthParams params) async {
+  Future<Either<ApiFailure, String>> initializeBvn() async {
     try {
-      final response = ResponseDto.fromMap(
-        await http.post(
-          authEndpoints.bvnInitialize,
-          params.toMap(),
-        ),
-      );
+      final response =
+          await http.get(authEndpoints.bvnInitialize, version: Version.v2);
 
-      return Right(response.status);
+      return Right(response['url']);
     } on AppServerException catch (err) {
       return Left(ApiFailure(msg: err.message));
     } catch (err) {

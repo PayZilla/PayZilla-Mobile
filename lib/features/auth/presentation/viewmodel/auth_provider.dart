@@ -351,14 +351,12 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> initializeBvn(AuthParams params, BuildContext context) async {
+  Future<void> initializeBvn(BuildContext context) async {
     onboardingResp = ApiResult<String>.idle();
     onboardingResp = ApiResult<String>.loading('Loading up....');
-    Log().debug('Initialization value for BVN', params.toMap());
-
     notifyListeners();
 
-    final failureOrLogin = await initializeBvnUseCase.call(params);
+    final failureOrLogin = await initializeBvnUseCase.call(NoParams());
     await failureOrLogin.fold(
       (failure) async {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -398,7 +396,7 @@ class AuthProvider extends ChangeNotifier {
         }
       },
       (res) {
-        onboardingResp = ApiResult<String>.success(res.toString());
+        onboardingResp = ApiResult<String>.success(res);
         notifyListeners();
       },
     );
