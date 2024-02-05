@@ -1,9 +1,14 @@
+import 'dart:collection';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
+
 import 'package:pay_zilla/features/ui_widgets/ui_widgets.dart';
-import 'package:pay_zilla/functional_utils/log_util.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:provider/provider.dart';
 
 class AppWebViewArgs {
   AppWebViewArgs(this.url, this.title);
@@ -21,62 +26,110 @@ class AppWebview extends StatefulWidget {
 }
 
 class _AppWebviewState extends State<AppWebview> {
-  late final WebViewController _controller;
-  int loadingPercent = 0;
+  final GlobalKey webViewKey = GlobalKey();
+  late final InAppWebViewController webViewController;
+  InAppWebViewSettings settings = InAppWebViewSettings(
+    isInspectable: kDebugMode,
+    mediaPlaybackRequiresUserGesture: false,
+    allowsInlineMediaPlayback: true,
+    iframeAllow: 'camera; microphone',
+    iframeAllowFullscreen: true,
+  );
+  String url = '';
+  double progress = 0;
+  final urlController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    // #docRegion platform_features
-    late final PlatformWebViewControllerCreationParams params;
-    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
-    }
+  }
 
-    final controller = WebViewController.fromPlatformCreationParams(params)
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            if (mounted) {
-              setState(() {
-                loadingPercent = progress;
-              });
-            }
-          },
-          onUrlChange: (change) {
-            Log().debug('Web view navigating to', change.url.toString());
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.args.url));
-
-    // #doc region platform_features
-    if (controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
-    }
-    // #end docRegion platform_features
-
-    _controller = controller;
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
     return Scaffold(
       appBar: CustomAppBar(
         title: widget.args.title,
       ),
-      body: loadingPercent != 100
-          ? const AppCircularLoadingWidget()
-          : SafeArea(
-              child: WebViewWidget(controller: _controller),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            InAppWebView(
+              key: webViewKey,
+              initialUrlRequest: URLRequest(
+                url: WebUri(widget.args.url),
+              ),
+              initialUserScripts: UnmodifiableListView<UserScript>([]),
+              initialSettings: settings,
+              onWebViewCreated: (controller) async {
+                webViewController = controller;
+              },
+              onLoadStart: (controller, url) async {
+                setState(() {
+                  this.url = url.toString();
+                  urlController.text = this.url;
+                });
+              },
+              onPermissionRequest: (controller, request) async {
+                return PermissionResponse(
+                  resources: request.resources,
+                  action: PermissionResponseAction.GRANT,
+                );
+              },
+              onLoadStop: (controller, url) async {
+                setState(() {
+                  this.url = url.toString();
+                  urlController.text = this.url;
+                });
+              },
+              onReceivedError: (controller, request, error) {},
+              onProgressChanged: (controller, p) {
+                setState(() {
+                  progress = p / 100;
+                  urlController.text = url;
+                });
+              },
+              onUpdateVisitedHistory: (controller, url, isReload) {
+                setState(() {
+                  this.url = url.toString();
+                  urlController.text = this.url;
+                });
+              },
+              onConsoleMessage: (controller, consoleMessage) {
+                if (consoleMessage.message.contains('handleDataReceived')) {
+                  final json = jsonDecode(consoleMessage.message);
+                  auth
+                    ..bvnModel = BvnModel.fromJson(json)
+                    ..requestBvn = false;
+                  setState(() {});
+                }
+              },
             ),
+            if (progress < 1.0)
+              AppCircularLoadingWidget(
+                value: progress,
+                color: AppColors.white,
+                size: 50,
+              )
+            else
+              const SizedBox.shrink(),
+            if (urlController.text.split('/').last.contains('error'))
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: ElevatedButton(
+                  child: const Icon(Icons.refresh),
+                  onPressed: () {
+                    webViewController.reload();
+                  },
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

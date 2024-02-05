@@ -70,38 +70,33 @@ class _CountryScreenState extends State<CountryScreen> with FormMixin {
             AppSolidButton(
               textTitle: 'Continue',
               showLoading: provider.onboardingResp.isLoading,
-              action: () => validate(() {
-                provider.initializeBvn(context).then((value) {
+              action: () => validate(() async {
+                await provider.initializeBvn(context).then((value) {
                   if (provider.onboardingResp.isSuccess) {
                     AppNavigator.of(context).push(AppRoutes.countryToBvn);
-                    // AppNavigator.of(context).push(
-                    //   AppRoutes.pin,
-                    //   args: GenericTokenVerificationArgs(
-                    //     email: 'your BVN data',
-                    //     path: AppRoutes.bvnToReasons,
-                    //     endpointPath: authEndpoints.bvnVerification,
-                    //   ),
-                    // );
                   }
                 });
               }),
             ),
             const YBox(Insets.dim_20),
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  AppNavigator.of(context).push(AppRoutes.home);
-                },
-                child: Text(
-                  'SKIP',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.textHeaderColor,
-                    fontWeight: FontWeight.w800,
-                    fontSize: Insets.dim_18,
+            if (provider.onboardingResp.isLoading)
+              const SizedBox.shrink()
+            else
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    AppNavigator.of(context).push(AppRoutes.home);
+                  },
+                  child: Text(
+                    'SKIP',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textHeaderColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: Insets.dim_18,
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),

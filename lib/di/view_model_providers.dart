@@ -24,6 +24,7 @@ void registerViewModelProviders(GetIt getIt) {
         forgotPasswordResetUseCase: getIt(),
         forgotPasswordUseCase: getIt(),
         initializeBvnUseCase: getIt(),
+        submitBvnUseCase: getIt(),
         pinSetupUseCase: getIt(),
         purposeUseCase: getIt(),
         updateBvnUseCase: getIt(),

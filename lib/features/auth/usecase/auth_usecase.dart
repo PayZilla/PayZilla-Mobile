@@ -79,6 +79,16 @@ class InitializeBvnUseCase implements UseCase<String, NoParams> {
   }
 }
 
+class SubmitBvnUseCase implements UseCase<bool, AuthParams> {
+  SubmitBvnUseCase({required this.authRepository});
+  AuthRepository authRepository;
+
+  @override
+  Future<Either<ApiFailure, bool>> call(AuthParams params) {
+    return authRepository.submitBvn(params);
+  }
+}
+
 // update BVN use case
 class UpdateBvnUseCase implements UseCase<bool, AuthParams> {
   UpdateBvnUseCase({required this.authRepository});

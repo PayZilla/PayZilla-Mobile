@@ -14,6 +14,7 @@ abstract class IAuthRemoteDataSource {
   Future<Either<ApiFailure, String>> emailVerificationInitiate();
   Future<Either<ApiFailure, String>> tokenVerification(AuthParams params);
   Future<Either<ApiFailure, String>> initializeBvn();
+  Future<Either<ApiFailure, bool>> submitBvn(AuthParams params);
   Future<Either<ApiFailure, bool>> updateBvn(AuthParams params);
   Future<Either<ApiFailure, bool>> setPin(String pin);
   Future<Either<ApiFailure, bool>> forgotPasswordInit(AuthParams params);
@@ -81,10 +82,6 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
   @override
   Future<Either<ApiFailure, List<ReasonsModel>>> fetchReasons() async {
     try {
-      final response = ResponseDto.fromMap(
-        await http.get(''),
-      );
-
       return const Right([]);
     } on AppServerException catch (err) {
       return Left(ApiFailure(msg: err.message));
@@ -147,6 +144,13 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
 
   @override
   Future<Either<ApiFailure, bool>> updateBvn(AuthParams params) async {
+    /**
+     * {
+     *  first_name:Emmanuel
+     *  last_name: Akinjole
+     *  phone_number: +2348029649888
+     * }
+     */
     try {
       final response = ResponseDto.fromMap(
         await http.post(
@@ -154,6 +158,30 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource {
           params.toMap(),
         ),
       );
+      return Right(response.status);
+    } on AppServerException catch (err) {
+      return Left(ApiFailure(msg: err.message));
+    } catch (err) {
+      return Left(ApiFailure(msg: err.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ApiFailure, bool>> submitBvn(AuthParams params) async {
+    /**
+   *   {
+          bvn:22891521717
+          date_of_birth:1986-07-19
+        }
+   */
+    try {
+      final response = ResponseDto.fromMap(
+        await http.post(
+          authEndpoints.submitBvn,
+          params.toMap(),
+        ),
+      );
+
       return Right(response.status);
     } on AppServerException catch (err) {
       return Left(ApiFailure(msg: err.message));

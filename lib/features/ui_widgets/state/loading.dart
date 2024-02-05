@@ -3,9 +3,14 @@ import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 class AppCircularLoadingWidget extends StatelessWidget {
-  const AppCircularLoadingWidget({this.size = 15, this.color, Key? key})
-      : super(key: key);
+  const AppCircularLoadingWidget({
+    this.size = 15,
+    this.color,
+    Key? key,
+    this.value,
+  }) : super(key: key);
   final double size;
+  final double? value;
   final Color? color;
 
   @override
@@ -17,6 +22,7 @@ class AppCircularLoadingWidget extends StatelessWidget {
         child: CircularProgressIndicator(
           strokeWidth: 2,
           color: color ?? Theme.of(context).primaryColor,
+          value: value,
         ),
       ),
     );

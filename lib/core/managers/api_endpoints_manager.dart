@@ -12,7 +12,8 @@ class _AuthEndpoints {
 
   final getKyc = '/kycs';
   final bvnInitialize = '/bvn/';
-//kycs/bvn/initialize
+  final submitBvn = '/kycs/bvn/initialize';
+
   final bvnVerification = '/kycs/bvn/verify';
   final bvnUpdate = '/kycs/bvn/update-name';
 

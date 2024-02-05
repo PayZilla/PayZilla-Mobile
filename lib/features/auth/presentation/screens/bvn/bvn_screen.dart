@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
@@ -25,12 +23,94 @@ class _BvnScreenState extends State<BvnScreen> with FormMixin {
   Widget build(BuildContext context) {
     final provider = context.watch<AuthProvider>();
 
-    return AppWebview(
-      args: AppWebViewArgs(
-        provider.onboardingResp.data!,
-        'Validate BVN',
-      ),
-    );
+    return provider.bvnModel.data.isEmpty && !provider.requestBvn
+        ? AppWebview(
+            args: AppWebViewArgs(
+              provider.onboardingResp.data!,
+              'Validate BVN',
+            ),
+          )
+        : AppScaffold(
+            appBar: CustomAppBar(
+              title: 'Confirm your BVN',
+              leading: AppBoxedButton(
+                onPressed: () => AppNavigator.of(context).pop(),
+              ),
+            ),
+            body: Form(
+              key: formKey,
+              child: ListView(
+                children: [
+                  AppTextFormField(
+                    hintText: 'Full legal name',
+                    labelText: 'Full legal name ',
+                    initialValue: provider.bvnModel.data.fullName,
+                    inputType: TextInputType.text,
+                    validator: (input) => Validators.validateFullName()(input),
+                  ),
+                  const YBox(Insets.dim_24),
+                  PhoneNumberTextFormField(
+                    labelText: 'Phone Number',
+                    hintText: 'Phone Number',
+                    key: const ValueKey('123'),
+                    initialValue: requestDto.phoneNumber,
+                    onSaved: (p0) {
+                      requestDto = requestDto.copyWith(
+                        phoneNumber: p0,
+                      );
+                    },
+                  ),
+                  const YBox(Insets.dim_18),
+                  ClickableFormField(
+                    labelText: 'Date Of Birth',
+                    hintText: 'Select date',
+                    key: const ValueKey('456'),
+                    controller: TextEditingController(
+                      text: provider.bvnModel.data.dob.split('T').first,
+                    ),
+                    validator: (input) => Validators.validateString(
+                      error: 'This field is required',
+                    )(input),
+                    suffixIcon: const Icon(
+                      PhosphorIcons.calendarBlank,
+                      size: 18,
+                    ),
+                  ),
+                  YBox(context.getHeight(0.4)),
+                  AppSolidButton(
+                    textTitle: 'Confirm',
+                    showLoading: provider.onboardingResp.isLoading,
+                    action: () {
+                      validate(() async {
+                        requestDto = requestDto.copyWith(
+                          bvn: provider.bvnModel.data.bvn,
+                          fullName: provider.bvnModel.data.fullName,
+                          dob: provider.bvnModel.data.dob.split('T').first,
+                        );
+                        Log().debug('the bvn request', requestDto.toMap());
+                        await provider.updateBvn(requestDto, context);
+                        // ignore: use_build_context_synchronously
+                        await provider
+                            .submitBvn(requestDto, context)
+                            .then((value) {
+                          if (provider.onboardingResp.isSuccess) {
+                            AppNavigator.of(context).push(
+                              AppRoutes.pin,
+                              args: GenericTokenVerificationArgs(
+                                email: 'your BVN data',
+                                path: AppRoutes.bvnToReasons,
+                                endpointPath: authEndpoints.bvnVerification,
+                              ),
+                            );
+                          }
+                        });
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
 /*
     AppScaffold(
       appBar: CustomAppBar(

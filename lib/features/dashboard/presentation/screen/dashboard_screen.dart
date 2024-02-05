@@ -99,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   radius: 8,
                                   backgroundColor: AppColors.borderErrorColor,
                                 ),
-                              )
+                              ),
                           ],
                         ),
                       ).onTap(
@@ -122,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           depositSvg,
                           transferSvg,
                           withdrawSvg,
-                          referEarnSvg
+                          referEarnSvg,
                         ],
                         name: const [
                           'Add Money',
@@ -138,7 +138,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           () => dsProvider.goTo(AppRoutes.transfer, context),
                           () =>
                               dsProvider.goTo(AppRoutes.bankTransfer, context),
-                          () => dsProvider.goTo(AppRoutes.referral, context)
+                          () => dsProvider.goTo(AppRoutes.referral, context),
                         ],
                       ),
                       const YBox(Insets.dim_2),
@@ -166,7 +166,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 4,
                                 crossAxisSpacing: Insets.dim_22,
-                                childAspectRatio: 0.9,
+                                childAspectRatio: 0.8,
                               ),
                               itemBuilder: (context, index) {
                                 final e = dsProvider.billResponse.data![index];
@@ -180,7 +180,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       height: context.getHeight(0.5),
                                       future: () async {
                                         return dsProvider.getCategoryId(
-                                            e.identifier, context);
+                                          e.identifier,
+                                          context,
+                                        );
                                       },
                                       itemBuilder: (context, item) {
                                         return ListTile(
@@ -370,7 +372,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         dsProvider.purchaseAirtime(context);
                                         AppNavigator.of(context).popDialog();
                                       },
-                                    )
+                                    ),
                                   ],
                                   itemBuilder: (context, item) {
                                     return item;
@@ -400,7 +402,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ),
                           ),
-                          const Spacer()
+                          const Spacer(),
                         ],
                       ),
                       Column(

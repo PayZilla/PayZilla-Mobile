@@ -62,6 +62,11 @@ void registerUseCases(GetIt getIt) {
       ),
     )
     ..registerFactory(
+      () => SubmitBvnUseCase(
+        authRepository: getIt(),
+      ),
+    )
+    ..registerFactory(
       () => PinSetupUseCase(
         authRepository: getIt(),
       ),

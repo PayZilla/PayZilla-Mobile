@@ -31,7 +31,7 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
     return AppScaffold(
       appBar: CustomAppBar(
         leading: AppBoxedButton(
-          onPressed: () => AppNavigator.of(context).pop(),
+          onPressed: () => AppNavigator.of(context).push(AppRoutes.onboarding),
         ),
       ),
       body: Form(
@@ -68,7 +68,6 @@ class _ReasonsScreenState extends State<ReasonsScreen> with FormMixin {
                 physics: const BouncingScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   childAspectRatio: 1.5,
                 ),

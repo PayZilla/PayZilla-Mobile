@@ -24,6 +24,7 @@ class AuthProvider extends ChangeNotifier {
     required this.pinSetupUseCase,
     required this.fetchReasonsUseCase,
     required this.initializeBvnUseCase,
+    required this.submitBvnUseCase,
     required this.updateBvnUseCase,
     required this.forgotPasswordUseCase,
     required this.forgotPasswordResetUseCase,
@@ -39,6 +40,7 @@ class AuthProvider extends ChangeNotifier {
   PinSetupUseCase pinSetupUseCase;
   FetchReasonsUseCase fetchReasonsUseCase;
   InitializeBvnUseCase initializeBvnUseCase;
+  SubmitBvnUseCase submitBvnUseCase;
   UpdateBvnUseCase updateBvnUseCase;
   ForgotPasswordUseCase forgotPasswordUseCase;
   ForgotPasswordResetUseCase forgotPasswordResetUseCase;
@@ -57,6 +59,20 @@ class AuthProvider extends ChangeNotifier {
   User get user => _user;
   set user(User val) {
     _user = val;
+    notifyListeners();
+  }
+
+  BvnModel _bvnModel = BvnModel.empty();
+  BvnModel get bvnModel => _bvnModel;
+  set bvnModel(BvnModel val) {
+    _bvnModel = val;
+    notifyListeners();
+  }
+
+  bool _requestBvn = true;
+  bool get requestBvn => _requestBvn;
+  set requestBvn(bool val) {
+    _requestBvn = val;
     notifyListeners();
   }
 
@@ -98,50 +114,6 @@ class AuthProvider extends ChangeNotifier {
         await getUser(context: context);
         AppNavigator.of(context).push(AppRoutes.home);
 
-/*
-        //1. Handle all conditions on login response first
-        if (!res.user.hasVerifiedEmail) {
-          final verificationMsg =
-              'You have not verified either phone number (${res.user.phoneNumber}) or email (${res.user.email})';
-          showInfoNotification(context, verificationMsg, durationInMills: 3500);
-          genericAuthResp = ApiResult<UserAuthModel>.error(verificationMsg);
-          notifyListeners();
-
-          AppNavigator.of(context).push(
-            AppRoutes.pin,
-            args: GenericTokenVerificationArgs(
-              email: res.user.email,
-              path: AppRoutes.country,
-              endpointPath: authEndpoints.emailVerificationVerify,
-            ),
-          );
-          return;
-        }
-        if (!res.user.hasVerifiedPhoneNumber) {
-          genericAuthResp = ApiResult<UserAuthModel>.error(
-            'You have not verified phone number (${res.user.phoneNumber})',
-          );
-          showInfoNotification(
-            context,
-            genericAuthResp.message,
-            durationInMills: 3500,
-          );
-          notifyListeners();
-          // ignore: use_build_context_synchronously
-          AppNavigator.of(context).push(AppRoutes.country);
-          return;
-        }
-
-        if (res.user.registrationPurpose.isEmpty) {
-          genericAuthResp = ApiResult<UserAuthModel>.success(res);
-          AppNavigator.of(context).push(AppRoutes.bvnToReasons);
-          notifyListeners();
-          return;
-        }
-        //2. Now handle user journey on kyc status
-
-        await getKyc(context);*/
-
         genericAuthResp = ApiResult<UserAuthModel>.success(res);
         notifyListeners();
       },
@@ -152,9 +124,7 @@ class AuthProvider extends ChangeNotifier {
     final failureOrKYC = await userUserKycCase.call(NoParams());
 
     await failureOrKYC.fold(
-      (failure) {
-        Log().debug('The KYC failed', failure.message);
-      },
+      (failure) {},
       (res) async {
         if (res.isEmpty) {
           AppNavigator.of(context).push(AppRoutes.countryToBvn);
@@ -172,6 +142,8 @@ class AuthProvider extends ChangeNotifier {
     required BuildContext context,
   }) async {
     _user = User.empty();
+    bvnModel = BvnModel.empty();
+    requestBvn = false;
     final userLocal = await sl<IAuthLocalDataSource>().getAuthUserPref();
     if (userLocal != null) {
       _user = userLocal as User;
@@ -226,6 +198,9 @@ class AuthProvider extends ChangeNotifier {
           ..saveAuthUserPref(res.user)
           ..saveUserEmail(res.user.email)
           ..saveToken(res.accessToken);
+        bvnModel = BvnModel.empty();
+        requestBvn = false;
+
         AppNavigator.of(context).push(
           AppRoutes.pin,
           args: GenericTokenVerificationArgs(
@@ -289,7 +264,6 @@ class AuthProvider extends ChangeNotifier {
     onboardingResp = ApiResult<String>.loading('Loading up....');
 
     notifyListeners();
-    Log().debug('Request OTP');
     final failureOrLogin = await emailVerificationUseCase.call(NoParams());
     failureOrLogin.fold(
       (failure) {
@@ -363,40 +337,47 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
 
-        if (failure.message == 'Bvn name not match') {
-          showInfoNotification(
-            context,
-            'BVN name not match PayZilla user name',
-            durationInMills: 3500,
-          );
-          var requestDto = AuthParams.empty();
-          await showBvnInfoUpdate(
-            context: context,
-            onTap: (p0) async {
-              if (p0.isNotEmpty) {
-                requestDto = requestDto.copyWith(
-                  fullName: p0.first,
-                  phoneNumber: p0.last,
-                );
-                notifyListeners();
-              }
-            },
-          ).show(context);
-
-          await updateBvn(requestDto, context);
-
-          onboardingResp = ApiResult<String>.idle();
-          notifyListeners();
-        } else {
-          showErrorNotification(
-            context,
-            failure.message,
-            durationInMills: 3000,
-          );
-        }
+        showErrorNotification(
+          context,
+          failure.message,
+          durationInMills: 3000,
+        );
       },
       (res) {
         onboardingResp = ApiResult<String>.success(res);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> submitBvn(AuthParams params, BuildContext context) async {
+    onboardingResp = ApiResult<String>.idle();
+    onboardingResp = ApiResult<String>.loading('Loading up....');
+    Log().debug('submit value for BVN', params.toMap());
+
+    var req = AuthParams.empty();
+    req = req.copyWith(
+      bvn: params.bvn,
+      dob: params.dob,
+    );
+
+    notifyListeners();
+
+    final failureOrLogin = await submitBvnUseCase.call(req);
+    await failureOrLogin.fold(
+      (failure) async {
+        onboardingResp = ApiResult<String>.error(failure.message);
+
+        notifyListeners();
+
+        showErrorNotification(
+          context,
+          failure.message,
+          durationInMills: 3000,
+        );
+      },
+      (res) {
+        onboardingResp = ApiResult<String>.success(res.toString());
         notifyListeners();
       },
     );
@@ -408,7 +389,13 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final failureOrLogin = await updateBvnUseCase.call(params);
+    var req = AuthParams.empty();
+    req = req.copyWith(
+      fullName: params.fullName,
+      phoneNumber: params.phoneNumber,
+    );
+
+    final failureOrLogin = await updateBvnUseCase.call(req);
     failureOrLogin.fold(
       (failure) {
         onboardingResp = ApiResult<String>.error(failure.message);
@@ -420,7 +407,10 @@ class AuthProvider extends ChangeNotifier {
       },
       (res) {
         onboardingResp = ApiResult<String>.success(res.toString());
-        showSuccessNotification(context, 'BVN info updated successfully');
+        showSuccessNotification(
+          context,
+          'BVN info updated successfully\nRequesting OTP...',
+        );
         notifyListeners();
       },
     );

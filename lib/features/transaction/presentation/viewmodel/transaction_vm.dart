@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/core/mixins/use_case.dart';
@@ -12,6 +11,7 @@ import 'package:pay_zilla/features/transaction/transaction.dart';
 import 'package:pay_zilla/features/transaction/usecase/transfer_usecase.dart';
 import 'package:pay_zilla/features/ui_widgets/image.dart';
 import 'package:pay_zilla/functional_utils/functional_utils.dart';
+import 'package:flutter_paystack_payment/flutter_paystack_payment.dart';
 
 class TransactionProvider extends ChangeNotifier {
   TransactionProvider({
@@ -50,7 +50,7 @@ class TransactionProvider extends ChangeNotifier {
   late TransferUseCase _transferUseCase;
   late ValidateBankUseCase _validateBankUseCase;
   late TransferWalletBankUseCase _transferWalletBankUseCase;
-  final _plugin = PaystackPlugin();
+  final _plugin = PaystackPayment();
 
   ApiResult<List<MultiSelectItem<CardsModel>>> cardsServiceResponse =
       ApiResult<List<MultiSelectItem<CardsModel>>>.idle();

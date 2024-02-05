@@ -13,6 +13,8 @@ abstract class AuthRepository {
   Future<Either<ApiFailure, String>> emailVerificationInitiate();
   Future<Either<ApiFailure, String>> tokenVerification(AuthParams params);
   Future<Either<ApiFailure, String>> initializeBvn();
+  Future<Either<ApiFailure, bool>> submitBvn(AuthParams params);
+
   Future<Either<ApiFailure, bool>> updateBvn(AuthParams params);
   Future<Either<ApiFailure, User>> purpose(List<String> purpose);
   Future<Either<ApiFailure, bool>> forgotPasswordInit(AuthParams params);
@@ -90,6 +92,11 @@ class AuthRepositoryImp implements AuthRepository {
   @override
   Future<Either<ApiFailure, String>> initializeBvn() async {
     return remoteDataSource.initializeBvn();
+  }
+
+  @override
+  Future<Either<ApiFailure, bool>> submitBvn(AuthParams params) async {
+    return remoteDataSource.submitBvn(params);
   }
 
   @override

@@ -38,6 +38,7 @@ class OnboardingProvider extends ChangeNotifier {
   @override
   void dispose() {
     _timer.cancel();
+    welcomePageController.dispose();
     super.dispose();
   }
 
