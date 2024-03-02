@@ -156,7 +156,8 @@ class AuthProvider extends ChangeNotifier {
       (failure) {
         showErrorNotification(context, failure.message, durationInMills: 2000);
         if (failure is SessionFailure) {
-          AppNavigator.of(context).push(AppRoutes.homeToLogout);
+          sl<IAuthLocalDataSource>().flushLocalStorage();
+          AppNavigator.of(context).push(AppRoutes.onboardingAuth);
         }
         notifyListeners();
       },
