@@ -29,6 +29,7 @@ class AuthProvider extends ChangeNotifier {
     required this.forgotPasswordUseCase,
     required this.forgotPasswordResetUseCase,
     required this.purposeUseCase,
+    required this.localDataSource,
   });
 
   LogInUseCase loginUseCase;
@@ -45,6 +46,7 @@ class AuthProvider extends ChangeNotifier {
   ForgotPasswordUseCase forgotPasswordUseCase;
   ForgotPasswordResetUseCase forgotPasswordResetUseCase;
   PurposeUseCase purposeUseCase;
+  final IAuthLocalDataSource localDataSource;
 
   final deBouncer = DeBouncer(milliseconds: 200);
 
@@ -163,7 +165,9 @@ class AuthProvider extends ChangeNotifier {
       },
       (res) {
         _user = res;
-
+        Log().debug('user on login', user.toJson());
+        requestBvn = user.getAbsoluteVerification;
+        localDataSource.saveBvnRequest(status: user.getAbsoluteVerification);
         notifyListeners();
       },
     );

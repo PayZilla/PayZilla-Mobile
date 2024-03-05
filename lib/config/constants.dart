@@ -18,6 +18,7 @@ class CacheKeys {
   static const password = 'user_password';
   static const phoneNumber = 'user_phone_number';
   static const biometric = 'biometric';
+  static const bvnRequest = 'bvn_request';
 
   static const biometricMode = 'biometric_mode';
 

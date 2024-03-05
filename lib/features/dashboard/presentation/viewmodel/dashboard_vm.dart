@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/mixins/use_case.dart';
+import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/dashboard/usecase/acount_usecases.dart';
 import 'package:pay_zilla/features/dashboard/usecase/bills_usecase.dart';
@@ -24,6 +25,7 @@ class DashboardProvider extends ChangeNotifier {
     required this.finalizeCardsUseCase,
     required this.deleteCardsUseCase,
     required this.chargeCardsUseCase,
+    required this.localDataSource,
   });
 
 // account
@@ -44,6 +46,9 @@ class DashboardProvider extends ChangeNotifier {
   DeleteCardsUseCase deleteCardsUseCase;
   ChargeCardsUseCase chargeCardsUseCase;
 
+  // local
+  final IAuthLocalDataSource localDataSource;
+
   // Airtime bills TEC
   final amountController = TextEditingController();
   final phoneController = TextEditingController();
@@ -53,6 +58,13 @@ class DashboardProvider extends ChangeNotifier {
   bool get showBalance => _showBalance;
   set showBalance(bool value) {
     _showBalance = value;
+    notifyListeners();
+  }
+
+  bool _showBvnRequest = false;
+  bool get showBvnRequest => _showBvnRequest;
+  set showBvnRequest(bool value) {
+    _showBvnRequest = value;
     notifyListeners();
   }
 
@@ -80,6 +92,7 @@ class DashboardProvider extends ChangeNotifier {
       (failure) {
         getWalletsResponse =
             ApiResult<List<WalletsModel>>.error(failure.message);
+
         notifyListeners();
       },
       (res) {

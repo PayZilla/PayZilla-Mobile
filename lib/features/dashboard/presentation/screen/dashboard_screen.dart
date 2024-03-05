@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pay_zilla/config/config.dart';
+import 'package:pay_zilla/core/managers/api_endpoints_manager.dart';
 import 'package:pay_zilla/features/auth/auth.dart';
 import 'package:pay_zilla/features/card/card.dart';
 import 'package:pay_zilla/features/dashboard/dashboard.dart';
@@ -29,6 +30,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final notification = context.watch<NotificationProvider>();
     final historiesProvider = context.watch<TransactionHistoryProvider>();
 
+    if (!authProvider.user.getAbsoluteVerification) {
+      // showDialogBoxWidget();
+      Log().debug(
+          'the user is verified', authProvider.user.getAbsoluteVerification);
+    }
     return AppScaffold(
       useBodyPadding: false,
       body: Stack(
@@ -74,6 +80,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                       const Spacer(),
+                      if (!authProvider.user.getAbsoluteVerification &&
+                          authProvider.requestBvn)
+                        InkWell(
+                          onTap: () {
+                            if (!authProvider.user.hasVerifiedEmail) {
+                              AppNavigator.of(context).push(
+                                AppRoutes.pin,
+                                args: GenericTokenVerificationArgs(
+                                  email: authProvider.user.email,
+                                  path: AppRoutes.home,
+                                  endpointPath:
+                                      authEndpoints.emailVerificationVerify,
+                                ),
+                              );
+                            } else {
+                              AppNavigator.of(context).push(AppRoutes.country);
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: Insets.dim_8),
+                            child: Container(
+                              width: Insets.dim_100,
+                              height: Insets.dim_34,
+                              decoration: BoxDecoration(
+                                color: AppColors.borderErrorColor,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Update',
+                                  style: context.textTheme.bodyMedium!.copyWith(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                    letterSpacing: 0.30,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      const XBox(Insets.dim_12),
                       Container(
                         height: 50,
                         width: 50,
@@ -492,6 +540,86 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   )
                 : const AtmCardWidget(),
           ),
+          // show dialog that can be disposed
+          if (!authProvider.requestBvn)
+            Container(
+              height: context.getHeight(),
+              width: context.getWidth(),
+              color: Colors.black.withOpacity(0.2),
+              child: Center(
+                child: Container(
+                  height: context.getHeight(0.3),
+                  width: context.getWidth(0.7),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: Insets.dim_22),
+                  decoration: BoxDecoration(
+                    color: AppColors.black.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      const YBox(Insets.dim_12),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          clipBehavior: Clip.hardEdge,
+                          height: 35,
+                          width: 35,
+                          decoration: const BoxDecoration(
+                            color: AppColors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: FittedBox(
+                            child: IconButton(
+                              onPressed: () {
+                                authProvider.requestBvn = true;
+                              },
+                              icon: const Icon(Icons.close),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const YBox(Insets.dim_32),
+                      Text(
+                        'Your ${!authProvider.user.hasVerifiedEmail ? 'email' : !authProvider.user.hasVerifiedPhoneNumber ? 'phone number' : 'account'} is not verified',
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          letterSpacing: 0.1,
+                        ),
+                      ),
+                      const Spacer(),
+                      if (!authProvider.user.hasVerifiedEmail)
+                        AppSolidButton(
+                          textTitle: 'Verify Email',
+                          action: () {
+                            AppNavigator.of(context).push(
+                              AppRoutes.pin,
+                              args: GenericTokenVerificationArgs(
+                                email: authProvider.user.email,
+                                path: AppRoutes.home,
+                                endpointPath:
+                                    authEndpoints.emailVerificationVerify,
+                              ),
+                            );
+                          },
+                        ),
+                      if (!authProvider.user.hasVerifiedPhoneNumber &&
+                          authProvider.user.hasVerifiedEmail)
+                        AppSolidButton(
+                          textTitle: 'Verify Phone Number',
+                          action: () {
+                            AppNavigator.of(context).push(AppRoutes.country);
+                          },
+                        ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
