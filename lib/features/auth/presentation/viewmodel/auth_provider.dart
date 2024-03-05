@@ -29,7 +29,6 @@ class AuthProvider extends ChangeNotifier {
     required this.forgotPasswordUseCase,
     required this.forgotPasswordResetUseCase,
     required this.purposeUseCase,
-    required this.localDataSource,
   });
 
   LogInUseCase loginUseCase;
@@ -46,7 +45,6 @@ class AuthProvider extends ChangeNotifier {
   ForgotPasswordUseCase forgotPasswordUseCase;
   ForgotPasswordResetUseCase forgotPasswordResetUseCase;
   PurposeUseCase purposeUseCase;
-  final IAuthLocalDataSource localDataSource;
 
   final deBouncer = DeBouncer(milliseconds: 200);
 
@@ -75,6 +73,13 @@ class AuthProvider extends ChangeNotifier {
   bool get requestBvn => _requestBvn;
   set requestBvn(bool val) {
     _requestBvn = val;
+    notifyListeners();
+  }
+
+  bool _bvnRequestDashboard = true;
+  bool get bvnRequestDashboard => _bvnRequestDashboard;
+  set bvnRequestDashboard(bool val) {
+    _bvnRequestDashboard = val;
     notifyListeners();
   }
 
@@ -146,9 +151,11 @@ class AuthProvider extends ChangeNotifier {
     _user = User.empty();
     bvnModel = BvnModel.empty();
     requestBvn = false;
+    bvnRequestDashboard = false;
     final userLocal = await sl<IAuthLocalDataSource>().getAuthUserPref();
     if (userLocal != null) {
       _user = userLocal as User;
+      bvnRequestDashboard = userLocal.getAbsoluteVerification;
       notifyListeners();
     }
     if (!useNetworkCall) return _user;
@@ -166,8 +173,7 @@ class AuthProvider extends ChangeNotifier {
       (res) {
         _user = res;
         Log().debug('user on login', user.toJson());
-        requestBvn = user.getAbsoluteVerification;
-        localDataSource.saveBvnRequest(status: user.getAbsoluteVerification);
+        bvnRequestDashboard = user.getAbsoluteVerification;
         notifyListeners();
       },
     );

@@ -81,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       const Spacer(),
                       if (!authProvider.user.getAbsoluteVerification &&
-                          authProvider.requestBvn)
+                          authProvider.bvnRequestDashboard)
                         InkWell(
                           onTap: () {
                             if (!authProvider.user.hasVerifiedEmail) {
@@ -541,7 +541,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 : const AtmCardWidget(),
           ),
           // show dialog that can be disposed
-          if (!authProvider.requestBvn)
+          if (!authProvider.bvnRequestDashboard)
             Container(
               height: context.getHeight(),
               width: context.getWidth(),
@@ -572,7 +572,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: FittedBox(
                             child: IconButton(
                               onPressed: () {
-                                authProvider.requestBvn = true;
+                                authProvider.bvnRequestDashboard = true;
                               },
                               icon: const Icon(Icons.close),
                             ),

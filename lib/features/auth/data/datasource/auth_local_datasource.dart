@@ -12,7 +12,6 @@ abstract class IAuthLocalDataSource {
   FutureOr<String> getUserPassword(); // for biometric auth
   FutureOr<dynamic> getAuthUserPref();
   FutureOr<bool> getUserBiometric();
-  FutureOr<bool> getBvnRequest();
   void hideVerificationBanner();
   void saveUserEmail(String email);
 
@@ -22,7 +21,6 @@ abstract class IAuthLocalDataSource {
   void saveAuthUserPref(User pref);
   void flushLocalStorage();
   void saveBiometricStatus({required bool status});
-  void saveBvnRequest({required bool status});
 }
 
 class AuthLocalDataSource implements IAuthLocalDataSource {
@@ -138,21 +136,5 @@ class AuthLocalDataSource implements IAuthLocalDataSource {
     final email = await getUserEmail();
     final password = await getUserPassword();
     return email.isNotEmpty && password.isNotEmpty && isBiometricsPrefEnabled;
-  }
-
-  @override
-  FutureOr<bool> getBvnRequest() async {
-    final bvnReq = await _secureLocalCache.get<bool>(CacheKeys.bvnRequest);
-
-    if (bvnReq != null) {
-      return bvnReq;
-    }
-
-    return false;
-  }
-
-  @override
-  void saveBvnRequest({required bool status}) {
-    unawaited(_secureLocalCache.put(CacheKeys.bvnRequest, status));
   }
 }

@@ -26,11 +26,13 @@ class OnboardingProvider extends ChangeNotifier {
 
   void initiate() {
     _timer = Timer.periodic(3.seconds, (_) {
-      welcomePageController.animateToPage(
-        currentValue != 2 ? currentValue + 1 : 0,
-        duration: 200.milliseconds,
-        curve: Curves.easeIn,
-      );
+      if (welcomePageController.hasClients) {
+        welcomePageController.animateToPage(
+          currentValue != 2 ? currentValue + 1 : 0,
+          duration: 200.milliseconds,
+          curve: Curves.easeIn,
+        );
+      }
     });
     notifyListeners();
   }

@@ -28,7 +28,6 @@ void registerViewModelProviders(GetIt getIt) {
         pinSetupUseCase: getIt(),
         purposeUseCase: getIt(),
         updateBvnUseCase: getIt(),
-        localDataSource: getIt(),
       ),
     )
     ..registerFactory(
@@ -70,7 +69,6 @@ void registerViewModelProviders(GetIt getIt) {
         payBillUseCase: getIt(),
         purchaseUseCase: getIt(),
         verifyUseCase: getIt(),
-        localDataSource: getIt(),
       ),
     )
     ..registerFactory(
