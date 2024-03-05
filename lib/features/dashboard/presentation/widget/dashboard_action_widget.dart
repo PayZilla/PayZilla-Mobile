@@ -42,7 +42,19 @@ class DashboardIconActionWidget extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LocalSvgImage(icon[index]),
+                  if (icon[index].split('.').last == 'svg')
+                    LocalSvgImage(icon[index])
+                  else
+                    Container(
+                      height: Insets.dim_24,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: LocalImage(
+                        icon[index],
+                      ),
+                    ),
                   const YBox(Insets.dim_12),
                   Flexible(
                     child: Text(
@@ -54,7 +66,7 @@ class DashboardIconActionWidget extends StatelessWidget {
                         letterSpacing: 0.30,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

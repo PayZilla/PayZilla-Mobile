@@ -62,8 +62,9 @@ final String profileActive = 'profile'.navSvg;
 final String scanSvg = 'scan'.navSvg;
 
 // dashboard
+
+const String nairaPng = 'assets/pngs/naira.jpeg';
 final String dataSvg = 'data'.dashboardSvg;
-final String depositSvg = 'deposit'.dashboardSvg;
 final String electricitySvg = 'electricity'.dashboardSvg;
 final String moreSvg = 'more'.dashboardSvg;
 final String referEarnSvg = 'refer_earn'.dashboardSvg;
@@ -72,7 +73,6 @@ final String schoolSvg = 'school'.dashboardSvg;
 final String sentSvg = 'sent'.dashboardSvg;
 final String transferSvg = 'transfer'.dashboardSvg;
 final String tvSvg = 'tv'.dashboardSvg;
-final String withdrawSvg = 'withdraw'.dashboardSvg;
 final String notificationCheckSvg = 'notification_check'.dashboardSvg;
 final String rewardSvg = 'reward'.dashboardSvg;
 final String paymentSvg = 'payment'.dashboardSvg;

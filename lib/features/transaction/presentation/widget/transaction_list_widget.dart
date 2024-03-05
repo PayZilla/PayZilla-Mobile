@@ -62,18 +62,33 @@ class _TransactionListState extends State<TransactionList> {
               color: AppColors.white,
               child: Row(
                 children: [
-                  Container(
-                    height: Insets.dim_100,
-                    width: Insets.dim_54,
-                    decoration: BoxDecoration(
-                      borderRadius: Corners.mdBorder,
-                      color: AppColors.borderColor,
+                  if (data.type == 'debit')
+                    Container(
+                      height: Insets.dim_100,
+                      width: Insets.dim_54,
+                      decoration: BoxDecoration(
+                        borderRadius: Corners.mdBorder,
+                        color: AppColors.borderColor,
+                      ),
+                      child: LocalSvgImage(
+                        sentSvg,
+                        fit: BoxFit.scaleDown,
+                      ),
+                    )
+                  else
+                    Container(
+                      height: Insets.dim_100,
+                      width: Insets.dim_54,
+                      clipBehavior: Clip.hardEdge,
+                      padding: const EdgeInsets.all(Insets.dim_14),
+                      decoration: BoxDecoration(
+                        borderRadius: Corners.mdBorder,
+                        color: AppColors.borderColor,
+                      ),
+                      child: const LocalImage(
+                        nairaPng,
+                      ),
                     ),
-                    child: LocalSvgImage(
-                      data.type == 'debit' ? sentSvg : depositSvg,
-                      fit: BoxFit.scaleDown,
-                    ),
-                  ),
                   const XBox(Insets.dim_24),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

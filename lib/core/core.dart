@@ -13,7 +13,6 @@ export './managers/network_manager.dart';
 export './managers/notification_manager.dart';
 export './mixins/form_mixin.dart';
 export './mixins/logout_mixin.dart';
-export './repository/repository.dart';
 export 'app_widget.dart';
 export 'core_app_utils/app_setups.dart';
 export 'core_app_utils/core_config.dart';

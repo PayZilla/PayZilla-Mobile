@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_zilla/config/config.dart';
 import 'package:pay_zilla/core/core.dart';
-import 'package:pay_zilla/features/dashboard/dashboard.dart';
 import 'package:pay_zilla/features/navigation/navigation.dart';
 import 'package:pay_zilla/features/profile/profile.dart';
 import 'package:pay_zilla/features/qr/qr.dart';

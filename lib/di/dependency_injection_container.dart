@@ -9,7 +9,6 @@ import 'package:pay_zilla/di/repositories.dart';
 import 'package:pay_zilla/di/usecases.dart';
 import 'package:pay_zilla/di/view_model_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 final sl = GetIt.instance;
 
@@ -39,8 +38,6 @@ Future<void> initServiceLocator(
 
 // Any other class
 Future<void> _registerOthers(Flavor flavor, bool enableLogging) async {
-  final sessionToken = const Uuid().v4();
-
   const secureStorage = FlutterSecureStorage();
   final localAuth = LocalAuthentication();
   final connectivity = Connectivity();

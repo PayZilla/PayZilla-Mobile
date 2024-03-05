@@ -119,9 +119,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       DashboardIconActionWidget(
                         icon: [
-                          depositSvg,
+                          nairaPng,
                           transferSvg,
-                          withdrawSvg,
+                          nairaPng,
                           referEarnSvg,
                         ],
                         name: const [
