@@ -33,7 +33,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!authProvider.user.getAbsoluteVerification) {
       // showDialogBoxWidget();
       Log().debug(
-          'the user is verified', authProvider.user.getAbsoluteVerification);
+        'the user is verified',
+        authProvider.user.getAbsoluteVerification,
+      );
     }
     return AppScaffold(
       useBodyPadding: false,
@@ -178,16 +180,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           'To Bank',
                           'Refer & Earn',
                         ],
-                        todo: [
-                          () => dsProvider.goTo(
-                                AppRoutes.fundingAccountDetails,
-                                context,
+                        todo: authProvider.user.getAbsoluteVerification
+                            ? [
+                                () => dsProvider.goTo(
+                                      AppRoutes.fundingAccountDetails,
+                                      context,
+                                    ),
+                                () => dsProvider.goTo(
+                                      AppRoutes.transfer,
+                                      context,
+                                    ),
+                                () => dsProvider.goTo(
+                                      AppRoutes.bankTransfer,
+                                      context,
+                                    ),
+                                () => dsProvider.goTo(
+                                      AppRoutes.referral,
+                                      context,
+                                    ),
+                              ]
+                            : List.generate(
+                                4,
+                                (index) => () =>
+                                    authProvider.bvnRequestDashboard = false,
                               ),
-                          () => dsProvider.goTo(AppRoutes.transfer, context),
-                          () =>
-                              dsProvider.goTo(AppRoutes.bankTransfer, context),
-                          () => dsProvider.goTo(AppRoutes.referral, context),
-                        ],
                       ),
                       const YBox(Insets.dim_2),
                       if (dsProvider.billResponse.isLoading)
@@ -353,6 +369,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             child: InkWell(
                               onTap: () async {
+                                if (!authProvider
+                                    .user.getAbsoluteVerification) {
+                                  authProvider.bvnRequestDashboard = false;
+                                  return;
+                                }
                                 authProvider.showNavBar = true;
                                 dsProvider.clearTEC();
                                 await FutureBottomSheet<Widget>(
@@ -475,8 +496,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                                 const Spacer(),
                                 TextButton(
-                                  onPressed: () => AppNavigator.of(context)
-                                      .push(AppRoutes.allTransactions),
+                                  onPressed: () {
+                                    if (!authProvider
+                                        .user.getAbsoluteVerification) {
+                                      authProvider.bvnRequestDashboard = false;
+                                      return;
+                                    }
+                                    AppNavigator.of(context)
+                                        .push(AppRoutes.allTransactions);
+                                  },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                   ),
