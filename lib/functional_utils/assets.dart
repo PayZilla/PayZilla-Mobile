@@ -64,6 +64,7 @@ final String scanSvg = 'scan'.navSvg;
 // dashboard
 
 const String nairaPng = 'assets/pngs/naira.jpeg';
+const String toBankPng = 'assets/pngs/to_bank.jpeg';
 final String dataSvg = 'data'.dashboardSvg;
 final String electricitySvg = 'electricity'.dashboardSvg;
 final String moreSvg = 'more'.dashboardSvg;

@@ -171,7 +171,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         icon: [
                           nairaPng,
                           transferSvg,
-                          nairaPng,
+                          toBankPng,
                           referEarnSvg,
                         ],
                         name: const [
