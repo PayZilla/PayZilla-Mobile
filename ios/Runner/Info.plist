@@ -27,17 +27,17 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app requires to access camera to improve on performance</string>
+	<string>PayZilla requires access to camera to improve on performance and better user experience when scanning Payzilla user data through QR code. </string>
 	<key>NSContactsUsageDescription</key>
-	<string>Reason we need access to the contact list</string>
+	<string>PayZilla requires access to the contact list for better user experience when using the product.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>This app requires access for face id authentication</string>
+	<string>PayZilla requires access for face id authentication</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs to access microphone for kyc verification.</string>
+	<string>PayZilla needs to access microphone for kyc verification and better improve your experience on the app.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app requires access to the photo library, to enable you select profile picture from your phone</string>
+	<string>PayZilla requires access to the photo library, to enable you select profile picture from your phone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs photos access to get QR code from photo library</string>
+	<string>PayZilla requires access to the photo library, to enable you select profile picture from your phone</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

@@ -2,7 +2,7 @@ name: pay_zilla
 description: A new Flutter project.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.9.0+13
+version: 1.9.0+15
 
 environment:
   sdk: ">=2.19.6 <3.0.0"

@@ -25,8 +25,7 @@ class BottomNavigationContainer extends StatefulWidget {
       _BottomNavigationContainerState();
 }
 
-class _BottomNavigationContainerState extends State<BottomNavigationContainer>
-    with ChangeNotifier {
+class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
   late AuthProvider authProvider;
   late TransactionProvider qrProvider;
   late TransactionHistoryProvider historyProvider;

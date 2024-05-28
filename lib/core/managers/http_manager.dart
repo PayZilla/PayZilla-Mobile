@@ -146,7 +146,7 @@ class HttpManager {
     } catch (e) {
       Log().debug(
         'the _makeRequest exception caught ${AppConfig.baseUrl}$endpoint',
-        e.toString(),
+        [data, e.toString()],
       );
       if (e is ServerException) {
         rethrow;

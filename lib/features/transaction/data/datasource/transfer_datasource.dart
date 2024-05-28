@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:pay_zilla/core/core.dart';
 import 'package:pay_zilla/features/transaction/transaction.dart';
+import 'package:pay_zilla/functional_utils/functional_utils.dart';
 
 abstract class ITransferRemoteDataSource {
   Future<Either<ApiFailure, List<BanksModel>>> getBanks();
@@ -58,6 +59,7 @@ class TransferRemoteDataSource implements ITransferRemoteDataSource {
   Future<Either<ApiFailure, WalletOrBankModel>> validateBanksOrWallet(
     ValidateBankOrWalletDto params,
   ) async {
+    Log().debug('What is validated on api', params.toJson());
     try {
       final response = ResponseDto.fromMap(
         await http.post(
